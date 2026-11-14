@@ -1,71 +1,71 @@
-{"protocolVersion":"0.1.1","runnerVersion":null,"pid":7460,"type":"start","time":0}
+{"protocolVersion":"0.1.1","runnerVersion":null,"pid":344,"type":"start","time":0}
 {"suite":{"id":0,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"suite","time":0}
 {"test":{"id":1,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart","suiteID":0,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":1}
 {"suite":{"id":2,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"suite","time":6}
 {"test":{"id":3,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart","suiteID":2,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":6}
-{"suite":{"id":4,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"suite","time":7}
+{"suite":{"id":4,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"suite","time":6}
 {"test":{"id":5,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart","suiteID":4,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":7}
-{"suite":{"id":6,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"suite","time":8}
-{"test":{"id":7,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart","suiteID":6,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":8}
-{"count":5,"time":10,"type":"allSuites"}
+{"suite":{"id":6,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"suite","time":7}
+{"test":{"id":7,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart","suiteID":6,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":7}
+{"count":5,"time":9,"type":"allSuites"}
 
-[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:63180/XRu2uMCgYgM=/"}}]
-{"testID":1,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":2902}
-{"group":{"id":8,"suiteID":0,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":6,"line":null,"column":null,"url":null},"type":"group","time":2909}
-{"test":{"id":9,"name":"TC-BUD-02 HU-14 suma mensual/anual y separa años","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":43,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":2910}
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:51978/0h1AjaIQ4wk=/"}}]
+{"testID":1,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":2984}
+{"group":{"id":8,"suiteID":0,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":6,"line":null,"column":null,"url":null},"type":"group","time":2990}
+{"test":{"id":9,"name":"TC-BUD-02 HU-14 suma mensual/anual y separa años","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":43,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":2991}
 
-[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:63190/ac7aTXYaaKU=/"}}]
-{"testID":9,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":2969}
-{"test":{"id":10,"name":"TC-BUD-02 HU-13 editar y eliminar recalcula sin duplicados","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":53,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":2970}
-{"testID":10,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":2976}
-{"test":{"id":11,"name":"TC-BUD-03 HU-12 categoría usada no cambia tipo ni se elimina","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":61,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":2976}
-{"testID":11,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":2986}
-{"test":{"id":12,"name":"TC-BUD-01 HU-13 límites de mes/año/monto y categoría ajena","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":83,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":2987}
-{"testID":12,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":2992}
-{"test":{"id":13,"name":"TC-BUD-04 HU-15 CSV con doce meses, totales y fórmulas neutralizadas","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":100,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":2992}
-{"testID":13,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3005}
-{"test":{"id":14,"name":"TC-BUD-03 HU-12 nombre de categoría vacío rechazado","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":116,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":3006}
-{"testID":14,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3011}
-{"testID":3,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":3084}
-{"group":{"id":15,"suiteID":2,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":3084}
-{"test":{"id":16,"name":"TC-DOC-02 HU-09 valida firma y tamaño de PDF/JPG/PNG","suiteID":2,"groupIDs":[15],"metadata":{"skip":false,"skipReason":null},"line":6,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"testStart","time":3085}
-{"testID":16,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3148}
-{"test":{"id":17,"name":"TC-DOC-01 HU-08 nombre obligatorio y sin ruta proporcionada","suiteID":2,"groupIDs":[15],"metadata":{"skip":false,"skipReason":null},"line":54,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"testStart","time":3148}
-{"testID":17,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3157}
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:51987/xq0eCWaA7fI=/"}}]
+{"testID":9,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3047}
+{"test":{"id":10,"name":"TC-BUD-02 HU-13 editar y eliminar recalcula sin duplicados","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":53,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":3048}
+{"testID":10,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3054}
+{"test":{"id":11,"name":"TC-BUD-03 HU-12 categoría usada no cambia tipo ni se elimina","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":61,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":3054}
+{"testID":11,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3065}
+{"test":{"id":12,"name":"TC-BUD-01 HU-13 límites de mes/año/monto y categoría ajena","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":83,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":3066}
+{"testID":12,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3072}
+{"test":{"id":13,"name":"TC-BUD-04 HU-15 CSV con doce meses, totales y fórmulas neutralizadas","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":100,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":3073}
+{"testID":13,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3090}
+{"test":{"id":14,"name":"TC-BUD-03 HU-12 nombre de categoría vacío rechazado","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":116,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":3090}
+{"testID":14,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3096}
+{"testID":3,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":3165}
+{"group":{"id":15,"suiteID":2,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":3165}
+{"test":{"id":16,"name":"TC-DOC-02 HU-09 valida firma y tamaño de PDF/JPG/PNG","suiteID":2,"groupIDs":[15],"metadata":{"skip":false,"skipReason":null},"line":6,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"testStart","time":3166}
+{"testID":16,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3226}
+{"test":{"id":17,"name":"TC-DOC-01 HU-08 nombre obligatorio y sin ruta proporcionada","suiteID":2,"groupIDs":[15],"metadata":{"skip":false,"skipReason":null},"line":54,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"testStart","time":3227}
+{"testID":17,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3245}
 
-[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:63201/hbPY1wUI_zg=/"}}]
-{"testID":5,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":3414}
-{"group":{"id":18,"suiteID":4,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":7,"line":null,"column":null,"url":null},"type":"group","time":3414}
-{"test":{"id":19,"name":"TC-FAM-01 HU-03 creador admin y solo admin invita","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":8,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3414}
-{"testID":19,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3472}
-{"test":{"id":20,"name":"TC-FAM-02 HU-04 invitación no concede acceso; receptor decide una vez","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":19,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3473}
-{"testID":20,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3481}
-{"test":{"id":21,"name":"TC-FAM-02 HU-04 rechazo y duplicado pendiente","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":37,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3482}
-{"testID":21,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3488}
-{"test":{"id":22,"name":"TC-FAM-04 HU-05 último admin no sale ni renuncia","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":47,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3488}
-{"testID":22,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3495}
-{"test":{"id":23,"name":"TC-FAM-03 HU-05 transferencia, renuncia y salida","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":55,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3496}
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:51999/xOdKayK-wP8=/"}}]
+{"testID":5,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":3499}
+{"group":{"id":18,"suiteID":4,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":7,"line":null,"column":null,"url":null},"type":"group","time":3500}
+{"test":{"id":19,"name":"TC-FAM-01 HU-03 creador admin y solo admin invita","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":8,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3500}
+{"testID":19,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3554}
+{"test":{"id":20,"name":"TC-FAM-02 HU-04 invitación no concede acceso; receptor decide una vez","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":19,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3554}
+{"testID":20,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3564}
+{"test":{"id":21,"name":"TC-FAM-02 HU-04 rechazo y duplicado pendiente","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":37,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3564}
+{"testID":21,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3569}
+{"test":{"id":22,"name":"TC-FAM-04 HU-05 último admin no sale ni renuncia","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":47,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3570}
+{"testID":22,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3576}
+{"test":{"id":23,"name":"TC-FAM-03 HU-05 transferencia, renuncia y salida","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":55,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3577}
+{"testID":23,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3582}
+{"test":{"id":24,"name":"TC-FAM-05 HU-06 ascendencia rechaza ciclos, autorrelación y ajenos","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":71,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3583}
+{"testID":24,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3590}
+{"test":{"id":25,"name":"TC-SEC-01 HU-03 mismo usuario en dos grupos sin compartir permisos","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":102,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3590}
+{"testID":25,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3596}
 
-[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:63207/pddpz_yTjuk=/"}}]
-{"testID":23,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3501}
-{"test":{"id":24,"name":"TC-FAM-05 HU-06 ascendencia rechaza ciclos, autorrelación y ajenos","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":71,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3502}
-{"testID":24,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3508}
-{"test":{"id":25,"name":"TC-SEC-01 HU-03 mismo usuario en dos grupos sin compartir permisos","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":102,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":3509}
-{"testID":25,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3514}
-{"testID":7,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":3646}
-{"group":{"id":26,"suiteID":6,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":3646}
-{"test":{"id":27,"name":"TC-BUD-01 HU-13 decimal exacto y coma local","suiteID":6,"groupIDs":[26],"metadata":{"skip":false,"skipReason":null},"line":5,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"testStart","time":3647}
-{"testID":27,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3704}
-{"test":{"id":28,"name":"TC-BUD-01 HU-13 rechaza montos ambiguos y fuera de límite","suiteID":6,"groupIDs":[26],"metadata":{"skip":false,"skipReason":null},"line":9,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"testStart","time":3705}
-{"testID":28,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3716}
-{"suite":{"id":29,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"suite","time":4238}
-{"test":{"id":30,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart","suiteID":29,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":4239}
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:52006/HKhscwYI_dc=/"}}]
+{"testID":7,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":3785}
+{"group":{"id":26,"suiteID":6,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":3786}
+{"test":{"id":27,"name":"TC-BUD-01 HU-13 decimal exacto y coma local","suiteID":6,"groupIDs":[26],"metadata":{"skip":false,"skipReason":null},"line":5,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"testStart","time":3786}
+{"testID":27,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3837}
+{"test":{"id":28,"name":"TC-BUD-01 HU-13 rechaza montos ambiguos y fuera de límite","suiteID":6,"groupIDs":[26],"metadata":{"skip":false,"skipReason":null},"line":9,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"testStart","time":3838}
+{"testID":28,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":3846}
+{"suite":{"id":29,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"suite","time":4251}
+{"test":{"id":30,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart","suiteID":29,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":4251}
 
-[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:63220/bVtHaCbtE14=/"}}]
-{"testID":30,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":5560}
-{"group":{"id":31,"suiteID":29,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":5560}
-{"test":{"id":32,"name":"TC-UI-01 HU-14 navegar y agregar monto exacto en demo","suiteID":29,"groupIDs":[31],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":6,"root_column":3,"root_url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"testStart","time":5560}
-{"testID":32,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":7397}
-{"test":{"id":33,"name":"TC-UI-01 HU-13 monto inválido conserva formulario","suiteID":29,"groupIDs":[31],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":35,"root_column":3,"root_url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"testStart","time":7398}
-{"testID":33,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":7834}
-{"success":true,"type":"done","time":8348}
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:52019/7kGzqdGewwI=/"}}]
+{"testID":30,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":5526}
+{"group":{"id":31,"suiteID":29,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":5527}
+{"test":{"id":32,"name":"TC-UI-01 HU-14 navegar y agregar monto exacto en demo","suiteID":29,"groupIDs":[31],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":6,"root_column":3,"root_url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"testStart","time":5527}
+{"testID":32,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":7604}
+{"test":{"id":33,"name":"TC-UI-01 HU-13 monto inválido conserva formulario","suiteID":29,"groupIDs":[31],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":35,"root_column":3,"root_url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"testStart","time":7605}
+{"testID":33,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":8103}
+{"success":true,"type":"done","time":8561}

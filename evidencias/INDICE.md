@@ -2,6 +2,8 @@
 
 Cada evidencia identifica commit/build, autor real, fecha, entorno y resultado. Tener una plantilla no significa completar el requisito.
 
+[Reporte local validado de la base](base/report.md) · [secuencia TDD real y límites](TDD.md). Los artifacts de CI corresponden al commit probado en GitHub Actions.
+
 | Requisito | Artefacto preparado | Falta evidencia real |
 |---|---|---|
 | Test Plan ágil | docs/sqa/TEST_PLAN.md y REVISION_PLAN.md | Revisión equipo/docente e historial por sprint |

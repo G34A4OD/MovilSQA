@@ -522,7 +522,7 @@ class BudgetPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Vista previa local. La descarga al dispositivo se implementará en HU-15.',
+                'Vista previa local. La descarga al dispositivo estará disponible en la versión completa.',
               ),
               const SizedBox(height: 12),
               SelectableText(

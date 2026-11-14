@@ -92,5 +92,5 @@ No hay aprobación humana ni prueba de servidor/dispositivo hasta adjuntar evide
     result.append({key:item[key] for key in ("id","edt","owner","reviewer","milestone")} |
                   {"number":issue["number"],"url":issue["url"]})
     # Checkpoint each successful mutation so a partial failure is reviewable.
-    (root/"planificacion/github-map.json").write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding="utf-8")
+    (root/"planificacion/github-map.json").write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n",encoding="utf-8",newline="\n")
 print("Mapa guardado. Rerun tras aceptar invitaciones completa asignaciones sin duplicar issues.")

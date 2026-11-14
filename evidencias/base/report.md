@@ -2,12 +2,12 @@
 
 Resultado global: **PASS**. Alcance: unidad/widget de la base local; no API ni E2E móvil.
 
-- Ejecución: base-final-01
-- Inicio UTC: 2026-11-14T05:09:28.2768425Z
-- Commit base: afaa69be5e9e775e8832132d0fc8e68bf48ded70; árbol con cambios: True
-- SHA-256 de fuentes normalizadas a LF: b78e924454dd4db4c8aa28f56c25232ec7e2e529c092dc0b77b66e41445ba41f
+- Ejecución: base-final-02
+- Inicio UTC: 2026-11-14T05:17:40.7935104Z
+- Commit base: edc0a8ec37e8cf21b2ff6f46df24a4290a98cf7d; árbol con cambios: True
+- SHA-256 de fuentes normalizadas a LF: 5eb76b0ff379d26602ea5d3011c1d97079440abd9496a2d66a0b0aa7f69851ff
 - Entorno: Microsoft Windows NT 10.0.26200.0; Flutter: Flutter 3.41.9 • channel stable • https://github.com/flutter/flutter.git
-- Duración suite: 8.348 s
+- Duración suite: 8.561 s
 - Pub/formato/análisis/tests (exit): 0/0/0/0
 
 | Total | Pasados | Fallidos/incompletos | Saltados | Tasa éxito (sin saltados) |

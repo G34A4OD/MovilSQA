@@ -275,7 +275,7 @@ class _FamilyPreview extends StatelessWidget {
       ),
       const SizedBox(height: 20),
       const Text(
-        'Vista de diseño. Crear grupos, invitar por ID, aceptar invitaciones y editar el árbol se implementará en HU-03 a HU-07.',
+        'Vista de ejemplo. Las invitaciones y la edición de tu familia estarán disponibles en la versión completa.',
       ),
     ],
   );
@@ -318,7 +318,7 @@ class _DocumentsPreview extends StatelessWidget {
       ),
       const SizedBox(height: 8),
       const Text(
-        'La carga de fotos/PDF y los permisos se implementarán con almacenamiento privado en HU-08 a HU-10. Esta demostración no permite subir documentos.',
+        'Tu archivo familiar necesita un espacio privado y acceso con tu cuenta. Esta demostración todavía no permite subir documentos.',
         textAlign: TextAlign.center,
       ),
     ],

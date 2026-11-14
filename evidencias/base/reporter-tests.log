@@ -5,6 +5,6 @@ test_missing_done_is_failure (test_report.ReportTest.test_missing_done_is_failur
 test_pass_skip_and_non_event_json (test_report.ReportTest.test_pass_skip_and_non_event_json) ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 1.253s
+Ran 5 tests in 1.412s
 
 OK
