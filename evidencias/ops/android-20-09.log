@@ -1,0 +1,22 @@
+00:00 +0: loading D:/Universidad/SQA/ProyectoMovil/app/integration_test/gerardo_mobile_test.dart
+Running Gradle task 'assembleDebug'...                             38,3s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...           7,9s
+00:00 +0: TC-MOB-G HU-01..07: registro PKCE, familia y permisos en Android real
+PASS_CASE: TC-AUTH-01: registro y confirmación PKCE por enlace Android
+PASS_CASE: TC-PRO-01: perfil guardado contra PostgreSQL desde teléfono
+PASS_CASE: TC-SEC-03: sesión persistida mediante almacenamiento seguro nativo
+PASS_CASE: TC-FAM-01: creación y consulta del grupo real
+CAPTURE_READY: 01-mascota-android
+PASS_CASE: TC-FAM-06: mascota creada en ficha separada
+PASS_CASE: TC-FAM-02: búsqueda Edge e invitación desde Android
+PASS_CASE: TC-FAM-03/06: receptor acepta y lee mascota sin acciones de admin
+CAPTURE_READY: 02-arbol-android
+PASS_CASE: TC-FAM-05: rol referenciado y árbol en dispositivo
+PASS_CASE: TC-PRO-03: consentimiento explícito por grupo
+PASS_CASE: TC-SEC-03: JWT anterior al logout sin filas privadas desde Android
+PASS_CASE: TC-AUTH-03: recuperación PKCE y cambio de contraseña en teléfono
+PASS_CASE: TC-AUTH-02: acceso con contraseña nueva
+CAPTURE_READY: 03-cuenta-android
+00:54 +1: (tearDownAll)
+00:55 +1: All tests passed!

@@ -3,6 +3,31 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test(
+    'TC-SEC-01: HTTP solo loopback de pruebas con bandera explícita y build debug',
+    () {
+      const SupabaseConfig(
+        url: 'http://127.0.0.1:54321',
+        publishableKey: 'sb_publishable_ficticio',
+        localTest: true,
+      ).validate();
+      expect(
+        () => const SupabaseConfig(
+          url: 'http://127.0.0.1:54321',
+          publishableKey: 'sb_publishable_ficticio',
+        ).validate(),
+        throwsFormatException,
+      );
+      expect(
+        () => const SupabaseConfig(
+          url: 'http://192.168.1.3:54321',
+          publishableKey: 'sb_publishable_ficticio',
+          localTest: true,
+        ).validate(),
+        throwsFormatException,
+      );
+    },
+  );
+  test(
     'TC-SEC-01: solo configuración pública HTTPS, sin credenciales de servidor',
     () {
       const SupabaseConfig(

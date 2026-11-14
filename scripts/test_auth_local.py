@@ -86,7 +86,7 @@ def main():
         status, retry = request('/rest/v1/rpc/create_family', {'p_name':'Familia HTTP ficticia','p_request_id':request_id}, token=s1['access_token'])
         check(status == 200 and retry['id'] == family['id'], 'TC-FAM-01 HU-03: reintento HTTP idempotente')
         status, rows = request('/rest/v1/memberships?select=is_admin,families!inner(id,name,version)', token=s1['access_token'])
-        check(status == 200 and len(rows) == 1 and rows[0]['is_admin'] and rows[0]['families']['id'] == family['id'], 'TC-FAM-01 HU-03: consulta móvil multigrupo embebida')
+        check(status == 200 and len(rows) == 1 and rows[0]['is_admin'] and rows[0]['families']['id'] == family['id'], 'TC-FAM-01 HU-03: consulta móvil embebida del grupo creado')
         status, rows = request('/rest/v1/memberships?select=user_id,is_admin,profiles!inner(full_name,public_id)', token=s1['access_token'])
         check(status == 200 and len(rows) == 1 and rows[0]['profiles']['full_name'] == profile['p_full_name'], 'TC-FAM-01 HU-03: consulta móvil de familiares')
         status, family = request('/rest/v1/rpc/update_family', {'p_family_id':family['id'],'p_name':'Familia HTTP editada','p_expected_version':1}, token=s1['access_token'])

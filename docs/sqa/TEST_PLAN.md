@@ -1,4 +1,4 @@
-# Test Plan ágil · Nido · TP-02 v0.3
+# Test Plan ágil · Nido · TP-02 v0.4
 
 Preparado: 14/11/2026. Estado: listo para revisión del equipo/docente; no aprobado aún. Responsables de elaboración: equipo Gerardo, Eva y Waldir. Base: Plan SQA móvil pp. 1-4. Se usa Scrum con sprints de una semana, tablero Kanban y prácticas XP de pruebas y revisión cruzada.
 
@@ -10,7 +10,7 @@ No se encontró un Test Plan previo del proyecto en la carpeta; no se inventa un
 
 ## 2. Alcance
 
-Producto objetivo: RF-01..15 y RNF-01..08 de `docs/REQUISITOS.md`. Incremento de preparación: dominio puro de dinero, categorías/movimientos, grupos/invitaciones/admin, ascendencia y validación temprana de archivos; UI de demostración. La arquitectura elegida es Flutter + Supabase directo: Auth, PostgreSQL con RLS, RPC transaccionales y Storage privado, mediante supabase_flutter. Autenticación real, conexión, migraciones, políticas/RPC, archivos y E2E siguen pendientes; no están cubiertos por las pruebas de la demo. No se construye un producto web ni una API propia intermedia.
+Producto objetivo: RF-01..15 y RNF-01..08 de `docs/REQUISITOS.md`. Incremento de preparación: dominio puro de dinero, categorías/movimientos, grupos/invitaciones/admin, ascendencia y validación temprana de archivos; UI de demostración. La arquitectura elegida es Flutter + Supabase directo: Auth, PostgreSQL con RLS, RPC transaccionales y Storage privado, mediante supabase_flutter. Actualización v0.4: identidad/familia implementadas con Auth, siete migraciones/RLS/RPC, lookup-user y pruebas SQL/HTTP/concurrentes. OPS incorpora Android real y restauración PostgreSQL local, registrados aparte. Archivos/Storage, presupuesto persistente y aceptación conjunta siguen pendientes; resultados exactos en evidencias/OPS_20.md y por HU. No se construye un producto web ni una API propia intermedia.
 
 | Sprint propuesto | Alcance comprobable | Riesgo y entregable |
 |---|---|---|
@@ -19,7 +19,7 @@ Producto objetivo: RF-01..15 y RNF-01..08 de `docs/REQUISITOS.md`. Incremento de
 | S3 | RF-11..15 e integración completa | Cálculos, aislamiento, concurrencia, CSV y regreso sin red |
 | S4 | Regresión, accesibilidad, rendimiento, restauración y entrega | Reportes, auditoría de cierre, release reproducible |
 
-El backlog debe dividir historias mayores a una semana. Los sprints son propuesta relativa a la fecha de inicio que confirme el equipo. No se programa antes de cumplir DoR y obtener validación docente de casos de uso.
+El backlog debe dividir historias mayores a una semana. La entrega objetivo comunicada es martes 17/11/2026; la disponibilidad y aceptación de cada sprint siguen por registrar con el equipo. No se programa antes de cumplir DoR y obtener validación docente de casos de uso.
 
 ## 3. Estrategia de pruebas
 
@@ -29,7 +29,7 @@ Prioridad P0: acceso cruzado, sesión, último admin, archivos y dinero. P1: inv
 |---|---|---|
 | Unidad (caja blanca y negra) | flutter_test para Dart; pruebas SQL/pgTAP para funciones de base de datos cuando existan | Cada cambio; JSON/JUnit/lcov o salida SQL con aserciones TC/HU |
 | Widget | flutter_test, múltiples anchos y texto ampliado | Cada PR; navegación, validaciones y estados de error |
-| Integración Supabase/DB | Supabase CLI y pgTAP en entorno local de pruebas; llamadas SDK con JWT de usuarios ficticios a Auth, Data API, RPC y Storage | Cada PR de migraciones/políticas; RLS, grants, FK, rollback, concurrencia e idempotencia. Suite pendiente de implementación |
+| Integración Supabase/DB | Supabase CLI y pgTAP en entorno local de pruebas; llamadas SDK con JWT de usuarios ficticios a Auth, Data API, RPC y Storage | Cada PR de migraciones/políticas; RLS, grants, FK, rollback, concurrencia e idempotencia. Implementada para identidad/familia; Storage y presupuesto pendientes |
 | Aceptación móvil | integration_test en Android, iOS cuando haya macOS | Cada incremento integrado; flujo real Flutter -> Auth/Data API/RPC -> PostgreSQL/Storage |
 | Alternativa móvil | Appium UiAutomator2/XCUITest, piloto antes de adopción | Si el docente exige o se valida compatibilidad con el árbol semántico Flutter |
 | Regresión / smoke | Unidad + widget en CI, smoke de login/grupo/archivo/presupuesto en dispositivo | Cada PR y antes de tag |
@@ -109,11 +109,11 @@ La clase XIX solicita comparar tres herramientas abiertas y una comercial **para
 
 ## Alcance actual de CI y pruebas Supabase pendientes
 
-El pipeline implementado ejecuta formato, análisis, tests Flutter de unidad/widget y tests Python del generador de reportes. Aún no ejecuta Supabase CLI/pgTAP, RLS, RPC, Edge Functions, Auth/Storage ni E2E en dispositivo. La cobertura Dart de la base no mide esas capas. Al implementar migraciones/políticas, Gerardo integra una etapa separada y trazable de pruebas Supabase con datos sintéticos; conservar su salida y metadatos sin convertir pruebas diseñadas en ejecutadas.
+El pipeline ejecuta formato/análisis/unidad/widget/reportes, Supabase CLI/pgTAP, Auth HTTP, Edge y familia HTTP y concurrencia con conexiones independientes. OPS agrega compilación Android. Las pruebas de dispositivo/restauración se ejecutan por scripts separados y con metadatos. La cobertura Dart no mide SQL ni bytes Storage. Los permisos de Storage y presupuesto requieren sus propias suites al integrar esos módulos; no están acreditados por identidad/familia.
 
 Usar los nombres y permisos de docs/api/CONTRATO.md. Los negativos deben ejecutarse con usuarios/roles no privilegiados y JWT reales de pruebas además de los tests SQL; usar service_role o el propietario de la BD podría eludir RLS y producir falsa confianza. Comprobar perfiles privados separados de datos públicos, grants de columnas sensibles y prohibición de escribir directamente is_admin/membresías fuera de RPC autorizadas. Para concurrencia, dos conexiones independientes deben intentar las salidas/degradaciones y verificarse el estado final.
 
-Logout elimina sesión local e invalida la renovación conforme al alcance de signOut; la firma de un JWT de acceso ya emitido puede seguir válida hasta expirar. Para los datos sensibles de Nido es obligatorio implementar y probar el helper privado de sesión vigente definido en SEGURIDAD.md (por ejemplo has_live_session): contrasta el session_id del JWT con su sesión Auth, sin exponer auth.sessions al cliente, y se aplica en policies, RPC y lecturas de Storage/Edge sensibles. No es un control opcional de la entrega. Reutilizar un JWT todavía vigente después de finalizar esa sesión en Auth debe impedir filas/bytes y mutaciones sensibles; una sesión vigente autorizada debe permitirlos. Otra sesión activa del mismo usuario no debe reactivar el JWT de la sesión terminada. Esta es una garantía del guard aplicado, no de la firma JWT ni de signOut por sí solos; la demo aún no la implementa ni acredita.
+Logout elimina sesión local e invalida la renovación conforme al alcance de signOut; la firma de un JWT de acceso ya emitido puede seguir válida hasta expirar. Para los datos sensibles de Nido es obligatorio implementar y probar el helper privado de sesión vigente definido en SEGURIDAD.md (por ejemplo has_live_session): contrasta el session_id del JWT con su sesión Auth, sin exponer auth.sessions al cliente, y se aplica en policies, RPC y lecturas de Storage/Edge sensibles. No es un control opcional de la entrega. Reutilizar un JWT todavía vigente después de finalizar esa sesión en Auth debe impedir filas/bytes y mutaciones sensibles; una sesión vigente autorizada debe permitirlos. Otra sesión activa del mismo usuario no debe reactivar el JWT de la sesión terminada. Esta es una garantía del guard aplicado, no de la firma JWT ni de signOut por sí solos; el helper está implementado en identidad/familia y probado con JWT anteriores al logout; Storage y finanzas deben incorporarlo y demostrar sus propios casos.
 
 La pertenencia también se consulta en BD en cada operación: una nueva petición después de salida/expulsión no accede al grupo aunque la sesión Auth permanezca activa. RLS puede filtrar SELECT o mutaciones y devolver cero filas; evaluar filas/bytes ausentes y verificar el estado final intacto, o la denegación documentada, sin exigir siempre 401/403. Los casos permitidos equivalentes deben demostrar una lectura o escritura real para evitar un falso verde por cero filas en ambos casos. Una copia descargada o transferencia ya iniciada no es revocable.
 

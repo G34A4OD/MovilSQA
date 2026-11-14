@@ -24,6 +24,8 @@ items = read("project","item-list",PROJECT,"--owner",OWNER,"--limit","1000","--f
 by_url = {i.get("content",{}).get("url"): i for i in items}
 backlog = json.loads((ROOT/"planificacion/backlog.json").read_text(encoding="utf-8"))
 mapping = {x["id"]: x for x in json.loads((ROOT/"planificacion/github-map.json").read_text(encoding="utf-8"))}
+mapping_path = ROOT/"planificacion/project-map.json"
+previous_records = json.loads(mapping_path.read_text(encoding="utf-8")).get("items", []) if mapping_path.exists() else []
 records = []
 for task in backlog:
     issue = mapping[task["id"]]
@@ -57,4 +59,8 @@ for task in backlog:
     gh("api","graphql","-f","query=mutation{"+ " ".join(operations)+"}")
     records.append(dict(id=task["id"],issue=issue["number"],item_id=item["id"],owner=task["owner"],reviewer=task["reviewer"]))
     print(f"{task['id']} #{issue['number']} -> {task['owner']} / {task['reviewer']}",flush=True)
+# Preserve independently created tasks, such as G0 #22, outside the original
+# backlog. Synchronizing the original twenty issues must not erase their map.
+managed_ids = {record["id"] for record in records}
+records.extend(record for record in previous_records if record["id"] not in managed_ids)
 (ROOT/"planificacion/project-map.json").write_text(json.dumps(dict(project_url=project["url"],project_id=project["id"],items=records),indent=2,ensure_ascii=False)+"\n",encoding="utf-8",newline="\n")

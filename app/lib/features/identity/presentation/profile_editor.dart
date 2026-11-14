@@ -76,7 +76,7 @@ class _ProfileEditorState extends State<ProfileEditor> {
             initialValue: blood,
             decoration: const InputDecoration(labelText: 'Tipo de sangre'),
             items: [
-              const DropdownMenuItem(value: null, child: Text('No informado')),
+              const DropdownMenuItem(value: null, child: Text('No sé')),
               ...ProfileInput.bloodTypes.map(
                 (v) => DropdownMenuItem(value: v, child: Text(v)),
               ),

@@ -1,12 +1,22 @@
 # Waldir · Presupuesto, CSV, planificación y métricas
 
-**Primero únete al repositorio:** https://github.com/G34A4OD/MovilSQA. Tu cuenta identificada es **riblawaldir** y se envió una invitación Write. Acepta desde tu propia cuenta antes de push/revisión. Usa tu identidad real Git/GH; no compartas tokens ni uses la cuenta de otro integrante.
+**Repositorio del equipo:** https://github.com/G34A4OD/MovilSQA. Tu cuenta identificada es **riblawaldir** y ya aceptó acceso Write. Trabaja desde tu propia cuenta para push/revisión. Usa tu identidad real Git/GH; no compartas tokens ni uses la cuenta de otro integrante.
+
+## Actualización vigente · 14/11/2026
+
+Identidad/familia ya están implementadas y conectadas: PR #23..30, pendientes de revisión en pila desde #21. Leer docs/ESTADO.md y docs/INTEGRACION.md antes de actuar; estas notas sustituyen las referencias históricas de abajo a demo sin conexión, invitaciones pendientes y lotes de migración 0001xx..0004xx. Eva y Waldir aceptaron Write y ya tienen assignees reales en sus issues.
+
+Ya hay tareas asignadas en https://github.com/users/G34A4OD/projects/1/views/1. Tu agente debe revisar tus issues y dependencias al iniciar, mover a In progress al empezar, enlazar rama/PR y pruebas, pasar a In review al solicitar revisión y marcar Done solo tras revisión, CI, merge y aceptación real. Registrar bloqueos/resultados, sin inventar firmas ni actividad ajena. GitHub Projects sustituye a Planner.
+
+Crear migraciones mediante CLI 3.1.0 migration new, posteriores a sus dependencias reales en supabase/migrations; no usar timestamps de ejemplo antiguos. Tests SQL en supabase/tests/database con archivo propio por módulo. No editar migraciones aplicadas.
+
+Para ejecutar la app usar flutter run --dart-define-from-file=config/supabase.local.json; la demo se solicita explícitamente con NIDO_DEMO=true. URL y publishable key son configuración cliente; la cuenta Auth y RLS autorizan datos. No compartir la sesión de Gerardo ni claves elevadas. Dashboard de Supabase requiere invitación individual independiente; puede desarrollarse localmente y enviar migraciones por PR.
 
 ## Enfoque confirmado
 
 Nido es una app móvil Flutter + **Supabase directo**. `supabase_flutter` conecta con Auth, PostgreSQL protegido por RLS y Storage privado; RPC SQL maneja las operaciones que requieren transacciones/reglas atómicas. Edge Functions se añaden solo para procesos de confianza del contrato. No se crea otro producto ni una API propia.
 
-La demo actual es una base de dominio en memoria, no el gestor persistente terminado. La conexión, políticas de datos, funciones y pruebas de integración se deben implementar y comprobar.
+La base de identidad/familia ya está conectada. Tu gestor financiero persistente, políticas de datos, funciones y pruebas siguen por implementar; la demo financiera en memoria se conserva como referencia.
 
 ## Tu participación y entregables
 
@@ -24,8 +34,8 @@ Implementas HU-11..15 de punta a punta (Flutter + datos/RLS/RPC Supabase + tests
 ## Tus rutas
 
 - Flutter: `app/lib/features/budget/**` y `app/test/budget/**`. Conserva y amplía las pruebas adversas de la base.
-- Datos: archivos propios en `supabase/migrations/`, lote inicial reservado `202611140004xx_*` (xx segundos 00-59; ejemplo válido `20261114000400_budget_base.sql`). Coordinar dependencias/versiones con Gerardo; no duplicar versiones ni editar migraciones aplicadas.
-- Pruebas: `supabase/tests/budget/**`, con SQL/pgTAP y pruebas de integración mediante SDK con usuarios Auth de pruebas.
+- Datos: archivos propios en `supabase/migrations/`, timestamp generado por CLI posterior a sus dependencias. Coordinar dependencias/versiones con Gerardo; no duplicar versiones ni editar migraciones aplicadas.
+- Pruebas: `supabase/tests/database/*budget*.test.sql`, con SQL/pgTAP y pruebas de integración mediante SDK con usuarios Auth de pruebas.
 - El contrato financiero usa RPC SQL y exportación local autorizada; no crear Edge Functions financieras adicionales salvo PR previo que justifique y acuerde su nombre/firma.
 - Planificación/métricas: `planificacion/**` y `docs/sqa/METRICAS.md`.
 
@@ -41,7 +51,7 @@ Varias hojas, años y grupos quedan aislados. La creación se deduplica de forma
 
 La URL y clave publishable/anon pueden estar en el cliente; claves secret/service_role y contraseña DB nunca. Las pruebas de permisos usan sesiones/JWT de usuarios de pruebas y solicitudes directas a datos/RPC; no solo un cliente de servicio que salta RLS. Al salir o ser expulsado del grupo, la membresía revocada debe denegar nuevas lecturas/exportaciones. Un JWT firmado y no expirado no prueba sesión activa. Es obligatorio aplicar private.has_live_session() del contrato a los datos financieros y sus RPC, contrastando session_id con auth.sessions mediante helper privado que custodia Gerardo y sin dar al móvil lectura de esa tabla. Probar lectura/mutación/exportación con sesión viva y, tras signOut con scope documentado, con el mismo JWT todavía no expirado: el guard debe denegar nuevas lecturas de filas/bytes disponibles y mutaciones sensibles. Comprobar además refresh/expiración aparte y no escribir tokens en logs. Una copia CSV ya guardada al teléfono no se puede revocar remotamente.
 
-Configuración cliente prevista: `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`; usar la inicialización `publishableKey` de la versión fijada del SDK. `anonKey` queda como alternativa heredada si el contrato lo documenta. La plantilla `app/config/supabase.example.json` solo describe valores públicos y todavía no conecta la demo; seguir `supabase/README.md` antes de inicializar el SDK.
+Configuración cliente prevista: `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`; usar la inicialización `publishableKey` de la versión fijada del SDK. `anonKey` queda como alternativa heredada si el contrato lo documenta. La plantilla `app/config/supabase.example.json` contiene marcadores públicos; usar su copia local ignorada para ejecutar la app conectada. El SDK ya está inicializado en main.dart.
 
 ## Prompt inicial para tu agente
 

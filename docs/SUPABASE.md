@@ -6,7 +6,7 @@ Estado real al 14/11/2026: nido-dev conectado por MCP; base de identidad/familia
 
 ## Configuración del móvil
 
-Gerardo agrega supabase_flutter y almacenamiento seguro mediante PR de dependencias, verifica compatibilidad con Flutter/Dart del proyecto y fija pubspec.lock. Las versiones se eligen y prueban al implementar; este documento no presume una instalación.
+Instalados y fijados supabase_flutter 2.18.3 y flutter_secure_storage 11.2.0; pubspec.lock versionado. Main inicializa SDK/PKCE y almacenamiento seguro por proyecto. Los repositorios de identidad/familia ya consumen Auth/Data API/RPC.
 
 El móvil recibe únicamente SUPABASE_URL y SUPABASE_PUBLISHABLE_KEY de un proyecto de pruebas. Ambas son configuración de cliente, no contraseñas. La publishable key puede distribuirse con la app; no debe confundirse con una secret key. La configuración real de desarrollo se pasa por un archivo local ignorado o dart-define y los ejemplos versionados usan marcadores.
 
@@ -27,7 +27,7 @@ No almacenar CI, sangre, domicilio o salud en user_metadata ni claims JWT. Compl
 
 Persistir refresh/access tokens mediante un adaptador de almacenamiento seguro compatible con la versión elegida (Keychain/Keystore), sin suponer que el almacenamiento predeterminado ya lo hace. Al logout retirar datos/cachés del usuario y canales Realtime. Documentar scope local/global: la [referencia signOut](https://supabase.com/docs/reference/dart/auth-signout) actual usa local por defecto.
 
-Un JWT emitido no queda invalidado instantáneamente solo por borrar el refresh token. Para accesos sensibles, implementar/probar el control restringido de sesión vigente descrito en SEGURIDAD.md; la expulsión del grupo sí debe afectar nuevas peticiones por consultar membresía viva en RLS. Ninguna de esas garantías está certificada por la demo.
+Un JWT emitido no queda invalidado instantáneamente solo por borrar el refresh token. Para accesos sensibles, implementar/probar el control restringido de sesión vigente descrito en SEGURIDAD.md; la expulsión del grupo sí debe afectar nuevas peticiones por consultar membresía viva en RLS. El guard de sesión y membresía está probado en identidad/familia mediante SQL y JWT reales locales; Storage y presupuesto deben probar sus capas por separado.
 
 ## Esquemas, grants y RLS
 
@@ -38,7 +38,7 @@ Un JWT emitido no queda invalidado instantáneamente solo por borrar el refresh 
 5. Revocar DML directo de membresías y demás escrituras críticas. Conceder EXECUTE solo a RPC necesarias. SECURITY DEFINER exige search_path seguro, autorización interna y auditoría; una función publicada por defecto puede sobrepasar RLS.
 6. Probar con clientes reales anon/authenticated y cuentas A/B/C, no solo con Dashboard o service_role, que sobrepasan las políticas.
 
-Fuentes primarias: [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security) y [funciones y privilegios](https://supabase.com/docs/guides/database/functions). Las políticas/helpers del contrato son trabajo de implementación, no controles ya desplegados.
+Fuentes primarias: [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security) y [funciones y privilegios](https://supabase.com/docs/guides/database/functions). Los helpers y policies de identidad/familia están desplegados; los de documentos y presupuesto siguen a cargo de sus módulos.
 
 ## Archivos privados
 
@@ -60,6 +60,6 @@ Dentro de una Edge Function, propagar el JWT del usuario a operaciones sujetas a
 
 Gerardo: Auth/deep links, configuración compartida, esquema base y family RPC/RLS. Eva: Storage, documents RPC/RLS y escaneo. Waldir: tablas/RPC/RLS financieras y exportación móvil. Cada módulo conserva su migración y tests propios, con integración coordinada.
 
-Antes de usar datos reales: Supabase de pruebas con datos ficticios, migraciones reproducibles, tests SQL/pgTAP de permisos e invariantes, dos peticiones concurrentes para último admin, integración móvil Auth/DB/Storage y backup/restauración. El CI actual solo cubre la base Flutter y reportes; esas pruebas se incorporan después.
+Antes de usar datos reales: Supabase de pruebas con datos ficticios, migraciones reproducibles, tests SQL/pgTAP de permisos e invariantes, dos peticiones concurrentes para último admin, integración móvil Auth/DB/Storage y backup/restauración. El CI cubre Flutter/reportes, SQL, Auth/Edge/familia HTTP y concurrencia. OPS agrega compilación Android; pruebas reales de dispositivo y restauración se registran por separado. Storage y presupuesto requieren integración.
 
 Verificar qué incluye el plan de Supabase antes de depender de backups, límites de sesión o recuperación. Respaldo de DB no equivale automáticamente a respaldo de objetos Storage. No se contrataron servicios ni se aplicaron recursos por preparar esta guía.

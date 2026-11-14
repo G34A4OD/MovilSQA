@@ -1,5 +1,6 @@
 """HU-04: multi-user HTTP attacks against the disposable local stack and Edge."""
 import json
+import base64
 import time
 import urllib.error
 import uuid
@@ -117,8 +118,17 @@ def main():
         check(status==200,'TC-FAM-04 HU-05: miembro sale voluntariamente')
         status,rows=db.request('/rest/v1/families?select=id',token=target['token'])
         check(status==200 and rows==[],'TC-SEC-02 HU-05: salida voluntaria revoca acceso vigente')
+        status,rows=db.request('/rest/v1/invitations?select=id',token=admin['token'])
+        check(status==200 and len(rows)>0,'TC-SEC-03 HU-04: control positivo de invitaciones antes de logout')
         status,_=db.request('/auth/v1/logout?scope=local',token=admin['token'],method='POST')
         check(status==204,'TC-SEC-03 HU-04: sesión del admin terminada')
+        payload=admin['token'].split('.')[1]
+        claims=json.loads(base64.urlsafe_b64decode(payload+'='*(-len(payload)%4)))
+        check(claims['exp']>time.time(),'TC-SEC-03 HU-04: mismo JWT todavía no expirado')
+        status,rows=db.request('/rest/v1/invitations?select=id',token=admin['token'])
+        check(status==200 and rows==[],'TC-SEC-03 HU-04: Data API acepta JWT y RLS retira invitaciones tras logout (200 vacío)')
+        status,error=db.rpc('lookup_family_user',{'p_family_id':family['id'],'p_public_id':target['public_id']},admin)
+        check(status==403 and error.get('code')=='42501' and error.get('message')=='forbidden','TC-SEC-03 HU-04: RPC directa denegada por guard SQL tras logout')
         status,_=db.request('/functions/v1/lookup-user',body,token=admin['token'])
         check(status in (401,403),'TC-SEC-03 HU-04: Edge con JWT anterior denegado')
     print(json.dumps({'status':'PASS','tests':len(passed),'cases':passed},ensure_ascii=False,indent=2))

@@ -1,40 +1,32 @@
-# Estado de Nido
+# Estado real de Nido
 
-Fecha de preparación: 14 de noviembre de 2026, America/La_Paz.
+Control del 14/11/2026. Entrega objetivo: martes 17/11/2026. Producto único móvil Flutter + Supabase directo. Solo datos ficticios.
 
-## Avance G0 · 14/11/2026 · issue #22
+## Implementado por Gerardo, pendiente de revisión
 
-Supabase MCP conectado a nido-dev (dcwfnnttrxbtavshrbfj). Migración compartida aplicada al entorno de desarrollo: profiles/private_profiles/profile_shares, families/memberships, tablas privadas de auditoría/idempotencia y helpers restringidos de sesión/membresía. Todas las tablas tienen RLS; las escrituras críticas permanecen cerradas hasta sus RPC. Esquema vacío, sin datos familiares reales. Historial local alineado con la versión asignada por MCP 20261114163113, sin cambiar el SQL aplicado.
+G0 (#22) y HU-01..07 (#2..8): Auth con confirmación/recuperación PKCE, sesión en almacenamiento seguro, perfil privado e ID público, consentimiento por grupo, CRUD lógico de familias, invitaciones con búsqueda exacta limitada, administración/salida, parentescos sin ciclos y mascotas. Flutter usa repositorios/DTO/ViewModels y supabase_flutter 2.18.3. La demo en memoria se conserva únicamente con NIDO_DEMO=true.
 
-Supabase CLI 3.1.0/Docker local: reconstrucción desde cero y 25 assertions pgTAP aprobadas con roles de cliente. Flutter: análisis sin incidencias y 20 tests aprobados; reporte local g0-22. SDK fijado a 2.18.3, versión estable resuelta por pub; adaptadores de sesión/PKCE en almacenamiento seguro preparados, todavía sin inicialización en la demo.
+En nido-dev están aplicadas siete migraciones identity/family y desplegada lookup-user. RLS/grants y RPC validan sesión Auth vigente, actor y grupo. El cliente no puede escribir directamente membresías ni el resto de tablas críticas. El guard consulta auth.sessions sin exponerla al móvil; no confunde logout con invalidación criptográfica de JWT.
 
-Entrega objetivo comunicada: martes 17/11/2026. Revisión humana/docente y ejecución en dispositivo pendientes. La sección de preparación de abajo es histórica; no certifica funcionalidades futuras. Ver supabase/LOCAL.md.
+## Verificación ejecutada
 
-## Incluido
+- PostgreSQL local: 150 aserciones pgTAP; Auth HTTP: 31 comprobaciones; familia/Edge HTTP: 48; handler Edge: 3 tests.
+- Concurrencia: 3 escenarios de último admin y 2 de ciclos, con dos conexiones independientes y bloqueo observado.
+- OPS: 45 tests Flutter PASS; análisis limpio; cobertura de dominio 88,81% y global 52,44%. Nueve tests Python de reportes/plan PASS.
+- Backup/restauración PostgreSQL local PASS: owners/grants conservados; con rol authenticated, perfil propio visible y perfil ajeno oculto; familia/membresías/mascota restaurados. No acredita objetos Storage ni recuperación del proveedor.
+- TECNO KN4 Android 16: escenario real PASS con 12 comprobaciones y tres capturas; confirma registro/recuperación PKCE desde Mailpit local, perfil, familia, invitación, parentesco, mascota, consentimiento y JWT anterior al logout sin filas privadas. Consultar evidencias/OPS_20.md; no acredita Storage/presupuesto ni iOS.
+- Supabase remoto: redirect exacto nido://auth/callback, confirmación email, contraseña mínima 12 y cambio seguro de contraseña configurados; capturas en evidencias/ui.
 
-- Revisión del plan móvil y de las clases XIX, XX y Git/GitHub XP; catálogo del resto de clases.
-- Alcance completo del producto, decisiones de arquitectura, privacidad y contrato de API.
-- Plan SQA ágil con las ocho secciones y matriz de la rúbrica.
-- EDT, PERT/CPM calculable, backlog y reparto de módulos verticales para tres integrantes.
-- Tres guías con prompts listos para sus agentes y revisión cruzada.
-- Base Flutter Material 3, dominio financiero y de grupos, demostración en memoria y pruebas.
-- Pipeline de validación, generador de reportes y plantillas GitHub.
-- Veinte issues, cuatro milestones, develop como default, ramas protegidas e invitaciones enviadas.
-- Documentación alineada a Flutter + Supabase directo: Auth, RLS, Storage privado y RPC. Sin proyecto conectado ni migraciones/políticas implementadas aún.
+## GitHub y equipo
 
-## Aún por implementar y demostrar
+Eva/pizzatoev y Waldir/riblawaldir aceptaron Write al repositorio. Las issues tienen asignados reales; ambos tienen acceso de edición al Project autorizado por Gerardo. PREP/G0/HU-01..07 están In review; OPS-01 preparado para revisión al publicar su PR. No hay firmas, aprobaciones ni release final inventados.
 
-Registro/login con Supabase Auth, persistencia con supabase_flutter/PostgreSQL, migraciones, políticas RLS/grants y RPC transaccionales, invitaciones entre cuentas, árbol completo, carga/lectura privada de PDF/fotos, edición del perfil, gestor financiero persistente, exportación/descarga en dispositivo, accesibilidad y pruebas E2E en Android/iOS.
+Los PR #21, #23..30 están apilados; Waldir tiene solicitudes reales de revisión y aprobaciones registradas en #21/#23..27 con límites. Las correcciones de sangre/autoinvitación/guard directo se entregan en OPS-01 y requieren revisar su diff. Seguir [INTEGRACION.md](INTEGRACION.md) para revisar, cambiar bases y fusionar en orden. Mantener las protecciones de develop/main.
 
-El código local de dominio no sustituye los permisos RLS/Storage ni las transacciones PostgreSQL. La app móvil no necesita un sitio web ni una API propia intermedia. No usar información de salud ni documentos reales en esta demostración.
+## Pendiente antes de la entrega completa
 
-## Evidencias que necesitan acciones humanas o infraestructura
+Eva: carpetas, documentos, Storage privado, cuarentena/escaneo, pruebas de bytes y auditoría/herramientas. Waldir: presupuesto persistente, categorías/movimientos/totales/CSV, rendimiento y métricas. Gerardo integra sus módulos y revisa a Eva cuando exista su PR.
 
-- GitHub CLI autorizado y repo preparado; Eva/Waldir todavía deben aceptar sus invitaciones Write. Ver GITHUB_ESTADO.md.
-- Revisar y aprobar los casos de uso con el docente, como exige la diapositiva XP p. 15.
-- Confirmar fecha de entrega y disponibilidad; el cronograma es relativo y estimado.
-- Gestionar las issues del equipo en el Project 1 de GitHub; no se necesita cuenta Microsoft 365.
-- Ejecutar y firmar revisiones, pruebas cruzadas y auditoría. Nadie puede aprobar su propio PR.
-- Desplegar un entorno de pruebas, validar backup/restauración y grabar la demostración móvil.
+La cola cleanup_jobs está implementada, pero no su worker físico: el acceso lógico se retira; no se afirma que los objetos hayan sido purgados. Coordinar la limpieza de archivos con Eva antes de habilitarla. delete-account es contrato previsto, no función desplegada ni botón disponible. No se han creado buckets ni escáner como parte de identidad/familias.
 
-Consultar `evidencias/INDICE.md` y el reporte generado para distinguir **ejecutado**, **planificado**, **bloqueado** y **no aplicable**. No dar por terminado un requisito por tener solamente un documento o una pantalla.
+Revisión docente de CU, inspección cruzada, aceptación humana, exploración/TalkBack/texto 200%, rendimiento, Storage/CSV y regresión conjunta pendientes. iOS no probado al no disponer de macOS/dispositivo. Firma de entrega, backup de objetos, ensayo de rollback y release/tag requieren integración y aceptación. Ver [índice](../evidencias/INDICE.md).

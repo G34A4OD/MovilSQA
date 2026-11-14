@@ -78,6 +78,8 @@ void main() {
       await model.signOut();
       await tester.pumpAndSettle();
       expect(find.text('Sesión abierta'), findsNothing);
+      expect(find.text('Entrar'), findsOneWidget);
+      expect(model.mode, AuthMode.signIn);
       await tester.pumpWidget(const SizedBox.shrink());
     },
   );

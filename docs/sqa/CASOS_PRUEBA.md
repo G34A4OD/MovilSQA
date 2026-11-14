@@ -1,6 +1,6 @@
 # Catálogo de pruebas
 
-Estado inicial: diseñado. Solo se marca ejecutado si existe reporte de la ejecución. IDs se repiten en nombres de pruebas automatizadas y matriz. Precondición general: datos ficticios; cuentas A (admin), B (miembro), C (ajeno), grupos G1/G2, proyecto Supabase de pruebas, versión de migraciones/políticas y cliente identificados. Reiniciar fixtures por test. Llamadas de app con supabase_flutter y JWT no privilegiados; casos SQL mediante Supabase CLI/pgTAP cuando se implemente la suite.
+Estado por capa: identidad/familia ejecutadas según evidencias/HU01_2.md..HU07_8.md y evidencias/OPS_20.md; documentos/Storage y presupuesto persistente pendientes de sus suites. Solo se marca ejecutado si existe reporte. Precondición general: datos ficticios; cuentas A (admin), B (miembro), C (ajeno), grupos G1/G2, proyecto de pruebas, versión de migraciones y cliente identificados. Fixtures aislados; llamadas normales con JWT y pruebas SQL como authenticated/anon, no permisos administrativos.
 
 | TC / HU | Prioridad y técnica | Pasos / datos | Resultado esperado |
 |---|---|---|---|
@@ -35,4 +35,10 @@ Estado inicial: diseñado. Solo se marca ejecutado si existe reporte de la ejecu
 
 Capturar fallos UI en el instante del fallo, junto con stack y identificador de ejecución/solicitud disponible. No usar captura de demo como prueba de RLS, RPC o acceso a Storage. Registrar criterio humano y firma en `evidencias/plantillas/REVISION.md`.
 
-Los nombres exactos de tablas/RPC están en ../api/CONTRATO.md. Registrar por caso las operaciones permitidas y denegadas, las filas/bytes visibles y el estado final de la BD. Nunca probar aislamiento usando solo una clave de servidor privilegiada. Estado de estas pruebas Supabase: diseñadas, pendientes de migraciones, configuración y ejecución real.
+Los nombres exactos de tablas/RPC están en ../api/CONTRATO.md. Registrar por caso las operaciones permitidas y denegadas, filas/bytes visibles y estado final. Nunca probar aislamiento solo con una clave elevada. La restauración OPS actual acredita PostgreSQL local y permisos, no archivos, cifrado del dump, RPO/RTO de nube ni recuperación de otro clúster.
+
+## Identificadores del incremento implementado
+
+Los scripts históricos incorporaron subcasos TC-PRO-01/03 (perfil/consentimiento), TC-AUTH-04 (logout), TC-SEC-03 (sesión) y TC-SEC-05 (límite de búsqueda), además de los IDs del catálogo. Conservar sus nombres en el reporte para no reescribir evidencia; la trazabilidad depende también de la descripción, HU y capa. En este catálogo TC-SEC-03 sigue siendo exposición y TC-SEC-05 operaciones Storage: sus pruebas de bytes no se declaran aprobadas por un subcaso homónimo de sesión/rate limit.
+
+TC-MOB-G es el escenario Android de HU-01..07. Contiene 12 comprobaciones trazadas, no 12 tests independientes. Sus metadatos/capturas están en evidencias/ops; para detalle leer OPS_20.md. Los flujos de lifecycle/bytes, finanzas y condiciones manuales conservan su estado pendiente hasta pruebas equivalentes reales.

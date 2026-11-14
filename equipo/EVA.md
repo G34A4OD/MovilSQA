@@ -2,13 +2,23 @@
 
 Actualización de integración HU-05: antes de implementar carpetas/archivos, leer access_epoch y cleanup_jobs en docs/api/CONTRATO.md. La salida/expulsión rota la generación del dueño; folders/documents humanos deben guardar owner_access_epoch desde el servidor y comprobarlo en RLS/RPC/Storage para que reingresar no publique archivos antiguos. Gerardo entrega este campo y los helpers; la política de bytes y el escaneo corresponden a tu módulo y se prueban aparte. Los timestamps antiguos propuestos 0003xx quedan reemplazados por migration new y una versión posterior a las migraciones compartidas reales de supabase/migrations.
 
-**Primero únete al repositorio:** https://github.com/G34A4OD/MovilSQA. Tu cuenta identificada es **pizzatoev** y se envió una invitación Write. Acepta la invitación con tu propia cuenta antes de push/revisión. Clonar un repositorio público no da permiso de escritura. Si recibes 403, comprueba cuenta/invitación; no uses credenciales de Gerardo.
+**Repositorio del equipo:** https://github.com/G34A4OD/MovilSQA. Tu cuenta identificada es **pizzatoev** y ya aceptó acceso Write. Trabaja con tu propia cuenta para push/revisión. Clonar un repositorio público no da permiso de escritura. Si recibes 403, comprueba cuenta/invitación; no uses credenciales de Gerardo.
+
+## Actualización vigente · 14/11/2026
+
+Identidad/familia ya están implementadas y conectadas: PR #23..30, pendientes de revisión en pila desde #21. Leer docs/ESTADO.md y docs/INTEGRACION.md antes de actuar; estas notas sustituyen las referencias históricas de abajo a demo sin conexión, invitaciones pendientes y lotes de migración 0001xx..0004xx. Eva y Waldir aceptaron Write y ya tienen assignees reales en sus issues.
+
+Ya hay tareas asignadas en https://github.com/users/G34A4OD/projects/1/views/1. Tu agente debe revisar tus issues y dependencias al iniciar, mover a In progress al empezar, enlazar rama/PR y pruebas, pasar a In review al solicitar revisión y marcar Done solo tras revisión, CI, merge y aceptación real. Registrar bloqueos/resultados, sin inventar firmas ni actividad ajena. GitHub Projects sustituye a Planner.
+
+Crear migraciones mediante CLI 3.1.0 migration new, posteriores a sus dependencias reales en supabase/migrations; no usar timestamps de ejemplo antiguos. Tests SQL en supabase/tests/database con archivo propio por módulo. No editar migraciones aplicadas.
+
+Para ejecutar la app usar flutter run --dart-define-from-file=config/supabase.local.json; la demo se solicita explícitamente con NIDO_DEMO=true. URL y publishable key son configuración cliente; la cuenta Auth y RLS autorizan datos. No compartir la sesión de Gerardo ni claves elevadas. Dashboard de Supabase requiere invitación individual independiente; puede desarrollarse localmente y enviar migraciones por PR.
 
 ## Enfoque confirmado
 
 El producto es una app Flutter + **Supabase directo**. El cliente usa `supabase_flutter` con Supabase Auth, datos protegidos por RLS y Storage privado. Las operaciones que necesitan confianza o transacción se implementan mediante RPC SQL y, cuando corresponda, Edge Functions. El alcance actual no incluye otra aplicación ni una API propia.
 
-La base todavía es una demo en memoria. Las políticas, la carga privada, el escaneo y la integración Auth/Storage se deben implementar y demostrar; no están garantizados por las pantallas de ejemplo.
+Auth/perfil/familia ya están conectados; la carga privada, el escaneo y las políticas de bytes del módulo documental se deben implementar y demostrar.
 
 ## Tu participación y entregables
 
@@ -27,8 +37,8 @@ Divide la carga de archivos en issues pequeños por su riesgo. Puedes avanzar UI
 ## Tus rutas
 
 - Flutter: `app/lib/features/documents/**` y `app/test/documents/**`.
-- Datos: archivos propios en `supabase/migrations/`, lote inicial reservado `202611140003xx_*` (xx segundos 00-59; ejemplo válido `20261114000300_documents_base.sql`), sin duplicar versiones ni editar migraciones ya aplicadas.
-- Pruebas: `supabase/tests/documents/**`, con SQL/pgTAP y pruebas de integración Storage con usuarios de pruebas.
+- Datos: archivos propios en `supabase/migrations/`, timestamp generado por CLI posterior a sus dependencias, sin duplicar versiones ni editar migraciones ya aplicadas.
+- Pruebas: `supabase/tests/database/*documents*.test.sql`, con SQL/pgTAP y pruebas de integración Storage con usuarios de pruebas.
 - Edge Function del contrato: `supabase/functions/process-document/**`. Si se necesita el fallback de lectura de bytes, acordar nombre/firma en el contrato antes de crearlo. Configuración/secretos compartidos mediante coordinación con Gerardo.
 - Documentación propia: `docs/sqa/HERRAMIENTAS.md`, reportes y auditorías de tus inspecciones. Cada ejecución tiene ID único.
 
@@ -46,7 +56,7 @@ La lectura de bytes requiere autorización vigente, no una convención del clien
 
 No asumir que logout invalida criptográficamente un access JWT. Para metadata y bytes sensibles es obligatorio usar private.has_live_session() del contrato, que contrasta session_id con auth.sessions mediante helper privado custodiado por Gerardo; el móvil no lee auth.sessions. Añadir el control de sesión a RLS/RPC/Storage y al fallback Edge según contrato. Probar sesión viva, luego signOut con scope documentado y el mismo JWT todavía no expirado: ya no debe permitir leer filas/bytes ni mutar datos sensibles. Registrar resultados sin token; probar aparte salida/expulsión con membresía revocada. No guardar contenido sensible en caches persistentes ni mostrarlo al cambiar de cuenta.
 
-Configuración cliente prevista: `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`; usar la inicialización `publishableKey` de la versión fijada del SDK. `anonKey` queda como alternativa heredada si el contrato lo documenta. La plantilla `app/config/supabase.example.json` solo describe valores públicos y todavía no conecta la demo; seguir `supabase/README.md` antes de inicializar el SDK.
+Configuración cliente prevista: `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`; usar la inicialización `publishableKey` de la versión fijada del SDK. `anonKey` queda como alternativa heredada si el contrato lo documenta. La plantilla `app/config/supabase.example.json` contiene marcadores públicos; usar su copia local ignorada para ejecutar la app conectada. El SDK ya está inicializado en main.dart.
 
 ## Prompt inicial para tu agente
 

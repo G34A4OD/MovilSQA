@@ -1,0 +1,15 @@
+{
+  "recorded_utc": "2026-11-14T23:36:54.197464+00:00",
+  "commit_base": "05973fd9ec80212041cd2a4e4f051b751d3a8103",
+  "dirty": true,
+  "source_sha256": "b0372b960dd79b992243e244132f926caf55dfb1fea38f5d985eb190e8e382e9",
+  "target": "lib/main.dart",
+  "configuration": "nido-dev / publishable key only / ignored local config",
+  "build_type": "debug; Android debug signing; not final release",
+  "device": "TECNO KN4 / Android 16 API 36",
+  "install": "Success",
+  "launch": "am start -W Status ok; PID 22596 observed",
+  "apk_sha256": "8b0ac37d74b858aea865786aea8425ff088f153d6f023f80c383d2d5827cce99",
+  "apk_bytes": 196505664,
+  "local_artifact": "entrega/nido-dev-debug.apk"
+}

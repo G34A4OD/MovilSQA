@@ -23,7 +23,15 @@ flutter pub get
 flutter run
 ```
 
-La pantalla inicial indica **Demostración local**. Usa exclusivamente datos ficticios en memoria; al reiniciar se descartan los cambios. Auth, los repositorios basados en supabase_flutter, las migraciones/RLS y los módulos persistentes son trabajo de las historias del backlog. Cambiar los documentos no significa que la conexión Supabase ya esté implementada.
+La aplicación inicia con Auth y los módulos persistentes de identidad/familia cuando recibe configuración pública del proyecto de pruebas:
+
+```powershell
+flutter run --dart-define-from-file=config/supabase.local.json
+# Alternativa explícita sin red, solo demostración ficticia:
+flutter run --dart-define=NIDO_DEMO=true
+```
+
+Crear el archivo local ignorado desde config/supabase.example.json con URL y publishable key. Nunca incluir service_role/secret ni contraseña DB. Documentos y presupuesto persistentes siguen a cargo de Eva/Waldir; la demo no acredita esos módulos. Consultar [integración y revisión](docs/INTEGRACION.md).
 
 ```powershell
 # Desde la raíz; genera evidencia con fecha, entorno, casos y métricas.
@@ -36,8 +44,8 @@ La pantalla inicial indica **Demostración local**. Usa exclusivamente datos fic
 |---|---|
 | `app/lib/core/` | Dinero, validaciones y tema compartidos |
 | `app/lib/features/` | Módulos por funcionalidad, con dominio/presentación |
-| `supabase/` | Guía y rutas reservadas para migraciones, pruebas SQL/RLS y Edge Functions; infraestructura pendiente |
-| `app/config/` | Plantilla pública para la futura conexión de la app; no contiene credenciales privilegiadas |
+| `supabase/` | Siete migraciones identity/family, pruebas SQL/RLS, entorno local y Edge lookup-user |
+| `app/config/` | Plantilla pública de conexión; configuración real local ignorada, sin claves elevadas |
 | `docs/api/` | Contrato del SDK Supabase, tablas, permisos y RPC para trabajar en paralelo |
 | `docs/sqa/` | Test Plan, casos, trazabilidad, auditoría y herramientas |
 | `planificacion/` | Backlog, EDT, estimaciones y cálculo reproducible PERT/CPM |
@@ -48,8 +56,8 @@ Los PDF del curso permanecen en la carpeta local y se excluyen del repositorio. 
 
 ## Situación de GitHub
 
-GitHub CLI autorizado; veinte issues, cuatro milestones, `develop` como default y `main`/`develop` protegidas. Invitaciones Write enviadas a Eva (`pizzatoev`) y Waldir (`riblawaldir`), pendientes de aceptación. Ver [estado remoto](docs/GITHUB_ESTADO.md) y [flujo de colaboración](docs/COLABORACION.md). La base se entrega por PR para revisión independiente; todavía no hay release final. No guardar tokens ni contraseñas en archivos o chats.
+GitHub CLI autorizado; issues reales, cuatro milestones, `develop` como default y `main`/`develop` protegidas. Eva (`pizzatoev`) y Waldir (`riblawaldir`) aceptaron Write; sus issues ya están asignadas. Ver [estado remoto](docs/GITHUB_ESTADO.md) y [flujo de colaboración](docs/COLABORACION.md). La base se entrega por PR para revisión independiente; todavía no hay release final. No guardar tokens ni contraseñas en archivos o chats.
 
 ## Tablero de trabajo
 
-[GitHub Projects · MovilSQA](https://github.com/users/G34A4OD/projects/1/views/1): 20 issues vinculadas, con Responsable, Revisor SQA, sprint, prioridad, puntos y dependencias. Gerardo: 9; Eva: 5; Waldir: 6. Usar Responsable para filtrar las tareas mientras los invitados aceptan el repositorio. PREP-01 está en revisión; el resto en Backlog. No se necesitan cuentas Microsoft 365.
+[GitHub Projects · MovilSQA](https://github.com/users/G34A4OD/projects/1/views/1): 21 issues vinculadas, incluido G0 #22, con responsable y revisión. Filtrar por Responsable o Assignees. PREP/G0/HU-01..07 están en revisión y OPS-01 en curso; las tareas de Eva/Waldir conservan el estado de trabajo real que registren sus agentes. No se necesitan cuentas Microsoft 365.

@@ -15,3 +15,7 @@ No se recibió un Test Plan original de este producto; solo el enunciado de la a
 Historial: TP-01 propuesta de referencia (14/11/2026); TP-02 v0.2 adaptación ágil preparada (14/11/2026); TP-02 v0.3 corrige arquitectura y estrategia de pruebas a Flutter + Supabase directo por aclaración del usuario (14/11/2026). Validación y firmas: pendientes de Gerardo, Eva, Waldir y docente cuando corresponda.
 
 La actualización v0.3 reemplaza la dependencia de una API propia por Auth, PostgreSQL/RLS, RPC y Storage de Supabase. Sustituye el plan de pruebas de servidor por Supabase CLI/pgTAP y pruebas SDK/E2E. Se conserva el historial de evidencias de unidad/widget; ninguna prueba Supabase se declara ejecutada por este cambio documental.
+
+## TP-02 v0.4 · 14/11/2026 · OPS-01 #20
+
+Actualiza el alcance ejecutado de identidad/familia, suites SQL/Auth/Edge/concurrencia, Android real y restauración PostgreSQL local. Los resultados y fallos del dispositivo se registran en evidencias/OPS_20.md. Conserva pendientes Storage/presupuesto, accesibilidad, rendimiento, backup de objetos, rollback y aprobación humana. No sustituye la revisión del equipo/docente ni declara Done por código o suite verde.
