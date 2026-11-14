@@ -2,7 +2,7 @@
 
 **Stack confirmado por el usuario: Flutter + Supabase, sin servidor propio ni producto web.** Auth es la única fuente de cuentas/sesiones; PostgreSQL, RLS, RPC y Storage privado forman el backend administrado. La referencia anterior al stack de otro proyecto queda sustituida por esta decisión.
 
-Estado real: configuración y contratos preparados. No se ha creado/conectado un proyecto Supabase, instalado el adaptador en la demo ni aplicado RLS/migraciones.
+Estado real al 14/11/2026: nido-dev conectado por MCP; base de identidad/familia y guard de sesión aplicados con RLS. SDK 2.18.3 fijado e inicialización móvil con almacenamiento seguro en HU-01. Ver ESTADO.md, AUTH.md y supabase/LOCAL.md para resultados y pendientes; documentos/presupuesto todavía se implementan por sus responsables.
 
 ## Configuración del móvil
 
