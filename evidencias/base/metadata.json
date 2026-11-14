@@ -1,0 +1,12 @@
+{
+  "run_id": "base-final-01",
+  "started_utc": "2026-11-14T05:09:28.2768425Z",
+  "commit": "afaa69be5e9e775e8832132d0fc8e68bf48ded70",
+  "dirty": true,
+  "os": "Microsoft Windows NT 10.0.26200.0",
+  "flutter": "Flutter 3.41.9 • channel stable • https://github.com/flutter/flutter.git",
+  "pub_exit": 0,
+  "format_exit": 0,
+  "analyze_exit": 0,
+  "test_exit": 0
+}

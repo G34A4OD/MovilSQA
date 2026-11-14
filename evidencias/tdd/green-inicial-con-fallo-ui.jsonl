@@ -1,0 +1,75 @@
+{"protocolVersion":"0.1.1","runnerVersion":null,"pid":24536,"type":"start","time":0}
+{"suite":{"id":0,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"suite","time":0}
+{"test":{"id":1,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart","suiteID":0,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":1}
+{"suite":{"id":2,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"suite","time":11}
+{"test":{"id":3,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart","suiteID":2,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":12}
+{"suite":{"id":4,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"suite","time":12}
+{"test":{"id":5,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart","suiteID":4,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":12}
+{"suite":{"id":6,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"suite","time":13}
+{"test":{"id":7,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart","suiteID":6,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":13}
+{"count":5,"time":14,"type":"allSuites"}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:55359/QX5VUShIfVY=/"}}]
+{"testID":1,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":13520}
+{"group":{"id":8,"suiteID":0,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":6,"line":null,"column":null,"url":null},"type":"group","time":13530}
+{"test":{"id":9,"name":"TC-BUD-02 HU-14 suma mensual/anual y separa años","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":43,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":13531}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:55370/_4_Woedq8ws=/"}}]
+{"testID":9,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13597}
+{"test":{"id":10,"name":"TC-BUD-02 HU-13 editar y eliminar recalcula sin duplicados","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":53,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":13597}
+{"testID":10,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13604}
+{"test":{"id":11,"name":"TC-BUD-03 HU-12 categoría usada no cambia tipo ni se elimina","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":61,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":13605}
+{"testID":11,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13621}
+{"test":{"id":12,"name":"TC-BUD-01 HU-13 límites de mes/año/monto y categoría ajena","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":83,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":13622}
+{"testID":12,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13629}
+{"test":{"id":13,"name":"TC-BUD-04 HU-15 CSV con doce meses, totales y fórmulas neutralizadas","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":100,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":13630}
+{"testID":13,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13646}
+{"test":{"id":14,"name":"TC-BUD-03 HU-12 nombre de categoría vacío rechazado","suiteID":0,"groupIDs":[8],"metadata":{"skip":false,"skipReason":null},"line":116,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"testStart","time":13647}
+{"testID":14,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13654}
+{"testID":3,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":13724}
+{"group":{"id":15,"suiteID":2,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":13724}
+{"test":{"id":16,"name":"TC-DOC-02 HU-09 valida firma y tamaño de PDF/JPG/PNG","suiteID":2,"groupIDs":[15],"metadata":{"skip":false,"skipReason":null},"line":6,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"testStart","time":13725}
+{"testID":16,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13788}
+{"test":{"id":17,"name":"TC-DOC-01 HU-08 nombre obligatorio y sin ruta proporcionada","suiteID":2,"groupIDs":[15],"metadata":{"skip":false,"skipReason":null},"line":54,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"testStart","time":13789}
+{"testID":17,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":13799}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:55379/Os5AOYmy71M=/"}}]
+{"testID":5,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":14162}
+{"group":{"id":18,"suiteID":4,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":7,"line":null,"column":null,"url":null},"type":"group","time":14162}
+{"test":{"id":19,"name":"TC-FAM-01 HU-03 creador admin y solo admin invita","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":8,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":14162}
+{"testID":19,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14210}
+{"test":{"id":20,"name":"TC-FAM-02 HU-04 invitación no concede acceso; receptor decide una vez","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":19,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":14211}
+{"testID":20,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14218}
+{"test":{"id":21,"name":"TC-FAM-02 HU-04 rechazo y duplicado pendiente","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":37,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":14219}
+{"testID":21,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14224}
+{"test":{"id":22,"name":"TC-FAM-04 HU-05 último admin no sale ni renuncia","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":47,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":14224}
+{"testID":22,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14230}
+{"test":{"id":23,"name":"TC-FAM-03 HU-05 transferencia, renuncia y salida","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":55,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":14230}
+{"testID":23,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14236}
+{"test":{"id":24,"name":"TC-FAM-05 HU-06 ascendencia rechaza ciclos, autorrelación y ajenos","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":71,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":14238}
+{"testID":24,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14245}
+{"test":{"id":25,"name":"TC-SEC-01 HU-03 mismo usuario en dos grupos sin compartir permisos","suiteID":4,"groupIDs":[18],"metadata":{"skip":false,"skipReason":null},"line":102,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"testStart","time":14246}
+{"testID":25,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14251}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:55389/1e-V3KUEYdE=/"}}]
+{"testID":7,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":14628}
+{"group":{"id":26,"suiteID":6,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":14628}
+{"test":{"id":27,"name":"TC-BUD-01 HU-13 decimal exacto y coma local","suiteID":6,"groupIDs":[26],"metadata":{"skip":false,"skipReason":null},"line":5,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"testStart","time":14628}
+{"testID":27,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14680}
+{"test":{"id":28,"name":"TC-BUD-01 HU-13 rechaza montos ambiguos y fuera de límite","suiteID":6,"groupIDs":[26],"metadata":{"skip":false,"skipReason":null},"line":9,"column":3,"url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"testStart","time":14681}
+{"testID":28,"result":"success","skipped":false,"hidden":false,"type":"testDone","time":14691}
+{"suite":{"id":29,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"suite","time":15029}
+{"test":{"id":30,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart","suiteID":29,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":15029}
+
+[{"event":"test.startedProcess","params":{"vmServiceUri":"http://127.0.0.1:55401/eQDa2BNsAJo=/"}}]
+{"testID":30,"result":"success","skipped":false,"hidden":true,"type":"testDone","time":16389}
+{"group":{"id":31,"suiteID":29,"parentID":null,"name":"","metadata":{"skip":false,"skipReason":null},"testCount":2,"line":null,"column":null,"url":null},"type":"group","time":16389}
+{"test":{"id":32,"name":"TC-UI-01 HU-14 navegar y agregar monto exacto en demo","suiteID":29,"groupIDs":[31],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":6,"root_column":3,"root_url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"testStart","time":16390}
+{"testID":32,"messageType":"print","message":"══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════\nThe following StateError was thrown running a test:\nBad state: No element\n\nWhen the exception was thrown, this was the stack:\n#0      Iterable.single (dart:core/iterable.dart:694:25)\n#1      WidgetController.element (package:flutter_test/src/controller.dart:883:30)\n#2      WidgetController.ensureVisible (package:flutter_test/src/controller.dart:2382:32)\n#3      main.<anonymous closure> (file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart:17:18)\n<asynchronous suspension>\n#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)\n<asynchronous suspension>\n#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)\n<asynchronous suspension>\n<asynchronous suspension>\n(elided one frame from package:stack_trace)\n\nThe test description was:\n  TC-UI-01 HU-14 navegar y agregar monto exacto en demo\n════════════════════════════════════════════════════════════════════════════════════════════════════","type":"print","time":18056}
+{"testID":32,"error":"Test failed. See exception logs above.\nThe test description was: TC-UI-01 HU-14 navegar y agregar monto exacto en demo","stackTrace":"","isFailure":false,"type":"error","time":18066}
+{"testID":32,"result":"error","skipped":false,"hidden":false,"type":"testDone","time":18067}
+{"test":{"id":33,"name":"TC-UI-01 HU-13 monto inválido conserva formulario","suiteID":29,"groupIDs":[31],"metadata":{"skip":false,"skipReason":null},"line":174,"column":5,"url":"package:flutter_test/src/widget_tester.dart","root_line":26,"root_column":3,"root_url":"file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart"},"type":"testStart","time":18067}
+{"testID":33,"messageType":"print","message":"══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════\nThe following StateError was thrown running a test:\nBad state: No element\n\nWhen the exception was thrown, this was the stack:\n#0      Iterable.single (dart:core/iterable.dart:694:25)\n#1      WidgetController.element (package:flutter_test/src/controller.dart:883:30)\n#2      WidgetController.ensureVisible (package:flutter_test/src/controller.dart:2382:32)\n#3      main.<anonymous closure> (file:///D:/Universidad/SQA/ProyectoMovil/app/test/widget_test.dart:32:18)\n<asynchronous suspension>\n#4      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)\n<asynchronous suspension>\n#5      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)\n<asynchronous suspension>\n<asynchronous suspension>\n(elided one frame from package:stack_trace)\n\nThe test description was:\n  TC-UI-01 HU-13 monto inválido conserva formulario\n════════════════════════════════════════════════════════════════════════════════════════════════════","type":"print","time":18621}
+{"testID":33,"error":"Test failed. See exception logs above.\nThe test description was: TC-UI-01 HU-13 monto inválido conserva formulario","stackTrace":"","isFailure":false,"type":"error","time":18622}
+{"testID":33,"result":"error","skipped":false,"hidden":false,"type":"testDone","time":18622}
+{"success":false,"type":"done","time":19072}

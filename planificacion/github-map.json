@@ -1,0 +1,182 @@
+[
+  {
+    "id": "PREP-01",
+    "edt": "1.0",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S1 - Base e identidad",
+    "number": 1,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/1"
+  },
+  {
+    "id": "HU-01",
+    "edt": "3.1",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S1 - Base e identidad",
+    "number": 2,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/2"
+  },
+  {
+    "id": "HU-02",
+    "edt": "3.1",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S1 - Base e identidad",
+    "number": 3,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/3"
+  },
+  {
+    "id": "HU-03",
+    "edt": "3.2",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S2 - Familia y archivos",
+    "number": 4,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/4"
+  },
+  {
+    "id": "HU-04",
+    "edt": "3.2",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S2 - Familia y archivos",
+    "number": 5,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/5"
+  },
+  {
+    "id": "HU-05",
+    "edt": "3.2",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S2 - Familia y archivos",
+    "number": 6,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/6"
+  },
+  {
+    "id": "HU-06",
+    "edt": "3.3",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S3 - Presupuesto e integración",
+    "number": 7,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/7"
+  },
+  {
+    "id": "HU-07",
+    "edt": "3.3",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S3 - Presupuesto e integración",
+    "number": 8,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/8"
+  },
+  {
+    "id": "HU-08",
+    "edt": "3.4",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S2 - Familia y archivos",
+    "number": 9,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/9"
+  },
+  {
+    "id": "HU-09",
+    "edt": "3.4",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S2 - Familia y archivos",
+    "number": 10,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/10"
+  },
+  {
+    "id": "HU-10",
+    "edt": "3.4",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S3 - Presupuesto e integración",
+    "number": 11,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/11"
+  },
+  {
+    "id": "HU-11",
+    "edt": "3.5",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S2 - Familia y archivos",
+    "number": 12,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/12"
+  },
+  {
+    "id": "HU-12",
+    "edt": "3.5",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S2 - Familia y archivos",
+    "number": 13,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/13"
+  },
+  {
+    "id": "HU-13",
+    "edt": "3.5",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S3 - Presupuesto e integración",
+    "number": 14,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/14"
+  },
+  {
+    "id": "HU-14",
+    "edt": "3.5",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S3 - Presupuesto e integración",
+    "number": 15,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/15"
+  },
+  {
+    "id": "HU-15",
+    "edt": "3.5",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S3 - Presupuesto e integración",
+    "number": 16,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/16"
+  },
+  {
+    "id": "QA-01",
+    "edt": "4.1",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S1 - Base e identidad",
+    "number": 17,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/17"
+  },
+  {
+    "id": "QA-02",
+    "edt": "4.2",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S4 - Calidad y entrega",
+    "number": 18,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/18"
+  },
+  {
+    "id": "QA-03",
+    "edt": "4.3",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S4 - Calidad y entrega",
+    "number": 19,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/19"
+  },
+  {
+    "id": "OPS-01",
+    "edt": "5.1",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S4 - Calidad y entrega",
+    "number": 20,
+    "url": "https://github.com/G34A4OD/MovilSQA/issues/20"
+  }
+]

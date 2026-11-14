@@ -1,0 +1,133 @@
+{"protocolVersion":"0.1.1","runnerVersion":null,"pid":26136,"type":"start","time":0}
+{"suite":{"id":0,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart"},"type":"suite","time":0}
+{"test":{"id":1,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart","suiteID":0,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":3}
+{"suite":{"id":2,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart"},"type":"suite","time":10}
+{"test":{"id":3,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart","suiteID":2,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":11}
+{"suite":{"id":4,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart"},"type":"suite","time":13}
+{"test":{"id":5,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart","suiteID":4,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":13}
+{"suite":{"id":6,"platform":"vm","path":"D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart"},"type":"suite","time":15}
+{"test":{"id":7,"name":"loading D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart","suiteID":6,"groupIDs":[],"metadata":{"skip":false,"skipReason":null},"line":null,"column":null,"url":null},"type":"testStart","time":15}
+{"count":4,"time":16,"type":"allSuites"}
+test/domain/budget_test.dart:1:8: Error: Error when reading 'lib/features/budget/domain/budget.dart': El sistema no puede encontrar la ruta especificada
+import 'package:app/features/budget/domain/budget.dart';
+       ^
+test/domain/budget_test.dart:5:8: Error: 'BudgetLedger' isn't a type.
+  late BudgetLedger ledger;
+       ^^^^^^^^^^^^
+test/domain/budget_test.dart:7:14: Error: Method not found: 'BudgetLedger'.
+    ledger = BudgetLedger(id: 'sheet-a', familyId: 'family-a', ownerId: 'alice');
+             ^^^^^^^^^^^^
+test/domain/budget_test.dart:8:82: Error: Undefined name 'EntryKind'.
+    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Sueldo', kind: EntryKind.income));
+                                                                                 ^^^^^^^^^
+test/domain/budget_test.dart:8:31: Error: Couldn't find constructor 'BudgetCategory'.
+    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Sueldo', kind: EntryKind.income));
+                              ^^^^^^^^^^^^^^
+test/domain/budget_test.dart:9:86: Error: Undefined name 'EntryKind'.
+    ledger.saveCategory(const BudgetCategory(id: 'food', name: 'Alimentación', kind: EntryKind.expense));
+                                                                                     ^^^^^^^^^
+test/domain/budget_test.dart:9:31: Error: Couldn't find constructor 'BudgetCategory'.
+    ledger.saveCategory(const BudgetCategory(id: 'food', name: 'Alimentación', kind: EntryKind.expense));
+                              ^^^^^^^^^^^^^^
+test/domain/budget_test.dart:11:3: Error: 'BudgetEntry' isn't a type.
+  BudgetEntry entry({String id = 'e1', int year = 2026, int month = 1, int cents = 100, String category = 'salary', String description = ''}) =>
+  ^^^^^^^^^^^
+test/domain/budget_test.dart:12:7: Error: Method not found: 'BudgetEntry'.
+      BudgetEntry(id: id, categoryId: category, year: year, month: month, amountCents: cents, description: description);
+      ^^^^^^^^^^^
+test/domain/budget_test.dart:35:93: Error: Undefined name 'EntryKind'.
+    expect(() => ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Otro', kind: EntryKind.expense)), throwsStateError);
+                                                                                          ^^^^^^^^^
+test/domain/budget_test.dart:35:44: Error: Couldn't find constructor 'BudgetCategory'.
+    expect(() => ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Otro', kind: EntryKind.expense)), throwsStateError);
+                                           ^^^^^^^^^^^^^^
+test/domain/budget_test.dart:36:88: Error: Undefined name 'EntryKind'.
+    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Nuevo sueldo', kind: EntryKind.income));
+                                                                                       ^^^^^^^^^
+test/domain/budget_test.dart:36:31: Error: Couldn't find constructor 'BudgetCategory'.
+    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Nuevo sueldo', kind: EntryKind.income));
+                              ^^^^^^^^^^^^^^
+test/domain/budget_test.dart:57:14: Error: Method not found: 'csvCell'.
+      expect(csvCell(attack), contains("'"));
+             ^^^^^^^
+test/domain/budget_test.dart:61:89: Error: Undefined name 'EntryKind'.
+    expect(() => ledger.saveCategory(const BudgetCategory(id: 'empty', name: ' ', kind: EntryKind.income)), throwsArgumentError);
+                                                                                        ^^^^^^^^^
+test/domain/budget_test.dart:61:44: Error: Couldn't find constructor 'BudgetCategory'.
+    expect(() => ledger.saveCategory(const BudgetCategory(id: 'empty', name: ' ', kind: EntryKind.income)), throwsArgumentError);
+                                           ^^^^^^^^^^^^^^
+{"testID":1,"error":"Failed to load \"D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart\":\nCompilation failed for testPath=D:/Universidad/SQA/ProyectoMovil/app/test/domain/budget_test.dart: test/domain/budget_test.dart:1:8: Error: Error when reading 'lib/features/budget/domain/budget.dart': El sistema no puede encontrar la ruta especificada\nimport 'package:app/features/budget/domain/budget.dart';\n       ^\ntest/domain/budget_test.dart:5:8: Error: 'BudgetLedger' isn't a type.\n  late BudgetLedger ledger;\n       ^^^^^^^^^^^^\ntest/domain/budget_test.dart:7:14: Error: Method not found: 'BudgetLedger'.\n    ledger = BudgetLedger(id: 'sheet-a', familyId: 'family-a', ownerId: 'alice');\n             ^^^^^^^^^^^^\ntest/domain/budget_test.dart:8:82: Error: Undefined name 'EntryKind'.\n    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Sueldo', kind: EntryKind.income));\n                                                                                 ^^^^^^^^^\ntest/domain/budget_test.dart:8:31: Error: Couldn't find constructor 'BudgetCategory'.\n    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Sueldo', kind: EntryKind.income));\n                              ^^^^^^^^^^^^^^\ntest/domain/budget_test.dart:9:86: Error: Undefined name 'EntryKind'.\n    ledger.saveCategory(const BudgetCategory(id: 'food', name: 'Alimentación', kind: EntryKind.expense));\n                                                                                     ^^^^^^^^^\ntest/domain/budget_test.dart:9:31: Error: Couldn't find constructor 'BudgetCategory'.\n    ledger.saveCategory(const BudgetCategory(id: 'food', name: 'Alimentación', kind: EntryKind.expense));\n                              ^^^^^^^^^^^^^^\ntest/domain/budget_test.dart:11:3: Error: 'BudgetEntry' isn't a type.\n  BudgetEntry entry({String id = 'e1', int year = 2026, int month = 1, int cents = 100, String category = 'salary', String description = ''}) =>\n  ^^^^^^^^^^^\ntest/domain/budget_test.dart:12:7: Error: Method not found: 'BudgetEntry'.\n      BudgetEntry(id: id, categoryId: category, year: year, month: month, amountCents: cents, description: description);\n      ^^^^^^^^^^^\ntest/domain/budget_test.dart:35:93: Error: Undefined name 'EntryKind'.\n    expect(() => ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Otro', kind: EntryKind.expense)), throwsStateError);\n                                                                                            ^^^^^^^^^\ntest/domain/budget_test.dart:35:44: Error: Couldn't find constructor 'BudgetCategory'.\n    expect(() => ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Otro', kind: EntryKind.expense)), throwsStateError);\n                                           ^^^^^^^^^^^^^^\ntest/domain/budget_test.dart:36:88: Error: Undefined name 'EntryKind'.\n    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Nuevo sueldo', kind: EntryKind.income));\n                                                                                       ^^^^^^^^^\ntest/domain/budget_test.dart:36:31: Error: Couldn't find constructor 'BudgetCategory'.\n    ledger.saveCategory(const BudgetCategory(id: 'salary', name: 'Nuevo sueldo', kind: EntryKind.income));\n                              ^^^^^^^^^^^^^^\ntest/domain/budget_test.dart:57:14: Error: Method not found: 'csvCell'.\n      expect(csvCell(attack), contains(\"'\"));\n             ^^^^^^^\ntest/domain/budget_test.dart:61:89: Error: Undefined name 'EntryKind'.\n    expect(() => ledger.saveCategory(const BudgetCategory(id: 'empty', name: ' ', kind: EntryKind.income)), throwsArgumentError);\n                                                                                        ^^^^^^^^^\ntest/domain/budget_test.dart:61:44: Error: Couldn't find constructor 'BudgetCategory'.\n    expect(() => ledger.saveCategory(const BudgetCategory(id: 'empty', name: ' ', kind: EntryKind.income)), throwsArgumentError);\n                                           ^^^^^^^^^^^^^^\n.","stackTrace":"","isFailure":false,"type":"error","time":24774}
+{"testID":1,"result":"error","skipped":false,"hidden":false,"type":"testDone","time":24778}
+{"testID":1,"error":"Error: The Dart compiler exited unexpectedly.","stackTrace":"package:flutter_tools/src/base/common.dart 34:3  throwToolExit\npackage:flutter_tools/src/compile.dart 939:11    DefaultResidentCompiler._compile.<fn>\ndart:async/zone_root.dart 48:47                  _rootRunUnary\ndart:async/zone.dart 733:19                      _CustomZone.runUnary\ndart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback\ndart:async/future_impl.dart 977:13               Future._propagateToListeners\ndart:async/future_impl.dart 862:9                Future._propagateToListeners\ndart:async/future_impl.dart 720:5                Future._completeWithValue\ndart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>\ndart:async/zone_root.dart 35:13                  _rootRun\ndart:async/zone.dart 726:19                      _CustomZone.run\ndart:async/zone.dart 625:7                       _CustomZone.runGuarded\ndart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>\ndart:async/schedule_microtask.dart 40:35         _microtaskLoop\ndart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop\ndart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback\ndart:isolate-patch/isolate_patch.dart 194:5      _RawReceivePort._handleMessage\n","isFailure":false,"type":"error","time":24896}
+test/domain/document_policy_test.dart:2:8: Error: Error when reading 'lib/features/documents/domain/document_policy.dart': El sistema no puede encontrar la ruta especificada
+import 'package:app/features/documents/domain/document_policy.dart';
+       ^
+test/domain/document_policy_test.dart:7:12: Error: Undefined name 'DocumentPolicy'.
+    expect(DocumentPolicy.detect(Uint8List.fromList([37, 80, 68, 70, 45, 49]), 'report.pdf'), 'application/pdf');
+           ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:8:12: Error: Undefined name 'DocumentPolicy'.
+    expect(DocumentPolicy.detect(Uint8List.fromList([255, 216, 255, 224]), 'photo.jpg'), 'image/jpeg');
+           ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:9:12: Error: Undefined name 'DocumentPolicy'.
+    expect(DocumentPolicy.detect(Uint8List.fromList([137, 80, 78, 71, 13, 10, 26, 10]), 'photo.png'), 'image/png');
+           ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:10:18: Error: Undefined name 'DocumentPolicy'.
+    expect(() => DocumentPolicy.detect(Uint8List.fromList([60, 104, 116, 109, 108]), 'fake.pdf'), throwsFormatException);
+                 ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:11:18: Error: Undefined name 'DocumentPolicy'.
+    expect(() => DocumentPolicy.detect(Uint8List.fromList([37, 80, 68, 70, 45]), 'fake.html'), throwsFormatException);
+                 ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:12:18: Error: Undefined name 'DocumentPolicy'.
+    expect(() => DocumentPolicy.detect(Uint8List(0), 'empty.pdf'), throwsFormatException);
+                 ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:13:50: Error: Undefined name 'DocumentPolicy'.
+    expect(() => DocumentPolicy.detect(Uint8List(DocumentPolicy.maxBytes + 1), 'big.pdf'), throwsFormatException);
+                                                 ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:13:18: Error: Undefined name 'DocumentPolicy'.
+    expect(() => DocumentPolicy.detect(Uint8List(DocumentPolicy.maxBytes + 1), 'big.pdf'), throwsFormatException);
+                 ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:16:12: Error: Undefined name 'DocumentPolicy'.
+    expect(DocumentPolicy.folderName('  Salud  '), 'Salud');
+           ^^^^^^^^^^^^^^
+test/domain/document_policy_test.dart:18:20: Error: Undefined name 'DocumentPolicy'.
+      expect(() => DocumentPolicy.folderName(value), throwsFormatException);
+                   ^^^^^^^^^^^^^^
+{"testID":3,"error":"Failed to load \"D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart\":\nCompilation failed for testPath=D:/Universidad/SQA/ProyectoMovil/app/test/domain/document_policy_test.dart: test/domain/document_policy_test.dart:2:8: Error: Error when reading 'lib/features/documents/domain/document_policy.dart': El sistema no puede encontrar la ruta especificada\nimport 'package:app/features/documents/domain/document_policy.dart';\n       ^\ntest/domain/document_policy_test.dart:7:12: Error: Undefined name 'DocumentPolicy'.\n    expect(DocumentPolicy.detect(Uint8List.fromList([37, 80, 68, 70, 45, 49]), 'report.pdf'), 'application/pdf');\n           ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:8:12: Error: Undefined name 'DocumentPolicy'.\n    expect(DocumentPolicy.detect(Uint8List.fromList([255, 216, 255, 224]), 'photo.jpg'), 'image/jpeg');\n           ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:9:12: Error: Undefined name 'DocumentPolicy'.\n    expect(DocumentPolicy.detect(Uint8List.fromList([137, 80, 78, 71, 13, 10, 26, 10]), 'photo.png'), 'image/png');\n           ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:10:18: Error: Undefined name 'DocumentPolicy'.\n    expect(() => DocumentPolicy.detect(Uint8List.fromList([60, 104, 116, 109, 108]), 'fake.pdf'), throwsFormatException);\n                 ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:11:18: Error: Undefined name 'DocumentPolicy'.\n    expect(() => DocumentPolicy.detect(Uint8List.fromList([37, 80, 68, 70, 45]), 'fake.html'), throwsFormatException);\n                 ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:12:18: Error: Undefined name 'DocumentPolicy'.\n    expect(() => DocumentPolicy.detect(Uint8List(0), 'empty.pdf'), throwsFormatException);\n                 ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:13:50: Error: Undefined name 'DocumentPolicy'.\n    expect(() => DocumentPolicy.detect(Uint8List(DocumentPolicy.maxBytes + 1), 'big.pdf'), throwsFormatException);\n                                                 ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:13:18: Error: Undefined name 'DocumentPolicy'.\n    expect(() => DocumentPolicy.detect(Uint8List(DocumentPolicy.maxBytes + 1), 'big.pdf'), throwsFormatException);\n                 ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:16:12: Error: Undefined name 'DocumentPolicy'.\n    expect(DocumentPolicy.folderName('  Salud  '), 'Salud');\n           ^^^^^^^^^^^^^^\ntest/domain/document_policy_test.dart:18:20: Error: Undefined name 'DocumentPolicy'.\n      expect(() => DocumentPolicy.folderName(value), throwsFormatException);\n                   ^^^^^^^^^^^^^^\n.","stackTrace":"","isFailure":false,"type":"error","time":33405}
+{"testID":3,"result":"error","skipped":false,"hidden":false,"type":"testDone","time":33406}
+{"testID":1,"error":"Error: The Dart compiler exited unexpectedly.","stackTrace":"package:flutter_tools/src/base/common.dart 34:3  throwToolExit\npackage:flutter_tools/src/compile.dart 939:11    DefaultResidentCompiler._compile.<fn>\ndart:async/zone_root.dart 48:47                  _rootRunUnary\ndart:async/zone.dart 733:19                      _CustomZone.runUnary\ndart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback\ndart:async/future_impl.dart 977:13               Future._propagateToListeners\ndart:async/future_impl.dart 862:9                Future._propagateToListeners\ndart:async/future_impl.dart 720:5                Future._completeWithValue\ndart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>\ndart:async/zone_root.dart 35:13                  _rootRun\ndart:async/zone.dart 726:19                      _CustomZone.run\ndart:async/zone.dart 625:7                       _CustomZone.runGuarded\ndart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>\ndart:async/schedule_microtask.dart 40:35         _microtaskLoop\ndart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop\ndart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback\ndart:isolate-patch/isolate_patch.dart 194:5      _RawReceivePort._handleMessage\n","isFailure":false,"type":"error","time":33449}
+test/domain/family_test.dart:1:8: Error: Error when reading 'lib/features/family/domain/family.dart': El sistema no puede encontrar la ruta especificada
+import 'package:app/features/family/domain/family.dart';
+       ^
+test/domain/family_test.dart:5:8: Error: 'FamilyGroup' isn't a type.
+  late FamilyGroup family;
+       ^^^^^^^^^^^
+test/domain/family_test.dart:6:24: Error: Method not found: 'FamilyGroup'.
+  setUp(() => family = FamilyGroup(id: 'A', name: 'Casa', creatorId: 'alice'));
+                       ^^^^^^^^^^^
+test/domain/family_test.dart:55:19: Error: Method not found: 'FamilyGroup'.
+    final other = FamilyGroup(id: 'B', name: 'Otra casa', creatorId: 'bob');
+                  ^^^^^^^^^^^
+{"testID":5,"error":"Failed to load \"D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart\":\nCompilation failed for testPath=D:/Universidad/SQA/ProyectoMovil/app/test/domain/family_test.dart: test/domain/family_test.dart:1:8: Error: Error when reading 'lib/features/family/domain/family.dart': El sistema no puede encontrar la ruta especificada\nimport 'package:app/features/family/domain/family.dart';\n       ^\ntest/domain/family_test.dart:5:8: Error: 'FamilyGroup' isn't a type.\n  late FamilyGroup family;\n       ^^^^^^^^^^^\ntest/domain/family_test.dart:6:24: Error: Method not found: 'FamilyGroup'.\n  setUp(() => family = FamilyGroup(id: 'A', name: 'Casa', creatorId: 'alice'));\n                       ^^^^^^^^^^^\ntest/domain/family_test.dart:55:19: Error: Method not found: 'FamilyGroup'.\n    final other = FamilyGroup(id: 'B', name: 'Otra casa', creatorId: 'bob');\n                  ^^^^^^^^^^^\n.","stackTrace":"","isFailure":false,"type":"error","time":41577}
+{"testID":5,"result":"error","skipped":false,"hidden":false,"type":"testDone","time":41578}
+{"testID":1,"error":"Error: The Dart compiler exited unexpectedly.","stackTrace":"package:flutter_tools/src/base/common.dart 34:3  throwToolExit\npackage:flutter_tools/src/compile.dart 939:11    DefaultResidentCompiler._compile.<fn>\ndart:async/zone_root.dart 48:47                  _rootRunUnary\ndart:async/zone.dart 733:19                      _CustomZone.runUnary\ndart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback\ndart:async/future_impl.dart 977:13               Future._propagateToListeners\ndart:async/future_impl.dart 862:9                Future._propagateToListeners\ndart:async/future_impl.dart 720:5                Future._completeWithValue\ndart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>\ndart:async/zone_root.dart 35:13                  _rootRun\ndart:async/zone.dart 726:19                      _CustomZone.run\ndart:async/zone.dart 625:7                       _CustomZone.runGuarded\ndart:async/zone.dart 666:23                      _CustomZone.bindCallbackGuarded.<fn>\ndart:async/schedule_microtask.dart 40:35         _microtaskLoop\ndart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop\ndart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback\ndart:isolate-patch/isolate_patch.dart 194:5      _RawReceivePort._handleMessage\n","isFailure":false,"type":"error","time":41640}
+test/domain/money_test.dart:1:8: Error: Error when reading 'lib/core/money.dart': El sistema no puede encontrar la ruta especificada
+import 'package:app/core/money.dart';
+       ^
+test/domain/money_test.dart:6:12: Error: Undefined name 'Money'.
+    expect(Money.parse('0.10').cents + Money.parse('0,20').cents, 30);
+           ^^^^^
+test/domain/money_test.dart:6:40: Error: Undefined name 'Money'.
+    expect(Money.parse('0.10').cents + Money.parse('0,20').cents, 30);
+                                       ^^^^^
+test/domain/money_test.dart:7:12: Error: Undefined name 'Money'.
+    expect(Money.parse('1234.56').format(), 'Bs 1234,56');
+           ^^^^^
+test/domain/money_test.dart:11:20: Error: Undefined name 'Money'.
+      expect(() => Money.parse(value), throwsFormatException, reason: value);
+                   ^^^^^
+test/domain/money_test.dart:13:12: Error: Undefined name 'Money'.
+    expect(Money.parse('999999999.99').cents, 99999999999);
+           ^^^^^
+{"testID":7,"error":"Failed to load \"D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart\":\nCompilation failed for testPath=D:/Universidad/SQA/ProyectoMovil/app/test/domain/money_test.dart: test/domain/money_test.dart:1:8: Error: Error when reading 'lib/core/money.dart': El sistema no puede encontrar la ruta especificada\nimport 'package:app/core/money.dart';\n       ^\ntest/domain/money_test.dart:6:12: Error: Undefined name 'Money'.\n    expect(Money.parse('0.10').cents + Money.parse('0,20').cents, 30);\n           ^^^^^\ntest/domain/money_test.dart:6:40: Error: Undefined name 'Money'.\n    expect(Money.parse('0.10').cents + Money.parse('0,20').cents, 30);\n                                       ^^^^^\ntest/domain/money_test.dart:7:12: Error: Undefined name 'Money'.\n    expect(Money.parse('1234.56').format(), 'Bs 1234,56');\n           ^^^^^\ntest/domain/money_test.dart:11:20: Error: Undefined name 'Money'.\n      expect(() => Money.parse(value), throwsFormatException, reason: value);\n                   ^^^^^\ntest/domain/money_test.dart:13:12: Error: Undefined name 'Money'.\n    expect(Money.parse('999999999.99').cents, 99999999999);\n           ^^^^^\n.","stackTrace":"","isFailure":false,"type":"error","time":49473}
+{"testID":7,"result":"error","skipped":false,"hidden":false,"type":"testDone","time":49473}
+{"success":false,"type":"done","time":49475}

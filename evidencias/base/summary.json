@@ -1,0 +1,259 @@
+{
+  "status": "PASS",
+  "passed": 19,
+  "failed": 0,
+  "skipped": 0,
+  "total": 19,
+  "suite_complete_success": true,
+  "success_rate": "100.00%",
+  "coverage_hits": 380,
+  "coverage_lines": 572,
+  "coverage_rate": "66.43%",
+  "domain_coverage_rate": "93.37%",
+  "domain_hits": 169,
+  "domain_lines": 181,
+  "duration_seconds": 8.348,
+  "source_sha256": "b78e924454dd4db4c8aa28f56c25232ec7e2e529c092dc0b77b66e41445ba41f",
+  "metadata": {
+    "run_id": "base-final-01",
+    "started_utc": "2026-11-14T05:09:28.2768425Z",
+    "commit": "afaa69be5e9e775e8832132d0fc8e68bf48ded70",
+    "dirty": true,
+    "os": "Microsoft Windows NT 10.0.26200.0",
+    "flutter": "Flutter 3.41.9 • channel stable • https://github.com/flutter/flutter.git",
+    "pub_exit": 0,
+    "format_exit": 0,
+    "analyze_exit": 0,
+    "test_exit": 0
+  },
+  "tests": [
+    {
+      "name": "TC-BUD-02 HU-14 suma mensual/anual y separa años",
+      "result": "success",
+      "tc": [
+        "TC-BUD-02"
+      ],
+      "hu": [
+        "HU-14"
+      ],
+      "error": "",
+      "seconds": 0.059
+    },
+    {
+      "name": "TC-BUD-02 HU-13 editar y eliminar recalcula sin duplicados",
+      "result": "success",
+      "tc": [
+        "TC-BUD-02"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.006
+    },
+    {
+      "name": "TC-BUD-03 HU-12 categoría usada no cambia tipo ni se elimina",
+      "result": "success",
+      "tc": [
+        "TC-BUD-03"
+      ],
+      "hu": [
+        "HU-12"
+      ],
+      "error": "",
+      "seconds": 0.01
+    },
+    {
+      "name": "TC-BUD-01 HU-13 límites de mes/año/monto y categoría ajena",
+      "result": "success",
+      "tc": [
+        "TC-BUD-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-BUD-04 HU-15 CSV con doce meses, totales y fórmulas neutralizadas",
+      "result": "success",
+      "tc": [
+        "TC-BUD-04"
+      ],
+      "hu": [
+        "HU-15"
+      ],
+      "error": "",
+      "seconds": 0.013
+    },
+    {
+      "name": "TC-BUD-03 HU-12 nombre de categoría vacío rechazado",
+      "result": "success",
+      "tc": [
+        "TC-BUD-03"
+      ],
+      "hu": [
+        "HU-12"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-DOC-02 HU-09 valida firma y tamaño de PDF/JPG/PNG",
+      "result": "success",
+      "tc": [
+        "TC-DOC-02"
+      ],
+      "hu": [
+        "HU-09"
+      ],
+      "error": "",
+      "seconds": 0.063
+    },
+    {
+      "name": "TC-DOC-01 HU-08 nombre obligatorio y sin ruta proporcionada",
+      "result": "success",
+      "tc": [
+        "TC-DOC-01"
+      ],
+      "hu": [
+        "HU-08"
+      ],
+      "error": "",
+      "seconds": 0.009
+    },
+    {
+      "name": "TC-FAM-01 HU-03 creador admin y solo admin invita",
+      "result": "success",
+      "tc": [
+        "TC-FAM-01"
+      ],
+      "hu": [
+        "HU-03"
+      ],
+      "error": "",
+      "seconds": 0.058
+    },
+    {
+      "name": "TC-FAM-02 HU-04 invitación no concede acceso; receptor decide una vez",
+      "result": "success",
+      "tc": [
+        "TC-FAM-02"
+      ],
+      "hu": [
+        "HU-04"
+      ],
+      "error": "",
+      "seconds": 0.008
+    },
+    {
+      "name": "TC-FAM-02 HU-04 rechazo y duplicado pendiente",
+      "result": "success",
+      "tc": [
+        "TC-FAM-02"
+      ],
+      "hu": [
+        "HU-04"
+      ],
+      "error": "",
+      "seconds": 0.006
+    },
+    {
+      "name": "TC-FAM-04 HU-05 último admin no sale ni renuncia",
+      "result": "success",
+      "tc": [
+        "TC-FAM-04"
+      ],
+      "hu": [
+        "HU-05"
+      ],
+      "error": "",
+      "seconds": 0.007
+    },
+    {
+      "name": "TC-FAM-03 HU-05 transferencia, renuncia y salida",
+      "result": "success",
+      "tc": [
+        "TC-FAM-03"
+      ],
+      "hu": [
+        "HU-05"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-FAM-05 HU-06 ascendencia rechaza ciclos, autorrelación y ajenos",
+      "result": "success",
+      "tc": [
+        "TC-FAM-05"
+      ],
+      "hu": [
+        "HU-06"
+      ],
+      "error": "",
+      "seconds": 0.006
+    },
+    {
+      "name": "TC-SEC-01 HU-03 mismo usuario en dos grupos sin compartir permisos",
+      "result": "success",
+      "tc": [
+        "TC-SEC-01"
+      ],
+      "hu": [
+        "HU-03"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-BUD-01 HU-13 decimal exacto y coma local",
+      "result": "success",
+      "tc": [
+        "TC-BUD-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.057
+    },
+    {
+      "name": "TC-BUD-01 HU-13 rechaza montos ambiguos y fuera de límite",
+      "result": "success",
+      "tc": [
+        "TC-BUD-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.011
+    },
+    {
+      "name": "TC-UI-01 HU-14 navegar y agregar monto exacto en demo",
+      "result": "success",
+      "tc": [
+        "TC-UI-01"
+      ],
+      "hu": [
+        "HU-14"
+      ],
+      "error": "",
+      "seconds": 1.837
+    },
+    {
+      "name": "TC-UI-01 HU-13 monto inválido conserva formulario",
+      "result": "success",
+      "tc": [
+        "TC-UI-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.436
+    }
+  ]
+}

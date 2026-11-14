@@ -1,0 +1,10 @@
+test_compile_failure_without_cases_is_failure (test_report.ReportTest.test_compile_failure_without_cases_is_failure) ... ok
+test_failed_assertion_is_not_success_and_html_is_escaped (test_report.ReportTest.test_failed_assertion_is_not_success_and_html_is_escaped) ... ok
+test_format_failure_blocks_global_pass (test_report.ReportTest.test_format_failure_blocks_global_pass) ... ok
+test_missing_done_is_failure (test_report.ReportTest.test_missing_done_is_failure) ... ok
+test_pass_skip_and_non_event_json (test_report.ReportTest.test_pass_skip_and_non_event_json) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.253s
+
+OK

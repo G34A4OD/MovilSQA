@@ -1,0 +1,24 @@
+# Material docente local: no redistribuir los libros ni las diapositivas.
+/*.pdf
+/tmp/
+**/build/
+**/.dart_tool/
+**/.idea/
+**/*.iml
+**/.env
+**/.env.*
+!**/.env.example
+**/vendor/
+**/node_modules/
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/coverage/
+**/local.properties
+**/key.properties
+**/*.jks
+**/*.keystore
+**/.phpunit.cache/
+/evidencias/ejecuciones/*
+!/evidencias/ejecuciones/.gitkeep
+.DS_Store
