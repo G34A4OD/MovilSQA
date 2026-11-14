@@ -5,6 +5,7 @@ import 'family_view_model.dart';
 import 'invitations_panel.dart';
 import 'members_panel.dart';
 import 'relationships_panel.dart';
+import 'pets_panel.dart';
 import 'package:uuid/uuid.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -325,6 +326,12 @@ class _FamilyPageState extends State<FamilyPage> {
                               familyId: f.id,
                               onChanged: model.load,
                             ),
+                          PetsPanel(
+                            key: ValueKey('pets:${f.id}'),
+                            repository: widget.repository.pets,
+                            familyId: f.id,
+                            isAdmin: f.isAdmin,
+                          ),
                           const SizedBox(height: 12),
                           OutlinedButton.icon(
                             onPressed: model.busy
