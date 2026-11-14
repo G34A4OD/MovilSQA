@@ -53,6 +53,6 @@ Eva exporta esta matriz a Word o Excel, revisa fuentes/condiciones actuales y pr
 2. Criterios de selección y matrices web/móvil.
 3. Elección Flutter + Supabase CLI/pgTAP y alternativas.
 4. Piloto real, comandos, datos y resultado con limitaciones.
-5. Flujo CI/reportes/Planner, costos de mantenimiento y siguiente mejora.
+5. Flujo CI/reportes/GitHub Projects, costos de mantenimiento y siguiente mejora.
 
 No presentar este texto como una presentación ya expuesta ni como firma de los tres integrantes.

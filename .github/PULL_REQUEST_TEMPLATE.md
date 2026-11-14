@@ -3,7 +3,7 @@
 EDT:
 HU / CU:
 Closes #NUMERO_REAL
-Tarea Planner:
+Tarea GitHub Projects:
 
 ## Validación
 

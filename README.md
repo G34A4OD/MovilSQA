@@ -9,7 +9,7 @@ Proyecto móvil de SQA de **Gerardo, Eva y Waldir**. **Flutter + Supabase direct
    - [Gerardo](equipo/GERARDO.md): identidad, grupos, parentescos, seguridad transversal e integración.
    - [Eva](equipo/EVA.md): carpetas, documentos, archivos privados, automatización y reporte.
    - [Waldir](equipo/WALDIR.md): presupuesto, categorías, movimientos, CSV y métricas.
-3. Sigue [el flujo GitHub y Planner](docs/COLABORACION.md). La rama compartida de integración será `develop`; `main` se reserva para releases revisados.
+3. Sigue [el flujo GitHub y GitHub Projects](docs/COLABORACION.md). La rama compartida de integración será `develop`; `main` se reserva para releases revisados.
 
 La preparación está en el [PR #21](https://github.com/G34A4OD/MovilSQA/pull/21). Hasta su revisión e integración, obtenerla con gh pr checkout 21 después de aceptar la invitación. Las nuevas historias salen de develop cuando la base esté integrada.
 
@@ -49,3 +49,7 @@ Los PDF del curso permanecen en la carpeta local y se excluyen del repositorio. 
 ## Situación de GitHub
 
 GitHub CLI autorizado; veinte issues, cuatro milestones, `develop` como default y `main`/`develop` protegidas. Invitaciones Write enviadas a Eva (`pizzatoev`) y Waldir (`riblawaldir`), pendientes de aceptación. Ver [estado remoto](docs/GITHUB_ESTADO.md) y [flujo de colaboración](docs/COLABORACION.md). La base se entrega por PR para revisión independiente; todavía no hay release final. No guardar tokens ni contraseñas en archivos o chats.
+
+## Tablero de trabajo
+
+[GitHub Projects · MovilSQA](https://github.com/users/G34A4OD/projects/1/views/1): 20 issues vinculadas, con Responsable, Revisor SQA, sprint, prioridad, puntos y dependencias. Gerardo: 9; Eva: 5; Waldir: 6. Usar Responsable para filtrar las tareas mientras los invitados aceptan el repositorio. PREP-01 está en revisión; el resto en Backlog. No se necesitan cuentas Microsoft 365.

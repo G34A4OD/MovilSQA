@@ -37,7 +37,7 @@ items += [
           "Logs, capturas de fallos, metadatos y TC/HU Clase XX",
           "Exploración, 200% texto, red y segundo plano"],["HU-09","HU-15","HU-06"],5),
     item("QA-03","4.3","Medir calidad y auditar cada sprint","Waldir",4,
-         ["Planner/CPM y métricas con denominador real",
+         ["GitHub Projects/CPM y métricas con denominador real",
           "Auditoría cruzada, correctivas y revalidación",
           "Carga staging p95/error rate; no inventar resultados"],["QA-02"],3,"P1"),
     item("OPS-01","5.1","Preparar entrega y release revisado","Gerardo",4,

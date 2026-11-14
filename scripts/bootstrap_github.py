@@ -78,7 +78,7 @@ Dependencias: {', '.join(item['depends_on']) or 'Ninguna'}
 Plan: docs/sqa/TEST_PLAN.md · TC: docs/sqa/CASOS_PRUEBA.md
 Contrato: docs/api/CONTRATO.md
 {STACK_LINE}
-Planner: pendiente de enlace real; tarea [EDT] #número Título.
+GitHub Projects: https://github.com/users/G34A4OD/projects/1/views/1 · tarea vinculada a esta issue, con EDT/HU y responsable.
 
 ## Aceptación
 {criteria}

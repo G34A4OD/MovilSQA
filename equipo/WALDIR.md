@@ -19,7 +19,7 @@ Implementas HU-11..15 de punta a punta (Flutter + datos/RLS/RPC Supabase + tests
 | W3 | Año 1-9999, doce meses y CRUD de movimientos | HU-13, TC-BUD-01/02 y deduplicación transaccional |
 | W4 | Totales mensuales/anuales, déficit/superávit/equilibrio | HU-14, oráculo independiente y aislamiento de hojas/años |
 | W5 | Descarga real CSV por año en dispositivo | HU-15, TC-BUD-04, parser independiente y autorización |
-| W6 | EDT/PERT/CPM, Planner, métricas/retro y carga de consultas/RPC | Fuentes/denominadores reales y TC-PERF-01 |
+| W6 | EDT/PERT/CPM, GitHub Projects, métricas/retro y carga de consultas/RPC | Fuentes/denominadores reales y TC-PERF-01 |
 
 ## Tus rutas
 
@@ -62,9 +62,9 @@ URL y clave publishable/anon pueden estar en configuración cliente; secret/serv
 
 Una issue Ready real por rama desde origin/develop; feature/NUMERO-descripcion, commits propios pequeños y PR hacia develop para Eva. Cambios de core/main/pubspec/locks/config/contrato/CI por PR previo a Gerardo. Adjunta TC/HU, tests unit/widget, SQL/pgTAP de RLS/restricciones/RPC e integración de datos con usuarios de pruebas. TDD rojo/verde/refactor y reporte con commit/entorno/duración/resultados/fallos/capturas UI reales. Lo no ejecutado queda planificado, sin inventar resultados.
 
-Actualiza PERT/CPM con scripts/plan.py: unidades, dependencias, holgura y ruta crítica. Estimación no equivale a horas trabajadas; confirma fecha/disponibilidad antes de Planner. Métricas con denominadores: pass/fail/skipped, cobertura, defectos/KLOC o HU, velocidad de HU aceptadas y flakiness con histórico. N/D si faltan datos. Al existir integración de pruebas, medir carga reproducible de consultas/RPC (20 usuarios/1000 movimientos por hoja), p95 y errores; no inventar valores ni usar producción.
+Actualiza PERT/CPM con scripts/plan.py: unidades, dependencias, holgura y ruta crítica. Estimación no equivale a horas trabajadas; confirma fecha/disponibilidad antes de GitHub Projects. Métricas con denominadores: pass/fail/skipped, cobertura, defectos/KLOC o HU, velocidad de HU aceptadas y flakiness con histórico. N/D si faltan datos. Al existir integración de pruebas, medir carga reproducible de consultas/RPC (20 usuarios/1000 movimientos por hoja), p95 y errores; no inventar valores ni usar producción.
 
-Yo reviso PR de Gerardo; Eva revisa los míos. No simular aprobación/firma/coautoría. Cada historia termina con implementación probada, evidencia/Planner/trazabilidad y PR revisable con Closes #REAL. Explica bloqueos concretos sin abandonar trabajo independiente autorizado.
+Yo reviso PR de Gerardo; Eva revisa los míos. No simular aprobación/firma/coautoría. Cada historia termina con implementación probada, evidencia/GitHub Projects/trazabilidad y PR revisable con Closes #REAL. Explica bloqueos concretos sin abandonar trabajo independiente autorizado.
 ~~~
 
 ## Prompt para revisar a Gerardo
@@ -75,7 +75,7 @@ Actúa como agente de Waldir para revisar el PR de Gerardo indicado. Lee diff/co
 
 ## Cierre personal
 
-PR propio Flutter/datos/RLS/RPC/tests, revisión a Gerardo, CSV descargado validado, Planner/CPM, métricas reales y acción de retrospectiva. Poder defender módulos de Eva/Gerardo además del tuyo.
+PR propio Flutter/datos/RLS/RPC/tests, revisión a Gerardo, CSV descargado validado, GitHub Projects/CPM, métricas reales y acción de retrospectiva. Poder defender módulos de Eva/Gerardo además del tuyo.
 
 ## Issues reales iniciales
 

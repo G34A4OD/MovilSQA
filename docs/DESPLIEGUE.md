@@ -10,7 +10,7 @@ Estado: guía preparada; proyecto Supabase sin conectar, migraciones/RLS/RPC y f
 4. Tras CI y revisión, publicar solo migraciones/funciones aprobadas a staging. No ejecutar db reset sobre un proyecto remoto con datos. Migraciones y app deben ser compatibles durante el despliegue.
 5. E2E de login, grupos, archivos, presupuesto y CSV en Android contra Supabase staging. iOS con macOS/Xcode; registrar pendiente si falta. Un build web no demuestra Android/iOS.
 6. PR develop -> main aprobado, checks verdes y pruebas sobre la versión concreta; tag v0.N.0. Generar APK release firmado y SHA-256. La futura conexión podrá leer configuración dart-define; la demo actual aún no lo hace.
-7. Copiar APK a app/releases y GitHub Release según el flujo acordado; adjuntar demo, resultados, defectos conocidos y enlaces Planner. Registrar versión del esquema y del binario.
+7. Copiar APK a app/releases y GitHub Release según el flujo acordado; adjuntar demo, resultados, defectos conocidos y enlaces GitHub Projects. Registrar versión del esquema y del binario.
 
 Rollback: conservar binario anterior y backup probado de DB y objetos Storage. Revertir código por PR; corregir migraciones aplicadas con nuevas migraciones compatibles, sin borrar historial o resetear base remota. Operaciones destructivas requieren restauración ensayada. Confirmar respaldos del plan elegido sin asumir que DB incluye Storage.
 

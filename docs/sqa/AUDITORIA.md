@@ -9,7 +9,7 @@ Fecha: 14/11/2026. Tipo: revisión inicial de preparación, **no aprobación fin
 | AUD-01-03 Sin evidencia de tres participantes aún | Repositorio remoto solo README al iniciar | Media: invitar, issues, PR y revisión con cuentas reales | Todos; matriz de participación con enlaces |
 | AUD-01-04 GH CLI sin autenticación al inicio | `gh auth status` sin sesión | Media: login del propietario, después bootstrap | Gerardo; issues/ramas/checks visibles |
 | AUD-01-05 No hay prueba en dispositivo ni iOS | Starter sin suite de sistema | Alta para release: Android temprano, iOS cuando exista macOS | Eva; reporte con dispositivo/build/captura real |
-| AUD-01-06 Falta calendario confirmado y Planner | Sin fecha de entrega suministrada | Media: estimación relativa y fechas al confirmar | Waldir; Planner con CPM y responsables |
+| AUD-01-06 Falta calendario confirmado y GitHub Projects | Sin fecha de entrega suministrada | Media: estimación relativa y fechas al confirmar | Waldir; GitHub Projects con CPM y responsables |
 | AUD-01-07 La demo en memoria no protege datos reales | Aviso explícito en UI/README y sin backend | Alta para uso real: mantener datos sintéticos hasta controles verificados | Todos; pruebas RLS/RPC/Storage y operación aprobadas |
 
 Ningún hallazgo se cierra solo por este documento. La implementación base y reportes pueden resolver parcialmente la falta de tests; adjuntar ejecución y revisión independiente. Al cerrar: anotar PR/commit, test repetido, resultado, quién verificó y fecha. Auditoría por sprint añade hallazgos nuevos y acciones; evitar reemplazar el historial.

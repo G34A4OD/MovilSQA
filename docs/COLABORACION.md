@@ -1,4 +1,4 @@
-# GitHub, XP y Planner para tres personas
+# GitHub, XP y GitHub Projects para tres personas
 
 Repositorio: https://github.com/G34A4OD/MovilSQA. Cada integrante usa su cuenta real. Eva y Waldir deben recibir y aceptar invitación de colaborador; un repositorio público permite clonar pero no da permiso de push. Gerardo necesita sus nombres de usuario para invitarlos. No compartir cuentas ni fabricar coautorías.
 
@@ -50,11 +50,15 @@ El revisor ejecuta `gh pr checkout NUMERO`, instala dependencias, corre pruebas 
 - No usar `reset --hard`, `clean -f` ni `push --force` como solución de conflictos. Si el árbol está sucio, primero guardar un commit propio o stash identificado.
 - Revisar `git diff --check` y `git diff --cached` antes de cada commit; no agregar todos los PDF ni carpetas de caché.
 
-## Planner como tablero del curso
+## GitHub Projects como tablero del equipo
 
-Crear un plan del equipo Microsoft 365 con columnas Backlog, Iteración, En progreso, En revisión (PR), Hecho. Cada tarea `[EDT] #issue Título` enlaza issue, PR, HU, test y evidencia; se asigna a driver y revisor. Labels: fase EDT, Ruta crítica, Móvil, Seguridad cuando aplique. Fechas reales se completan desde CPM al confirmar inicio/disponibilidad; no inventar una fecha de entrega.
+Tablero elegido por el usuario: [Nido / Project 1](https://github.com/users/G34A4OD/projects/1/views/1). Este sustituye al tablero externo mencionado en las diapositivas. Las tareas son las issues existentes de MovilSQA, enlazadas al Project; no se crean copias como draft tasks.
 
-Al crear issue -> Backlog; al planificar -> Iteración; rama activa -> En progreso; PR -> En revisión; aprobación + CI + merge -> Hecho. Capturar vista del tablero por sprint y enlaces antes/después. GitHub Projects puede ser complemento; no declarar sincronización automática con Planner si no existe. El script no accede a Microsoft 365.
+Cada item conserva su issue, HU/EDT, criterios de aceptación, milestone, driver y revisor. Responsable identifica a Gerardo, Eva o Waldir; Revisor conserva la rotación acordada. Assignees se completa con la cuenta real cuando GitHub permite asignarla tras aceptar la invitación. Un campo Responsable no concede acceso al repositorio ni equivale a aceptar la invitación.
+
+Mantener estados del tablero: pendiente, en curso, en revisión y terminado según las opciones configuradas. PREP-01 está en revisión mientras el PR #21 no esté aprobado e integrado. Las historias restantes no están terminadas por haberlas añadido al Project. Fechas e iteraciones reales se concretan al confirmar disponibilidad/entrega; no inventarlas.
+
+Issue -> trabajo de historia; rama -> implementación; PR enlazado -> revisión; aprobación + CI + merge + aceptación -> terminado. Capturar vistas del Project por sprint y conservar enlaces al item/issue, PR y evidencia. Ya no se requiere otro tablero en Microsoft 365.
 
 ## Tags y releases
 
@@ -68,4 +72,4 @@ git push origin v0.1.0
 gh release create v0.1.0 --verify-tag --generate-notes --draft
 ```
 
-Revisar release draft con APK firmado de pruebas, checksum SHA-256, instrucciones, reporte, defectos conocidos y demo; después publicar con autorización del equipo. Firma de Android mediante secretos protegidos; no subir keystore. Evidencias de participación: commits propios + PR + revisión cruzada + pruebas + tarea Planner por cada persona, no solo conteo de líneas.
+Revisar release draft con APK firmado de pruebas, checksum SHA-256, instrucciones, reporte, defectos conocidos y demo; después publicar con autorización del equipo. Firma de Android mediante secretos protegidos; no subir keystore. Evidencias de participación: commits propios + PR + revisión cruzada + pruebas + tarea GitHub Projects por cada persona, no solo conteo de líneas.

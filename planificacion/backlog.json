@@ -339,7 +339,7 @@
       "QA-02"
     ],
     "criteria": [
-      "Planner/CPM y métricas con denominador real",
+      "GitHub Projects/CPM y métricas con denominador real",
       "Auditoría cruzada, correctivas y revalidación",
       "Carga staging p95/error rate; no inventar resultados"
     ]

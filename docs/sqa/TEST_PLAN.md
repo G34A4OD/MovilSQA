@@ -53,15 +53,15 @@ Los tres desarrollan, escriben pruebas, corrigen sus defectos y aportan evidenci
 
 ## 5. Ciclo de vida de pruebas dentro del sprint
 
-Lunes: revisar riesgos/cambios, seleccionar historias Ready, estimar y diseñar aceptación. Cada día: TDD, inspección y automatización; actualizar issue y Planner. Antes del PR: unidad/widget y las pruebas SQL/RLS/Supabase que correspondan, reporte y evidencia. Revisión: compañero ejecuta smoke y negativos, CI sobre commit exacto. Viernes: aceptación de PO/equipo, regresión, auditoría breve, métricas, retrospectiva con acción/dueño/fecha y release si pasa gates.
+Lunes: revisar riesgos/cambios, seleccionar historias Ready, estimar y diseñar aceptación. Cada día: TDD, inspección y automatización; actualizar issue y GitHub Projects. Antes del PR: unidad/widget y las pruebas SQL/RLS/Supabase que correspondan, reporte y evidencia. Revisión: compañero ejecuta smoke y negativos, CI sobre commit exacto. Viernes: aceptación de PO/equipo, regresión, auditoría breve, métricas, retrospectiva con acción/dueño/fecha y release si pasa gates.
 
 STLC por historia: analizar requisito -> planificar -> diseñar TC/datos -> preparar entorno -> ejecutar -> reportar defectos -> reejecutar/regresión -> cerrar. No esperar al último sprint para probar. Bug con pasos/esperado/actual/severidad/entorno/evidencia; clasificar bug de código, test inestable o infraestructura. Nunca reintentar silenciosamente hasta conseguir verde.
 
 ## 6. Criterios de entrada y salida
 
-**Definition of Ready:** CU revisado/aprobado por docente, HU INVEST con criterios y riesgos, mockup Material 3, contrato y autorización definidos, TC trazados, EDT/PERT/CPM y tarea Planner con responsables, dependencias satisfechas, datos ficticios y entorno disponibles. Si falta aprobación docente, diseño puede prepararse y la historia se marca pendiente de Ready; no se presume aprobada.
+**Definition of Ready:** CU revisado/aprobado por docente, HU INVEST con criterios y riesgos, mockup Material 3, contrato y autorización definidos, TC trazados, EDT/PERT/CPM y tarea GitHub Projects con responsables, dependencias satisfechas, datos ficticios y entorno disponibles. Si falta aprobación docente, diseño puede prepararse y la historia se marca pendiente de Ready; no se presume aprobada.
 
-**Definition of Done:** criterios pasan; tests P0 y regresión verdes; análisis sin errores; cobertura medida de dominio >=80% como objetivo (no presumida); revisión de otro integrante y conversaciones resueltas; seguridad multiusuario/multigrupo, sesión vigente y denegación de URLs firmadas verificadas con RLS, grants, RPC y políticas Storage/Edge de Supabase; documento/captura/log y metadatos ligados a commit/issue/PR; sin defectos críticos/altos abiertos; evidencia y Planner actualizados; aceptación humana registrada.
+**Definition of Done:** criterios pasan; tests P0 y regresión verdes; análisis sin errores; cobertura medida de dominio >=80% como objetivo (no presumida); revisión de otro integrante y conversaciones resueltas; seguridad multiusuario/multigrupo, sesión vigente y denegación de URLs firmadas verificadas con RLS, grants, RPC y políticas Storage/Edge de Supabase; documento/captura/log y metadatos ligados a commit/issue/PR; sin defectos críticos/altos abiertos; evidencia y GitHub Projects actualizados; aceptación humana registrada.
 
 Entrada a release: historias Done, entorno staging disponible, backup y rollback definidos. Salida: tests ejecutados sobre commit/tag, APK probada y checksum, reporte de auditoría sin bloqueantes, defectos conocidos documentados, aprobación de equipo. Suspender ante filtración, corrupción, pérdida del último admin o entorno incorrecto; reanudar tras corrección y regresión P0.
 
@@ -92,7 +92,7 @@ El generador de reportes conserva total, passed/failed/skipped, fallos y trazabi
 | Conflictos entre agentes | Alta / media | Módulos exclusivos, contrato previo, PR pequeños; Gerardo |
 | Sin Android/iOS disponible | Media / alta | Emulador temprano, iOS pendiente explícito sin macOS; Eva |
 | Alcance mayor que calendario | Alta / alta | Vertical slices, priorizar P0, reestimar con equipo sin omitir requisitos silenciosamente; Waldir |
-| Falta permisos GitHub/Planner | Media / media | Preparación local, autenticar/invitar, registrar bloqueo real; Gerardo |
+| Falta permisos GitHub/GitHub Projects | Media / media | Preparación local, autenticar/invitar, registrar bloqueo real; Gerardo |
 | Evidencia sin metadatos o ficticia | Media / alta | Script reproducible, commit/hu/tc, firmas reales; Eva |
 
 ## Evidencias y trazabilidad de la rúbrica
@@ -103,7 +103,7 @@ El generador de reportes conserva total, passed/failed/skipped, fallos y trazabi
 | Estrategias de pruebas | 20% | Código tests, red/green/refactor, BDD/ATDD, pipeline y resultados reales |
 | Control y seguimiento | 20% | Auditoría, inspecciones, defectos, acciones verificadas y métricas |
 | Documento y presentación | 15% | Revisión editorial, matriz Word/Excel y presentación breve de herramientas/demo |
-| Participación colaborativa | 20% | Tres cuentas, issues/Planner, commits, PR y revisiones cruzadas con evidencia |
+| Participación colaborativa | 20% | Tres cuentas, issues/GitHub Projects, commits, PR y revisiones cruzadas con evidencia |
 
 La clase XIX solicita comparar tres herramientas abiertas y una comercial **para web y móvil**; la matriz y su exportación final a Word/Excel y presentación pertenecen a Eva con revisión de Gerardo. La clase XX exige metadatos, fallos, capturas UI, trazabilidad y firmas: usar el reporte generado y completar las validaciones humanas. Índice final en `evidencias/INDICE.md`.
 

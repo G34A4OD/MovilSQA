@@ -14,7 +14,7 @@ Sprint / milestone:
 Driver y revisor:
 Dependencias:
 PERT (O/M/P, unidad):
-Planner:
+GitHub Projects:
 
 ## Criterios de aceptación
 

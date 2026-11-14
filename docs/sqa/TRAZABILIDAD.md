@@ -25,6 +25,6 @@ Los tests de dominio/widget son evidencia parcial: no equivalen a aceptación de
 | QA-03 | 4.3 | [#19](https://github.com/G34A4OD/MovilSQA/issues/19) | Waldir / Eva | — | Planificado; sin aceptación ejecutada |
 | OPS-01 | 5.1 | [#20](https://github.com/G34A4OD/MovilSQA/issues/20) | Gerardo / Waldir | — | Planificado; sin aceptación ejecutada |
 
-Trazar después cada PR, commit, TC manual/automatizado y evidencia en el issue/Planner. El mismo TC puede cubrir varias condiciones; no contar HU completas como aceptadas por este mapa.
+Trazar después cada PR, commit, TC manual/automatizado y evidencia en el issue/GitHub Projects. El mismo TC puede cubrir varias condiciones; no contar HU completas como aceptadas por este mapa.
 
 Arquitectura vigente: Flutter + Supabase directo. Cada HU necesita evidencia de las políticas RLS/grants/RPC y Storage que le correspondan además de sus tests Dart. La etapa actual de CI no ejecuta todavía esas pruebas Supabase. Las referencias a API en artefactos históricos no acreditan una API propia ni controles implementados.

@@ -67,7 +67,7 @@ Tests positivos/negativos con grupo A/B, invitado pendiente, expulsado, usuario 
 
 Completa la selección Clase XIX para el producto móvil: al menos tres opciones abiertas y una comercial, fuentes oficiales, criterios, matriz Word/Excel y presentación breve con piloto/flujo CI. Si se pide comparación de otro entorno como ejercicio académico, incluirla sin agregar un producto al alcance. integration_test es base Flutter; Appium requiere piloto de compatibilidad. No afirmar un piloto ejecutado ni adquirir licencias sin autorización.
 
-Al terminar cada historia, ejecuta validación, actualiza trazabilidad/evidencias/Planner y abre PR pequeño para Gerardo con Closes #REAL. Yo reviso PR de Waldir desde mi cuenta con pruebas reales. No simules aprobación, firma, coautoría ni resultado. Reporta implementación, pruebas y bloqueos concretos; conserva avance independiente autorizado.
+Al terminar cada historia, ejecuta validación, actualiza trazabilidad/evidencias/GitHub Projects y abre PR pequeño para Gerardo con Closes #REAL. Yo reviso PR de Waldir desde mi cuenta con pruebas reales. No simules aprobación, firma, coautoría ni resultado. Reporta implementación, pruebas y bloqueos concretos; conserva avance independiente autorizado.
 ~~~
 
 ## Prompt para revisión de Waldir
@@ -78,7 +78,7 @@ Actúa como agente de Eva para revisar el PR de Waldir indicado. Lee diff/HU/TC/
 
 ## Cierre personal
 
-PR propio de funcionalidad + tests de datos/Storage/Flutter + revisión a Waldir + matriz/presentación + auditoría con acciones verificadas + capturas Android + tarea Planner. Reporte Clase XX: información general, detalle, evidencia, observaciones, conclusiones y firmas solo tras revisión real.
+PR propio de funcionalidad + tests de datos/Storage/Flutter + revisión a Waldir + matriz/presentación + auditoría con acciones verificadas + capturas Android + tarea GitHub Projects. Reporte Clase XX: información general, detalle, evidencia, observaciones, conclusiones y firmas solo tras revisión real.
 
 ## Issues reales iniciales
 

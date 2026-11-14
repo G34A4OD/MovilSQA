@@ -5,7 +5,7 @@ Los archivos fuente están en la raíz local, fuera del control de versiones por
 | Fuente local | Páginas relevantes | Aplicación |
 |---|---|---|
 | Plan SQA movil.pdf | 1-5; tablas en 3 y 4 | Ocho secciones del Test Plan, seis evidencias, rúbrica 25/20/20/15/20 |
-| gitub para equipos en xp.pdf | 3-17, 20-21, 34-61; APK pp. 57-58 | EDT, PERT/CPM, Planner, Material 3, ramas, revisiones, issues, releases y CI. El stack y producto web del proyecto anterior no aplican por aclaración del usuario |
+| gitub para equipos en xp.pdf | 3-17, 20-21, 34-61; APK pp. 57-58 | EDT, PERT/CPM, GitHub Projects, Material 3, ramas, revisiones, issues, releases y CI. El stack y producto web del proyecto anterior no aplican por aclaración del usuario |
 | Clase_XIX_SQA.pdf | 9-23 | Riesgo para automatizar, comparación de al menos cuatro herramientas, tres abiertas y una comercial, flujo y presentación |
 | Clase _XX_SQA.pdf | 9-24, 26-30 | Metadatos, métricas, fallos, capturas, trazabilidad, conclusiones y validaciones del reporte |
 | Clases I-VI | Conceptos, proceso y producto | Prevención, objetivos de calidad, riesgos, QA/QC |
@@ -29,3 +29,5 @@ Los archivos fuente están en la raíz local, fuera del control de versiones por
 - [Appium](https://appium.io/docs/en/latest/): alternativa E2E multiplataforma.
 
 El usuario aclaró que Laravel y el producto web de las diapositivas correspondían a otro proyecto. Esa restricción no aplica a esta entrega móvil. La decisión vigente es **Flutter + Supabase directo**, con Auth, PostgreSQL/RLS, Storage privado y RPC/Edge Functions donde se necesiten. Se conserva el flujo de calidad y colaboración del curso. Ver SUPABASE.md y api/CONTRATO.md. Esta decisión ya está autorizada; no requiere otra confirmación.
+
+Cambio de herramienta autorizado: el equipo usa GitHub Projects (Project 1 de G34A4OD) como tablero de SQA. Se mantienen las prácticas de trazabilidad del material docente.

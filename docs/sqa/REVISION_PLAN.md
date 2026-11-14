@@ -4,7 +4,7 @@ No se recibió un Test Plan original de este producto; solo el enunciado de la a
 
 | Apartado tradicional propuesto TP-01 | Problema en ciclo ágil | Actualización TP-02 | Evidencia esperada |
 |---|---|---|---|
-| Alcance único del proyecto | Pruebas al final | Alcance por sprint y HU priorizadas por riesgo | Milestone y Planner |
+| Alcance único del proyecto | Pruebas al final | Alcance por sprint y HU priorizadas por riesgo | Milestone y GitHub Projects |
 | QA separado del desarrollo | Hallazgos tardíos | Responsabilidad compartida, revisión cruzada | PR con revisor distinto |
 | Casos manuales al concluir | Regresión costosa | TDD, BDD/ATDD y automatización continua | Rojo/verde/refactor + JSON/JUnit |
 | Entorno descrito una vez | Resultados irreproducibles | Metadatos por ejecución y commit exacto | Reporte Clase XX |

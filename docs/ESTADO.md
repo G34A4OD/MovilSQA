@@ -25,7 +25,7 @@ El código local de dominio no sustituye los permisos RLS/Storage ni las transac
 - GitHub CLI autorizado y repo preparado; Eva/Waldir todavía deben aceptar sus invitaciones Write. Ver GITHUB_ESTADO.md.
 - Revisar y aprobar los casos de uso con el docente, como exige la diapositiva XP p. 15.
 - Confirmar fecha de entrega y disponibilidad; el cronograma es relativo y estimado.
-- Crear/actualizar Planner con las cuentas Microsoft 365 del equipo.
+- Gestionar las issues del equipo en el Project 1 de GitHub; no se necesita cuenta Microsoft 365.
 - Ejecutar y firmar revisiones, pruebas cruzadas y auditoría. Nadie puede aprobar su propio PR.
 - Desplegar un entorno de pruebas, validar backup/restauración y grabar la demostración móvil.
 

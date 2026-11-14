@@ -10,4 +10,8 @@ Repositorio público: https://github.com/G34A4OD/MovilSQA. No subir PDF del curs
 - [PR #21 de la base](https://github.com/G34A4OD/MovilSQA/pull/21), rama chore/1-base-sqa-familia; no se fusiona hasta revisión de otra cuenta. Consultar sus checks para CI actual.
 - Ningún tag/release final emitido; las funcionalidades productivas siguen en backlog.
 
-Las fechas de milestones/Planner quedan pendientes de la fecha de entrega y disponibilidad. GitHub Projects no sustituye una evidencia real de Planner. Comprobar el estado actual de invitaciones al empezar: este documento registra la preparación, no garantiza aceptación posterior.
+Las fechas de milestones/GitHub Projects quedan pendientes de la fecha de entrega y disponibilidad. El Project 1 de GitHub sustituye al tablero externo por decisión del usuario; registrar sus vistas y enlaces como evidencia. Comprobar el estado actual de invitaciones al empezar: este documento registra la preparación, no garantiza aceptación posterior.
+
+## Project 1 configurado
+
+Project privado MovilSQA: https://github.com/users/G34A4OD/projects/1/views/1. Veinte issues existentes, sin drafts duplicados. Responsable y Revisor SQA definidos para todos; sprint, EDT/HU, prioridad, estimación y dependencias cargados. Reparto: 9 Gerardo, 5 Eva, 6 Waldir. PREP-01 en In review y 19 en Backlog. El acceso privado al Project es independiente de las invitaciones al repositorio. Assignees de Eva/Waldir queda pendiente hasta que GitHub permita asignar sus cuentas; Responsable registra el reparto actual.
