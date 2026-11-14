@@ -1,10 +1,14 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/read_all.dart';
 import '../domain/family_repository.dart';
+import '../domain/invitation_repository.dart';
+import 'supabase_invitation_repository.dart';
 
 class SupabaseFamilyRepository implements FamilyRepository {
   const SupabaseFamilyRepository(this.client);
   final SupabaseClient client;
+  @override
+  InvitationRepository get invitations => SupabaseInvitationRepository(client);
   @override
   Future<List<FamilyRecord>> list() async {
     final actor = client.auth.currentUser?.id;

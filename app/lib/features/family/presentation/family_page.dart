@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../identity/domain/profile.dart';
 import '../domain/family_repository.dart';
 import 'family_view_model.dart';
+import 'invitations_panel.dart';
 import 'package:uuid/uuid.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -244,7 +245,7 @@ class _FamilyPageState extends State<FamilyPage> {
                           ),
                           const SizedBox(height: 12),
                           const Text(
-                            'Puedes pertenecer a más de un grupo. Las invitaciones aparecerán aquí al conectar HU-04.',
+                            'Puedes pertenecer a más de un grupo familiar.',
                           ),
                           const SizedBox(height: 16),
                           for (final family in model.families)
@@ -276,6 +277,11 @@ class _FamilyPageState extends State<FamilyPage> {
                                   },
                             icon: const Icon(Icons.add),
                             label: const Text('Crear familia'),
+                          ),
+                          InvitationsPanel(
+                            key: const ValueKey('received'),
+                            repository: widget.repository.invitations,
+                            onChanged: model.load,
                           ),
                         ]
                       : [
@@ -309,6 +315,13 @@ class _FamilyPageState extends State<FamilyPage> {
                                   child: const Text('Eliminar grupo'),
                                 ),
                               ],
+                            ),
+                          if (f.isAdmin)
+                            InvitationsPanel(
+                              key: ValueKey('sent:${f.id}'),
+                              repository: widget.repository.invitations,
+                              familyId: f.id,
+                              onChanged: model.load,
                             ),
                           const SizedBox(height: 12),
                           OutlinedButton.icon(

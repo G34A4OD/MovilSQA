@@ -1,0 +1,67 @@
+"""HU-04: multi-user HTTP attacks against the disposable local stack and Edge."""
+import json
+import time
+import urllib.error
+import uuid
+from local_supabase import LocalSupabase
+
+
+def main():
+    passed=[]
+    def check(condition,label):
+        if not condition:
+            raise AssertionError(label)
+        passed.append(label)
+    with LocalSupabase() as db:
+        # Wait for the separately started local Edge runtime, without dumping logs/keys.
+        ready=False
+        for _ in range(90):
+            try:
+                status,_=db.request('/functions/v1/lookup-user',{})
+                if status==401:
+                    ready=True
+                    break
+            except (urllib.error.URLError,TimeoutError):
+                pass
+            time.sleep(1)
+        check(ready,'TC-SEC-03 HU-04: Edge local sin JWT deniega')
+        admin=db.actor('Persona Admin HTTP')
+        target=db.actor('Persona Receptora HTTP')
+        stranger=db.actor('Persona Ajena HTTP')
+        family=db.family(admin,'Grupo Invitación HTTP')
+        body={'family_id':family['id'],'public_id':target['public_id']}
+        status,_=db.request('/functions/v1/lookup-user',body,token=stranger['token'])
+        check(status==403,'TC-FAM-02 HU-04: ajeno no usa búsqueda Edge')
+        status,found=db.request('/functions/v1/lookup-user',body,token=admin['token'])
+        check(status==200 and set(found)=={'full_name','public_id'} and found['public_id']==target['public_id'],'TC-FAM-02 HU-04: admin obtiene solo nombre/ID por Edge real')
+        status,rows=db.request('/rest/v1/profiles?select=user_id',token=admin['token'])
+        check(status==200 and len(rows)==1,'TC-SEC-01 HU-04: buscar no abre perfiles ajenos por REST')
+        params={'p_family_id':family['id'],'p_target_public_id':target['public_id'],'p_request_id':str(uuid.uuid4())}
+        status,_=db.rpc('invite_member',params,stranger)
+        check(status==403,'TC-FAM-02 HU-04: ajeno no invita por RPC directa')
+        status,invite=db.rpc('invite_member',params,admin)
+        check(status==200 and invite['status']=='pending','TC-FAM-02 HU-04: invitación real admin')
+        status,retry=db.rpc('invite_member',params,admin)
+        check(status==200 and retry['id']==invite['id'],'TC-FAM-02 HU-04: reintento no duplica')
+        status,rows=db.request('/rest/v1/invitations?select=id,family_name,target_name,status,expires_at',token=target['token'])
+        check(status==200 and len(rows)==1 and rows[0]['family_name']==family['name'],'TC-FAM-03 HU-04: receptor ve invitación mínima')
+        status,rows=db.request('/rest/v1/families?select=id',token=target['token'])
+        check(status==200 and rows==[],'TC-SEC-02 HU-04: invitado pendiente sin datos familiares')
+        response={'p_invitation_id':invite['id'],'p_decision':'accept','p_request_id':str(uuid.uuid4())}
+        status,_=db.rpc('respond_invitation',response,stranger)
+        check(status==400,'TC-FAM-03 HU-04: tercero no acepta')
+        status,accepted=db.rpc('respond_invitation',response,target)
+        check(status==200 and accepted['status']=='accepted','TC-FAM-03 HU-04: receptor acepta por HTTP')
+        status,rows=db.request('/rest/v1/memberships?select=user_id,is_admin',token=target['token'])
+        check(status==200 and len(rows)==2 and not next(r['is_admin'] for r in rows if r['user_id']==target['user_id']),'TC-FAM-03 HU-04: miembro aceptado sin privilegio admin')
+        status,_=db.rpc('lookup_family_user',{'p_family_id':family['id'],'p_public_id':stranger['public_id']},target)
+        check(status==403,'TC-FAM-02 HU-04: miembro normal tampoco elude Edge por SQL RPC')
+        status,_=db.request('/auth/v1/logout?scope=local',token=admin['token'],method='POST')
+        check(status==204,'TC-SEC-03 HU-04: sesión del admin terminada')
+        status,_=db.request('/functions/v1/lookup-user',body,token=admin['token'])
+        check(status in (401,403),'TC-SEC-03 HU-04: Edge con JWT anterior denegado')
+    print(json.dumps({'status':'PASS','tests':len(passed),'cases':passed},ensure_ascii=False,indent=2))
+
+
+if __name__=='__main__':
+    main()
