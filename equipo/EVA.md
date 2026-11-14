@@ -1,5 +1,7 @@
 # Eva · Documentos, privacidad y automatización
 
+Actualización de integración HU-05: antes de implementar carpetas/archivos, leer access_epoch y cleanup_jobs en docs/api/CONTRATO.md. La salida/expulsión rota la generación del dueño; folders/documents humanos deben guardar owner_access_epoch desde el servidor y comprobarlo en RLS/RPC/Storage para que reingresar no publique archivos antiguos. Gerardo entrega este campo y los helpers; la política de bytes y el escaneo corresponden a tu módulo y se prueban aparte. Los timestamps antiguos propuestos 0003xx quedan reemplazados por migration new y una versión posterior a las migraciones compartidas reales de supabase/migrations.
+
 **Primero únete al repositorio:** https://github.com/G34A4OD/MovilSQA. Tu cuenta identificada es **pizzatoev** y se envió una invitación Write. Acepta la invitación con tu propia cuenta antes de push/revisión. Clonar un repositorio público no da permiso de escritura. Si recibes 403, comprueba cuenta/invitación; no uses credenciales de Gerardo.
 
 ## Enfoque confirmado

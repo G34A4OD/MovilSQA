@@ -27,10 +27,19 @@ class FamilyMember {
 }
 
 abstract interface class FamilyRepository {
+  String? get currentUserId;
   InvitationRepository get invitations;
+  Future<void> setAdmin(String familyId, String targetUserId, bool value);
+  Future<void> leave(String familyId);
+  Future<void> remove(String familyId, String targetUserId);
   Future<List<FamilyRecord>> list();
   Future<List<FamilyMember>> members(String familyId);
   Future<void> create(String name, String requestId);
   Future<void> update(FamilyRecord family, String name);
   Future<void> delete(FamilyRecord family, String confirmation);
+}
+
+class FamilyFailure implements Exception {
+  const FamilyFailure(this.code);
+  final String code;
 }

@@ -3,6 +3,7 @@ import '../../identity/domain/profile.dart';
 import '../domain/family_repository.dart';
 import 'family_view_model.dart';
 import 'invitations_panel.dart';
+import 'members_panel.dart';
 import 'package:uuid/uuid.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -332,16 +333,7 @@ class _FamilyPageState extends State<FamilyPage> {
                             label: const Text('Elegir qué datos comparto'),
                           ),
                           const SizedBox(height: 16),
-                          for (final member in model.members)
-                            Card(
-                              child: ListTile(
-                                leading: const Icon(Icons.person_outline),
-                                title: Text(member.fullName),
-                                subtitle: Text(
-                                  member.isAdmin ? 'Administrador' : 'Miembro',
-                                ),
-                              ),
-                            ),
+                          MembersPanel(model: model, family: f),
                         ],
                 ),
               ),

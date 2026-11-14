@@ -37,6 +37,11 @@ class FamilyViewModel extends ChangeNotifier {
       await action();
       await _refresh();
       return true;
+    } on FamilyFailure catch (error) {
+      message = error.code == 'last_admin'
+          ? 'El grupo necesita al menos un administrador. Designa otro antes de renunciar o salir.'
+          : 'Tu permiso cambió o la acción no está disponible. Recarga el grupo.';
+      return false;
     } catch (_) {
       message =
           'No se completó la acción. Revisa conexión, permisos y cambios de otro dispositivo; recarga para actualizar.';
@@ -73,6 +78,12 @@ class FamilyViewModel extends ChangeNotifier {
       run(() => repository.update(family, name));
   Future<bool> delete(FamilyRecord family, String confirmation) =>
       run(() => repository.delete(family, confirmation));
+  Future<bool> setAdmin(FamilyRecord family, FamilyMember member, bool value) =>
+      run(() => repository.setAdmin(family.id, member.userId, value));
+  Future<bool> leave(FamilyRecord family) =>
+      run(() => repository.leave(family.id));
+  Future<bool> remove(FamilyRecord family, FamilyMember member) =>
+      run(() => repository.remove(family.id, member.userId));
   void back() {
     selected = null;
     members = [];

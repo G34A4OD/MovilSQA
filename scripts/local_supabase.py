@@ -71,6 +71,10 @@ class LocalSupabase:
             status,_=self.request('/auth/v1/admin/users/'+str(uuid.UUID(user_id)),admin=True,method='DELETE')
             assert status==200,'Clean synthetic Auth fixture'
 
+    def sql(self, query):
+        result=subprocess.run([os.environ.get('DOCKER_BIN','docker'),'exec','-i','supabase_db_nido','psql','-X','-q','-A','-t','-U','postgres','-d','postgres','-v','ON_ERROR_STOP=1'],input=query,text=True,capture_output=True,check=True)
+        return result.stdout.strip()
+
     def __enter__(self):
         return self
 
