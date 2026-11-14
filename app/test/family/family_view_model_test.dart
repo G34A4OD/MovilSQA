@@ -1,6 +1,8 @@
 import 'package:app/features/family/domain/family_repository.dart';
 import 'package:app/features/family/domain/invitation_repository.dart';
 import 'invitation_view_model_test.dart' show FakeInvitations;
+import 'relationships_test.dart' show FakeRelationships;
+import 'package:app/features/family/domain/relationship_repository.dart';
 import 'package:app/features/family/presentation/family_view_model.dart';
 import 'package:app/core/read_all.dart';
 import 'package:app/core/connected_app.dart';
@@ -12,6 +14,8 @@ import '../identity/auth_view_model_test.dart' show FakeAuth;
 import '../identity/profile_view_model_test.dart' show FakeProfiles, valid;
 
 class FakeFamilies implements FamilyRepository {
+  @override
+  RelationshipRepository get relationships => FakeRelationships();
   @override
   String? get currentUserId => 'persona';
   bool lastAdmin = false;

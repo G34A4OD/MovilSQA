@@ -28,7 +28,11 @@ jobs:
         run: python -m unittest discover -s scripts/tests -v
       - name: Validar y generar reporte
         shell: pwsh
-        run: ./scripts/verify.ps1 -RunId "ci-${{ github.run_id }}-${{ github.run_attempt }}"
+        run: |
+          $runId = "ci-${{ github.run_id }}-${{ github.run_attempt }}"
+          $env:NIDO_TEST_FONT_PATH = Join-Path $env:FLUTTER_ROOT 'bin/cache/artifacts/material_fonts/roboto-regular.ttf'
+          $env:NIDO_CAPTURE_WIDGET_PATH = Join-Path $env:GITHUB_WORKSPACE "evidencias/ejecuciones/$runId/tree-widget.png"
+          ./scripts/verify.ps1 -RunId $runId
       - name: Conservar evidencia incluso con fallos
         if: always()
         uses: actions/upload-artifact@v4

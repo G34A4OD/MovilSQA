@@ -3,10 +3,15 @@ import '../../../core/read_all.dart';
 import '../domain/family_repository.dart';
 import '../domain/invitation_repository.dart';
 import 'supabase_invitation_repository.dart';
+import '../domain/relationship_repository.dart';
+import 'supabase_relationship_repository.dart';
 
 class SupabaseFamilyRepository implements FamilyRepository {
   const SupabaseFamilyRepository(this.client);
   final SupabaseClient client;
+  @override
+  RelationshipRepository get relationships =>
+      SupabaseRelationshipRepository(client);
   @override
   String? get currentUserId => client.auth.currentUser?.id;
   Future<void> _membership(

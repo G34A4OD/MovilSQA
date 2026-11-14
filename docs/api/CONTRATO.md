@@ -63,7 +63,7 @@ Todas las RPC extraen auth.uid(), comprueban sesión/permisos y trabajan sobre r
 | revoke_invitation | p_invitation_id | Solo admin del grupo; revoca pendiente |
 | set_member_admin | p_family_id,p_target_user_id,p_is_admin | Admin; renuncia propia permitida; nunca cero admins |
 | leave_family / remove_member | p_family_id[,p_target_user_id] | Salida propia o expulsión por admin; mismo lock y protección de último admin; retirar documentos/acceso del saliente |
-| save_relationship / delete_relationship | p_family_id, IDs de relación, kind/version | Admin; parent dirigido, partner/sibling simétricos; extremos del mismo grupo, sin auto relación ni ciclo |
+| save_relationship / delete_relationship | p_family_id, IDs de relación, kind/version | Admin; ascendencia dirigida, vínculos laterales; extremos del mismo grupo, sin auto relación ni ciclo |
 | delete_pet | p_pet_id,p_expected_version | Admin, mismo grupo; revocar referencias documentales y programar limpieza |
 
 Las lecturas de grupos/membresías/invitaciones/parentescos/mascotas son select filtrados y paginados, siempre sujetos a RLS. El ID público por sí solo nunca otorga acceso.
@@ -77,6 +77,10 @@ invite_member devuelve {error: invitation_unavailable} para destinos no disponib
 HU-05: set_member_admin/leave_family/remove_member bloquean primero families y vuelven a validar sesión/membresía/admin. membership_revision cambia bajo ese lock para impedir snapshots obsoletos también en REPEATABLE READ. La salida/expulsión inactiva membresía, quita admin, retira profile_shares y revoca invitaciones pendientes del saliente; cambiar parentesco nunca cambia administración. El último admin recibe last_admin. Un reingreso explícito entra sin restaurar privilegios previos.
 
 La salida rota memberships.access_epoch. **Integración obligatoria de Eva:** folders/documents de titular humano guardan owner_access_epoch obtenido del servidor y sus policies/RPC exigen dueño activo y coincidencia con memberships.access_epoch además del lector activo. Así un reingreso no vuelve a compartir archivos antiguos sin nuevo consentimiento. Para mascotas se aplica pertenencia/admin y estado de mascota; no hay usuario Auth de mascota. Un cliente no elige el epoch ni el dueño. private.cleanup_jobs guarda la generación retirada en metadata; el worker limpia solo generaciones retiradas y usa corte temporal/lease para no borrar archivos de un reingreso. Hasta demostrar RLS/Storage del módulo de archivos, las pruebas de membresía no acreditan revocación de bytes.
+
+HU-06 amplía kinds a parent/grandparent/uncle (dirigidos) y sibling/cousin/partner (simétricos normalizados). Las etiquetas hijo/nieto/sobrino invierten origen/destino al guardar. Esto permite declarar abuelos/tíos aunque el familiar intermedio todavía no tenga cuenta; no infiere permisos ni certifica datos biológicos. Los ciclos se prohíben en ascendencia parent/grandparent, bajo lock de familia y relationship_revision para concurrencia/isolation. Cada vínculo conserva los access_epoch de ambos extremos y no reaparece automáticamente tras una salida/reingreso.
+
+Firmas HU-06: save_relationship(p_family_id,p_relationship_id,p_from_user_id,p_to_user_id,p_kind,p_expected_version,p_request_id) devuelve relación; id/version null para creación. delete_relationship(p_family_id,p_relationship_id,p_expected_version). Toda creación/edición se deduplica por actor/request/cuerpo. El árbol móvil dibuja ascendencia y lista también los vínculos laterales con texto accesible.
 
 ## Documentos y archivos · Eva
 

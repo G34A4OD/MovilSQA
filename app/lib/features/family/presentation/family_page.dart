@@ -4,6 +4,7 @@ import '../domain/family_repository.dart';
 import 'family_view_model.dart';
 import 'invitations_panel.dart';
 import 'members_panel.dart';
+import 'relationships_panel.dart';
 import 'package:uuid/uuid.dart';
 
 class FamilyPage extends StatefulWidget {
@@ -334,6 +335,12 @@ class _FamilyPageState extends State<FamilyPage> {
                           ),
                           const SizedBox(height: 16),
                           MembersPanel(model: model, family: f),
+                          RelationshipsPanel(
+                            key: ValueKey('relationships:${f.id}'),
+                            repository: widget.repository.relationships,
+                            family: f,
+                            members: model.members,
+                          ),
                         ],
                 ),
               ),
