@@ -15,18 +15,18 @@ Fuentes primarias: [Flutter integration_test](https://docs.flutter.dev/testing/i
 
 La valoración es una inferencia del contexto del equipo, no un benchmark. Elegimos herramientas oficiales Flutter por compatibilidad/lenguaje y mantenimiento; no afirmamos que ya se haya ejecutado integration_test en dispositivo. Las pruebas actuales son unidad/widget. Appium y Katalon requieren piloto de un formulario y una descarga antes de decidir.
 
-## Web: tres opciones abiertas y una comercial
+## Web: comparación académica de tres opciones abiertas y una comercial
 
 | Herramienta | Licencia / entorno | Ventajas | Límites | Decisión |
 |---|---|---|---|---|
-| Playwright Test | Código abierto, navegador/TS y otros bindings | Trace, screenshots, aislamiento y reporter; buena CI | No valida una APK nativa; probar Flutter web no sustituye Android | Elegida si se añade panel web Laravel |
+| Playwright Test | Código abierto, navegador/TS y otros bindings | Trace, screenshots, aislamiento y reporter; buena CI | No valida una APK nativa; probar Flutter web no sustituye Android | Referencia comparativa; fuera del producto móvil |
 | Selenium WebDriver | Código abierto, navegadores/múltiples lenguajes | Ecosistema amplio y Grid | Configuración de sincronización/reporte; no app nativa | Alternativa web |
 | Cypress App | Runner de código abierto, JS/TS web; servicios Cloud separados | Experiencia de depuración e integración frontend | Restricciones del navegador y posibles servicios comerciales; no APK | Alternativa web |
 | Katalon Studio Enterprise | Comercial, web/API/móvil | IDE y reportes en un producto | Licencia y ejecución según edición, integración/piloto por validar | Comparada, no adquirida |
 
 Fuentes: [Playwright](https://playwright.dev/docs/intro), [Selenium](https://www.selenium.dev/documentation/), [Cypress](https://docs.cypress.io/app/get-started/why-cypress), [tecnologías Katalon](https://docs.katalon.com/katalon-studio/supported-technologies-for-katalon-studio).
 
-El producto solicitado es móvil. La comparación web responde a la actividad de Clase XIX; no crea un portal web adicional obligatorio. PHPUnit HTTP sobre Laravel/PostgreSQL prueba la API sin depender de UI web. Newman puede ejecutar colecciones API exportadas si se elige Postman para diseño; no es necesario duplicar cada test PHPUnit.
+El producto solicitado es exclusivamente móvil. La comparación web responde a la actividad de Clase XIX; no implica desarrollar un portal, panel ni API propia. Para la infraestructura se seleccionan Supabase CLI y pgTAP/SQL para políticas, permisos y funciones PostgreSQL; se completan con llamadas de integración desde supabase_flutter a Auth, Data API/RPC y Storage con JWT de usuarios de pruebas. Estas suites Supabase todavía no están implementadas. Un cliente con service_role puede eludir RLS: no sirve como identidad para los casos negativos de usuario. Fuente: [pruebas Supabase](https://supabase.com/docs/guides/local-development/testing/overview).
 
 ## Integración y piloto
 
@@ -35,14 +35,15 @@ flowchart LR
   I[Issue + HU + TC + riesgo] --> R[Test que falla por causa esperada]
   R --> C[Implementación y refactor]
   C --> P[PR y revisión de compañero]
-  P --> CI[CI: formato / análisis / unidad-widget / API]
+  P --> CI[CI actual: formato / análisis / unidad-widget / reportador]
   CI --> A[Artifacts JSON-JUnit-lcov y reporte]
-  A --> M[Staging + E2E Android/iOS]
+  A --> S[Etapa futura: Supabase CLI / pgTAP / RLS / RPC / Storage]
+  S --> M[Staging Supabase + E2E Android/iOS]
   M --> Q[Auditoría / métricas / correctivas]
   Q --> D[Aceptación + release]
 ~~~
 
-Piloto actual: tests unidad/widget del presupuesto y dominio en scripts/verify.ps1. Eva debe ampliar a login -> grupo -> documento privado -> presupuesto -> CSV con servidor real, medir duración/mantenibilidad y adjuntar capturas. Explorar UX/accesibilidad manualmente; no automatizar juicio subjetivo como si fuera un resultado binario.
+Piloto actual: tests unidad/widget del presupuesto y dominio en scripts/verify.ps1. Eva debe ampliar a login -> grupo -> documento privado -> presupuesto -> CSV contra un proyecto Supabase de pruebas con políticas reales, medir duración/mantenibilidad y adjuntar capturas. Explorar UX/accesibilidad manualmente; no automatizar juicio subjetivo como si fuera un resultado binario.
 
 ## Entregables de la actividad que faltan
 
@@ -50,7 +51,7 @@ Eva exporta esta matriz a Word o Excel, revisa fuentes/condiciones actuales y pr
 
 1. Contexto y riesgos de Nido.
 2. Criterios de selección y matrices web/móvil.
-3. Elección Flutter/PHPUnit y alternativas.
+3. Elección Flutter + Supabase CLI/pgTAP y alternativas.
 4. Piloto real, comandos, datos y resultado con limitaciones.
 5. Flujo CI/reportes/Planner, costos de mantenimiento y siguiente mejora.
 

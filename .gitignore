@@ -18,7 +18,9 @@
 **/key.properties
 **/*.jks
 **/*.keystore
-**/.phpunit.cache/
+/app/config/supabase.local.json
+/supabase/.temp/
+/supabase/.branches/
 /evidencias/ejecuciones/*
 !/evidencias/ejecuciones/.gitkeep
 .DS_Store

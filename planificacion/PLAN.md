@@ -6,7 +6,7 @@ Cronograma relativo, no horas realizadas ni fecha de entrega confirmada.
 | ID / EDT | Entregable / dueño | Pred. | O/M/P | TE | Sigma | IT | FT | IL | FL | Holgura |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---:|
 | A / 2.1 | Requisitos y contrato / Todos |  | 1/2/3 | 2.00 | 0.33 | 0.00 | 2.00 | 0.00 | 2.00 | 0.00 |
-| B / 2.2 | Esquema API y seguridad / Gerardo | A | 1/3/5 | 3.00 | 0.67 | 2.00 | 5.00 | 2.00 | 5.00 | 0.00 |
+| B / 2.2 | Esquema Supabase RLS y RPC / Gerardo | A | 1/3/5 | 3.00 | 0.67 | 2.00 | 5.00 | 2.00 | 5.00 | 0.00 |
 | C / 2.3 | Interfaz Material 3 y mockups / Eva | A | 1/2/3 | 2.00 | 0.33 | 2.00 | 4.00 | 7.00 | 9.00 | 5.00 |
 | D / 3.1 | Identidad y sesión / Gerardo | B | 2/4/6 | 4.00 | 0.67 | 5.00 | 9.00 | 5.00 | 9.00 | 0.00 |
 | E / 3.4 | Archivo familiar seguro / Eva | B, C | 2/4/6 | 4.00 | 0.67 | 5.00 | 9.00 | 9.00 | 13.00 | 4.00 |
@@ -24,7 +24,7 @@ CPM no nivela recursos. E y K comparten Eva; Todos requiere coordinación. Confi
 ## EDT (100% del alcance)
 
 - 1.0 Gestión: repo, roles, Planner, cambios y seguimiento.
-- 2.1 CU/HU/requisitos; 2.2 esquema/API/seguridad; 2.3 mockups.
+- 2.1 CU/HU/requisitos; 2.2 Supabase/RLS/RPC; 2.3 mockups.
 - 3.1 Identidad; 3.2 grupos/admins; 3.3 parentescos/mascotas; 3.4 documentos; 3.5 presupuesto/CSV.
 - 4.1 pruebas/automatización; 4.2 manual/presentación; 4.3 auditoría/métricas/correctivas.
 - 5.1 staging, backup/rollback, release, APK y entrega.

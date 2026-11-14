@@ -14,13 +14,14 @@ Característica: Reglas críticas de Nido
   Escenario: Una invitación pendiente no da acceso
     Dado que una persona recibió una invitación a una familia
     Cuando intenta consultar documentos antes de aceptar
-    Entonces el servidor deniega el acceso
+    Entonces las políticas RLS de Supabase no exponen documentos del grupo
 
   @HU-09 @TC-DOC-04
   Escenario: Salir de la familia revoca lectura
     Dado que un miembro podía leer un documento compartido
     Cuando abandona el grupo
-    Entonces una nueva petición al contenido del documento es denegada
+    Entonces una nueva petición autenticada a Storage no obtiene el contenido
+    Y esto no elimina una copia que el miembro ya hubiera descargado
 
   @HU-14 @TC-BUD-02
   Escenario: Balance anual exacto y aislado

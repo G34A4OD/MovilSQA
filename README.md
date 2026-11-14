@@ -1,6 +1,6 @@
 # Nido · Archivo y presupuesto familiar
 
-Proyecto móvil de SQA de **Gerardo, Eva y Waldir**. Flutter + API Laravel + PostgreSQL y archivos privados en **Supabase**, combinando la elección del usuario con el stack A del curso. Interfaz Material 3 en español. [Configuración de Supabase](docs/SUPABASE.md).
+Proyecto móvil de SQA de **Gerardo, Eva y Waldir**. **Flutter + Supabase directo**: Auth para cuentas, PostgreSQL con RLS para datos, Storage privado para archivos y funciones SQL/RPC para reglas transaccionales. Producto único móvil con Material 3 en español. [Configuración de Supabase](docs/SUPABASE.md).
 
 ## Empieza aquí
 
@@ -23,7 +23,7 @@ flutter pub get
 flutter run
 ```
 
-La pantalla inicial indica **Demostración local**. Usa exclusivamente datos ficticios en memoria; al reiniciar se descartan los cambios. No es un login, un servidor ni un almacén seguro de documentos. El adaptador HTTP y los módulos productivos son trabajo de las historias del backlog.
+La pantalla inicial indica **Demostración local**. Usa exclusivamente datos ficticios en memoria; al reiniciar se descartan los cambios. Auth, los repositorios basados en supabase_flutter, las migraciones/RLS y los módulos persistentes son trabajo de las historias del backlog. Cambiar los documentos no significa que la conexión Supabase ya esté implementada.
 
 ```powershell
 # Desde la raíz; genera evidencia con fecha, entorno, casos y métricas.
@@ -36,8 +36,9 @@ La pantalla inicial indica **Demostración local**. Usa exclusivamente datos fic
 |---|---|
 | `app/lib/core/` | Dinero, validaciones y tema compartidos |
 | `app/lib/features/` | Módulos por funcionalidad, con dominio/presentación |
-| `web/` | Contrato y guía de implementación de API Laravel; no hay servidor implementado aún |
-| `docs/api/` | Contrato HTTP, nombres y permisos congelados para trabajar en paralelo |
+| `supabase/` | Guía y rutas reservadas para migraciones, pruebas SQL/RLS y Edge Functions; infraestructura pendiente |
+| `app/config/` | Plantilla pública para la futura conexión de la app; no contiene credenciales privilegiadas |
+| `docs/api/` | Contrato del SDK Supabase, tablas, permisos y RPC para trabajar en paralelo |
 | `docs/sqa/` | Test Plan, casos, trazabilidad, auditoría y herramientas |
 | `planificacion/` | Backlog, EDT, estimaciones y cálculo reproducible PERT/CPM |
 | `.github/` | CI, plantillas de issue y PR |

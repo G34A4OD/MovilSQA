@@ -1,65 +1,89 @@
 # Arquitectura y contrato de integración
 
-## Decisión ADR-001
+## Decisión vigente ADR-001 / ADR-002
 
-Flutter Material 3 y API REST Laravel 13 con PostgreSQL alojado en **Supabase**, elegido por el usuario. Supabase aporta PostgreSQL y Storage privado; Laravel mantiene autenticación Sanctum, policies y transacciones. No se duplican usuarios en Supabase Auth. Monolito modular para tres personas: no microservicios. `app/` conserva el proyecto inicial; `web/` aloja el servidor del stack A. Ver `SUPABASE.md` para separar credenciales y evitar acceso directo a datos.
+**Una aplicación móvil Flutter + Supabase directo.** El usuario aclaró que el stack de servidor de las diapositivas correspondía a otro proyecto; no es requisito de este producto. Supabase Auth gestiona las cuentas, PostgreSQL conserva los datos con RLS y Storage mantiene los archivos privados. No se construye un portal web ni una API propia intermedia.
 
-Flutter: organización por funcionalidad, UI + ViewModel (`ChangeNotifier` inicialmente), dominio independiente, repositorios abstractos y adaptadores de datos. Inyección por constructor en un único punto de composición. El repositorio en memoria solo soporta la demo; el HTTP será la implementación real. La guía oficial recomienda [vistas, modelos de vista y repositorios](https://docs.flutter.dev/app-architecture/guide).
+Estado: arquitectura y contratos preparados para implementar. La app actual sigue siendo una demostración en memoria; no hay conexión, migraciones, RLS o funciones desplegadas que estos documentos certifiquen.
 
-Servidor: FormRequest valida, Policy autoriza, Action/Service ejecuta reglas y transacciones, Eloquent persiste, API Resource filtra campos. Usar repositorio adicional solo si desacopla un origen real; no envolver cada operación Eloquent sin propósito. Strategy para CSV/otros exportadores futuros; un servicio de dominio para presupuesto y otro para parentescos. Nada de Singleton global mutable para la sesión.
+Flutter se organiza por funcionalidades: identity, family, documents y budget. Cada módulo tiene presentación, dominio y datos. La UI observa un ViewModel (ChangeNotifier inicialmente), los casos de uso operan sobre repositorios abstractos y el adaptador Supabase transforma DTOs en entidades. Inyección por constructor en el punto de composición; cliente Supabase compartido e inyectado, sin estado global mutable de usuario/grupo. La [guía oficial de Flutter](https://docs.flutter.dev/app-architecture/guide) fundamenta la separación de vistas, modelos de vista y repositorios.
 
-```mermaid
+~~~mermaid
 flowchart LR
   V[Flutter / Material 3] --> VM[ViewModel por módulo]
-  VM --> U[Casos de uso y dominio]
+  VM --> U[Casos de uso y dominio Dart]
   U --> R[Interfaz Repository]
   R --> D[Demo en memoria]
-  R --> H[Adaptador HTTP / DTO]
-  H --> A[Laravel REST / Sanctum]
-  A --> P[Policies + FormRequests]
-  P --> S[Actions y transacciones]
-  S --> DB[(PostgreSQL)]
-  S --> F[Archivos privados / cuarentena]
-```
+  R --> S[Adaptador supabase_flutter / DTO]
+  S --> A[Supabase Auth]
+  S --> DB[Data API + RLS + RPC PostgreSQL]
+  S --> F[Storage privado + RLS]
+  S --> E[Edge Functions para tareas privilegiadas]
+  E --> DB
+  E --> F
+~~~
 
-## Módulos y contratos congelados
+## Qué corresponde al cliente y qué a Supabase
 
-`identity`, `family`, `documents`, `budget`. El contrato `docs/api/CONTRATO.md` es la frontera estable entre agentes. Cada uno implementa UI, datos, API y pruebas de su módulo. Nombres JSON snake_case; Dart camelCase; UUID internos y código público aleatorio separado. Dinero `amount_cents`, nunca `double`. Fechas civiles ISO `YYYY-MM-DD`; instantes UTC ISO-8601.
+| Capa | Responsabilidad |
+|---|---|
+| Flutter | Formularios, navegación, calendario mensual, feedback de validación, vista del árbol, cálculos de presentación y descarga CSV |
+| Auth | Registro, verificación, acceso, recuperación, refresh y cierre de sesión |
+| PostgreSQL | Integridad, FK, checks, RLS por usuario/grupo, idempotencia y transacciones |
+| RPC SQL | Invariantes de varias filas: membresías/admins, invitaciones, ascendencia, categorías y movimientos |
+| Storage | Objetos privados, rutas opacas y autorización con JWT + RLS en cada solicitud |
+| Edge Functions | Búsqueda exacta con rate limit; verificación/escaneo de archivos y tareas administrativas que necesitan secretos |
 
-`core`, punto de composición, `pubspec.yaml`, lockfiles, archivos de rutas agregadores, workflow y migración base tienen propietario de integración: Gerardo. Los otros crean archivos nuevos y solicitan cambios concretos mediante su issue; no reescriben estos archivos simultáneamente. Contratos cambiados mediante PR pequeño antes de consumidores.
+La aplicación no guarda contraseñas ni credenciales PostgreSQL. Solo incorpora URL de proyecto y publishable key. La clave pública identifica el proyecto, **no autoriza acceso a filas**: los grants y RLS son obligatorios. Las secret/service_role keys quedan exclusivamente en funciones/servicios autorizados y nunca llegan al móvil.
 
-## Modelo de datos
+## Contratos y propiedad de archivos
 
-```mermaid
+El contrato estable es [api/CONTRATO.md](api/CONTRATO.md), compuesto por llamadas SDK, tablas, RPC y funciones Edge; no por rutas de un servidor propio. Nombres PostgreSQL/JSON snake_case, Dart camelCase, UUID internos y public_id aleatorio separado. Dinero en amount_cents entero, fechas civiles YYYY-MM-DD e instantes UTC.
+
+Gerardo custodia core, composición, pubspec/locks, cliente Supabase, contrato, config, esquema base y CI. Cada integrante agrega su módulo y migraciones SQL propias en supabase/migrations, con timestamp único y orden de dependencia acordado. Tests SQL/RLS en supabase/tests/database por módulo y funciones en supabase/functions. No reescribir migraciones ya aplicadas ni crear un único archivo compartido para todos.
+
+Las operaciones simples pueden usar select/insert/update/delete del SDK **solo** cuando sus grants, políticas USING/WITH CHECK y restricciones impidan saltarse las reglas. Las escrituras críticas se revocan a anon/authenticated en las tablas y se exponen exclusivamente mediante RPC revisadas. Un botón oculto o una función que nadie está obligado a usar no es una barrera de seguridad.
+
+## Modelo de datos y privacidad
+
+~~~mermaid
 erDiagram
-  USER ||--|| PROFILE : owns
-  USER ||--o{ MEMBERSHIP : has
+  AUTH_USER ||--|| PROFILE : owns
+  AUTH_USER ||--|| PRIVATE_PROFILE : owns
+  AUTH_USER ||--o{ PROFILE_SHARE : consents
+  AUTH_USER ||--o{ MEMBERSHIP : joins
   FAMILY ||--|{ MEMBERSHIP : contains
   FAMILY ||--o{ INVITATION : offers
-  USER ||--o{ INVITATION : receives
   FAMILY ||--o{ RELATIONSHIP : links
   FAMILY ||--o{ PET : shelters
-  MEMBERSHIP ||--o{ FOLDER : owns
-  PET ||--o{ FOLDER : owns
+  FAMILY ||--o{ FOLDER : scopes
   FOLDER ||--o{ DOCUMENT : contains
   FAMILY ||--o{ BUDGET_SHEET : contextualizes
-  USER ||--o{ BUDGET_SHEET : owns
+  AUTH_USER ||--o{ BUDGET_SHEET : owns
   BUDGET_SHEET ||--o{ CATEGORY : defines
   CATEGORY ||--o{ ENTRY : classifies
   BUDGET_SHEET ||--o{ ENTRY : records
-  USER ||--o{ AUDIT_EVENT : acts
-```
+~~~
 
-Claves: `memberships (family_id,user_id)` única; `is_admin` separado de relaciones; `relationships (family_id,source_id,target_id,kind)` única; invitación pendiente única familia/receptor; `folders` tiene titular humano **o** mascota (XOR); documentos referencian carpeta y autor y no aceptan un `family_id` independiente contradictorio. Categorías y movimientos comparten hoja mediante FK compuesta/validación transaccional. `amount_cents bigint > 0`; límites seguros JS/Dart documentados en contrato. Índices por pertenencia, propietario/año/mes, categoría y expiración.
+Tablas de aplicación previstas en public, con grants mínimos y RLS desde su migración: profiles, private_profiles, profile_shares, families, memberships, invitations, relationships, pets, folders, documents, budget_sheets, categories y entries. Auditoría, claves de idempotencia y helpers internos se mantienen en esquema private no expuesto por Data API.
 
-## Invariantes transaccionales del servidor
+Profiles contiene solo nombre de presentación e ID público; su lectura se limita al titular y a miembros activos de un grupo común. Private_profiles contiene CI, sangre, nacimiento y domicilio y solo lo lee/escribe su titular. Profile_shares contiene únicamente los campos que el titular decidió compartir explícitamente con un grupo y conserva su consentimiento; no abre todo el perfil privado. RLS protege filas, por eso separar datos sensibles evita confiar en la lista de columnas que envía Flutter.
 
-- Bloquear la fila del grupo (`SELECT FOR UPDATE`) al remover/degradar admin o salir; volver a contar admins antes de confirmar. Dos salidas simultáneas no pueden dejar cero.
-- Aceptación de invitación bloquea invitación y grupo; valida receptor, estado, vigencia e invitador todavía autorizado. Insertar membresía con índice único; repetición devuelve conflicto, nunca duplica.
-- Bloquear grupo al modificar ascendencias; búsqueda recursiva detecta ciclos. Hermanos son simétricos; padre/hijo es un enlace dirigido invertible, no dos verdades divergentes.
-- Escribir movimientos y validar categoría/hoja/tipo dentro de transacción. Bloquear categoría al eliminar o cambiar tipo si está usada.
-- Documentos: reservar metadata -> cargar a cuarentena -> validar MIME/firma/antimalware -> publicar privado -> autorizar cada descarga. Compensación y limpieza si una fase falla.
+Claves: memberships (family_id,user_id) única; is_admin independiente de parentesco; invitación pendiente única familia/receptor; folders con titular humano o mascota (XOR); FK compuestas impiden relacionar carpeta/documento, categoría/movimiento o parentesco con otro grupo/hoja. Los paths Storage se generan a partir de IDs opacos y metadata persistida; no se autorizan por un prefijo enviado libremente desde el cliente.
 
-## Decisiones de seguridad
+## Invariantes transaccionales
 
-Ver `SEGURIDAD.md`. El servidor es autoridad incluso si el cliente oculta botones. El administrador de familia no es administrador del sistema. No hay endpoints de listar todos los usuarios o descargar archivos por rutas proporcionadas por cliente.
+- Crear grupo y primera membresía admin en una misma RPC.
+- Al cambiar admin, expulsar o salir, bloquear primero la fila families con SELECT FOR UPDATE, volver a validar actor y contar admins; todas las rutas de cambio comparten ese orden. Revocar escrituras directas a memberships. Dos salidas simultáneas no dejan cero admins.
+- Responder una invitación bloquea grupo e invitación; comprueba receptor, estado, vigencia e invitador todavía admin. La membresía se inserta bajo índice único y el reintento se deduplica.
+- Mutar parentescos bloquea grupo y valida extremos y ausencia de ciclos con consulta recursiva. Parent es dirigido, partner/sibling se normalizan para evitar duplicados simétricos.
+- Categoría y movimientos se validan dentro de RPC y con FK/checks. Bloquear categoría al comprobar su uso; misma hoja, tipo consistente, monto positivo y año/mes válidos. Revocar escritura directa que permita eludir la transacción.
+- Archivo: reservar metadata -> cargar a cuarentena -> validar/escaneo en servicio confiable -> publicar objeto privado -> marcar approved. Storage y DB no son una transacción única: usar estados, idempotencia, compensación y limpieza reintentable.
+
+## Seguridad y verificación
+
+Preferir SECURITY INVOKER. Si una RPC necesita SECURITY DEFINER por grants revocados o helpers no recursivos, fijar search_path vacío, calificar esquemas, validar auth.uid() y autorización en el cuerpo, revocar EXECUTE a PUBLIC/anon y conceder solo las firmas necesarias. Una función definer puede sobrepasar RLS; concederla a authenticated no significa que ya esté autorizada por usuario. [Funciones de base de datos Supabase](https://supabase.com/docs/guides/database/functions).
+
+Para datos familiares, RLS consulta membresía vigente en DB en lugar de guardar el rol de familia únicamente en el JWT. El logout limpia sesión y cachés del cliente, pero un JWT previamente emitido puede seguir válido hasta expirar; para acciones sensibles se requiere diseñar/probar además un helper restringido que compruebe session_id contra auth.sessions. Los bytes ya descargados no se revocan retroactivamente. [Sesiones Supabase](https://supabase.com/docs/guides/auth/sessions).
+
+El CI actual prueba Flutter y el generador de reportes. Tests SQL/pgTAP y de integración Auth/RLS/Storage sobre un entorno Supabase de pruebas se agregan en las historias correspondientes; no están implementados por este cambio documental.

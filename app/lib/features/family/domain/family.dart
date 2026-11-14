@@ -14,7 +14,7 @@ class FamilyInvitation {
 }
 
 /// Local domain aggregate. Concurrency, expiration, account lookup and access
-/// control across devices require the Laravel transactional implementation.
+/// control across devices require transactional Supabase RPCs and RLS policies.
 class FamilyGroup {
   FamilyGroup({
     required this.id,

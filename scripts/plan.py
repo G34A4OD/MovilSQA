@@ -48,7 +48,7 @@ lines += ["",f"Duración por dependencias: **{duration:g} días**. Ruta crítica
           "CPM no nivela recursos. E y K comparten Eva; Todos requiere coordinación. Confirmar capacidad y dividir paquetes mayores a una semana. Tras acordar inicio/entrega, trasladar IT/FT a Planner con calendario hábil; día 0 no significa hoy.", "",
           "## EDT (100% del alcance)", "",
           "- 1.0 Gestión: repo, roles, Planner, cambios y seguimiento.",
-          "- 2.1 CU/HU/requisitos; 2.2 esquema/API/seguridad; 2.3 mockups.",
+          "- 2.1 CU/HU/requisitos; 2.2 Supabase/RLS/RPC; 2.3 mockups.",
           "- 3.1 Identidad; 3.2 grupos/admins; 3.3 parentescos/mascotas; 3.4 documentos; 3.5 presupuesto/CSV.",
           "- 4.1 pruebas/automatización; 4.2 manual/presentación; 4.3 auditoría/métricas/correctivas.",
           "- 5.1 staging, backup/rollback, release, APK y entrega.", "",

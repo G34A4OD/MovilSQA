@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
+from issue_plan import STACK_LINE, sync_plan_body
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--repo",default="G34A4OD/MovilSQA")
@@ -11,6 +12,8 @@ parser.add_argument("--gerardo",default="G34A4OD")
 parser.add_argument("--eva",default="pizzatoev")
 parser.add_argument("--waldir",default="riblawaldir")
 parser.add_argument("--apply",action="store_true")
+parser.add_argument("--sync-plan",action="store_true",
+                    help="Actualizar redacción de arquitectura en issues existentes, preservando notas y checkboxes")
 args = parser.parse_args()
 if not re.fullmatch(r"[\w.-]+/[\w.-]+",args.repo):
     raise SystemExit("Repositorio inválido.")
@@ -52,6 +55,12 @@ for item in items:
         raise SystemExit(f"Issues duplicadas para {item['id']}.")
     if found:
         issue = found[0]
+        if args.sync_plan:
+            updated = sync_plan_body(issue["body"])
+            if updated != issue["body"].replace("\r\n", "\n"):
+                body_path = body_dir/(item["id"]+"-update.md")
+                body_path.write_text(updated,encoding="utf-8",newline="\n")
+                gh("issue","edit",str(issue["number"]),"--repo",args.repo,"--body-file",str(body_path))
         handle = handles[item["owner"]]
         current = {user["login"].lower() for user in issue.get("assignees",[])}
         if handle in assignable and handle.lower() not in current:
@@ -68,7 +77,7 @@ Driver: {item['owner']} · Revisor: {item['reviewer']}
 Dependencias: {', '.join(item['depends_on']) or 'Ninguna'}
 Plan: docs/sqa/TEST_PLAN.md · TC: docs/sqa/CASOS_PRUEBA.md
 Contrato: docs/api/CONTRATO.md
-Stack: Flutter + Laravel + PostgreSQL en Supabase y Storage privado.
+{STACK_LINE}
 Planner: pendiente de enlace real; tarea [EDT] #número Título.
 
 ## Aceptación
@@ -77,7 +86,7 @@ Planner: pendiente de enlace real; tarea [EDT] #número Título.
 - [ ] Tests positivos/negativos con TC/HU y reporte Clase XX
 - [ ] Revisión cruzada real, CI verde y evidencia antes de Done
 
-No hay aprobación humana ni prueba de servidor/dispositivo hasta adjuntar evidencia.
+No hay aprobación humana ni prueba de Supabase/dispositivo hasta adjuntar evidencia.
 """
         body_path = body_dir/(item["id"]+".md")
         body_path.write_text(body,encoding="utf-8")

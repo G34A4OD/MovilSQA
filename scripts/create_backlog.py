@@ -19,7 +19,7 @@ for line in (root/"docs/REQUISITOS.md").read_text(encoding="utf-8").splitlines()
     number = int(hu.split("-")[1])
     sprint = 1 if number <= 2 else 2 if number in (3,4,5,8,9,11,12) else 3
     points = 8 if number == 9 else 5 if number in (1,5,6,13) else 3
-    criteria = [requirement, "Tests positivos y negativos con TC/HU, UI/API/DB y evidencia", "Revisión cruzada, CI y aceptación real antes de Done"]
+    criteria = [requirement, "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia", "Revisión cruzada, CI y aceptación real antes de Done"]
     if points == 8:
         criteria.insert(0, "Dividir en subissues de 1-3 días: carga, cuarentena/escaneo, consulta/edición y descarga")
     title = requirement.split(". ")[0]
@@ -33,7 +33,7 @@ items += [
           "Matriz Word/Excel, presentación breve, fuentes oficiales y flujo CI",
           "Piloto real y justificación Clase XIX"],["PREP-01"],3,"P1"),
     item("QA-02","4.2","Ejecutar E2E, accesibilidad y reporte móvil","Eva",4,
-         ["Flujo UI/API/DB/archivos real en Android; iOS explícito",
+         ["Flujo Flutter/Auth/RLS/RPC/Storage real en Android; iOS explícito",
           "Logs, capturas de fallos, metadatos y TC/HU Clase XX",
           "Exploración, 200% texto, red y segundo plano"],["HU-09","HU-15","HU-06"],5),
     item("QA-03","4.3","Medir calidad y auditar cada sprint","Waldir",4,

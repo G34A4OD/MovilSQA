@@ -7,10 +7,10 @@ Cada evidencia identifica commit/build, autor real, fecha, entorno y resultado. 
 | Requisito | Artefacto preparado | Falta evidencia real |
 |---|---|---|
 | Test Plan ágil | docs/sqa/TEST_PLAN.md y REVISION_PLAN.md | Revisión equipo/docente e historial por sprint |
-| Repo y pruebas | app/test y workflow | PR, CI remoto, servidor y dispositivo |
+| Repo y pruebas | app/test y workflow | PR, CI remoto, RLS/RPC/Auth/Storage y dispositivo |
 | Auditoría y correctivas | docs/sqa/AUDITORIA.md | Sesión cruzada, firmas reales y revalidación |
 | Tablero ágil | docs/COLABORACION.md, backlog y CPM | Planner con enlaces/capturas issues/PR |
-| Resultados | scripts/verify.ps1 -> ejecuciones/ID | Cada historia, API y E2E además de base |
+| Resultados | scripts/verify.ps1 -> ejecuciones/ID | Cada historia, Supabase/RLS y E2E además de base |
 | Indicadores/mejoras | docs/sqa/METRICAS.md | Sprints reales, denominadores y acciones |
 | Clase XIX | docs/sqa/HERRAMIENTAS.md | Exportación Word/Excel, presentación y piloto |
 | Clase XX | report.md/html, summary.json, junit.xml, logs | Fallos UI/dispositivo y validación humana |

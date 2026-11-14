@@ -12,13 +12,13 @@ Fecha de preparación: 14 de noviembre de 2026, America/La_Paz.
 - Base Flutter Material 3, dominio financiero y de grupos, demostración en memoria y pruebas.
 - Pipeline de validación, generador de reportes y plantillas GitHub.
 - Veinte issues, cuatro milestones, develop como default, ramas protegidas e invitaciones enviadas.
-- Supabase preparado como PostgreSQL/Storage del servidor; sin proyecto conectado aún.
+- Documentación alineada a Flutter + Supabase directo: Auth, RLS, Storage privado y RPC. Sin proyecto conectado ni migraciones/políticas implementadas aún.
 
 ## Aún por implementar y demostrar
 
-Registro/login real, persistencia Laravel/PostgreSQL, autorización en servidor, invitaciones entre cuentas, árbol completo, carga/lectura privada de PDF/fotos, edición del perfil, gestor financiero persistente, exportación/descarga en dispositivo, accesibilidad y pruebas E2E en Android/iOS.
+Registro/login con Supabase Auth, persistencia con supabase_flutter/PostgreSQL, migraciones, políticas RLS/grants y RPC transaccionales, invitaciones entre cuentas, árbol completo, carga/lectura privada de PDF/fotos, edición del perfil, gestor financiero persistente, exportación/descarga en dispositivo, accesibilidad y pruebas E2E en Android/iOS.
 
-El código local de dominio no sustituye la autorización transaccional del servidor. No usar información de salud ni documentos reales en esta demostración.
+El código local de dominio no sustituye los permisos RLS/Storage ni las transacciones PostgreSQL. La app móvil no necesita un sitio web ni una API propia intermedia. No usar información de salud ni documentos reales en esta demostración.
 
 ## Evidencias que necesitan acciones humanas o infraestructura
 

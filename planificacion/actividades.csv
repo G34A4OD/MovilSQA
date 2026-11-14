@@ -1,6 +1,6 @@
 id,edt,entregable,predecesoras,optimista,probable,pesimista,responsable
 A,2.1,Requisitos y contrato,,1,2,3,Todos
-B,2.2,Esquema API y seguridad,A,1,3,5,Gerardo
+B,2.2,Esquema Supabase RLS y RPC,A,1,3,5,Gerardo
 C,2.3,Interfaz Material 3 y mockups,A,1,2,3,Eva
 D,3.1,Identidad y sesión,B,2,4,6,Gerardo
 E,3.4,Archivo familiar seguro,B|C,2,4,6,Eva

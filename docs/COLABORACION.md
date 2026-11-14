@@ -14,6 +14,8 @@ Preparación realizada: PR #21, veinte issues, cuatro milestones y ramas protegi
 
 ## Trabajo diario
 
+Arquitectura vigente: Flutter + Supabase directo. Las issues del plan se mantienen con sus números y responsables. Al corregir el stack usar scripts/bootstrap-github.ps1 -Apply -SyncPlan: actualiza solo la redacción gestionada, conserva checkboxes y notas, y no crea issues duplicadas. Migraciones/RLS/RPC/Storage se revisan en las rutas de supabase por módulo. No desplegar recursos desde una rama sin revisión.
+
 ```powershell
 git status
 git fetch origin

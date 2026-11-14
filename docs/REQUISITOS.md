@@ -44,7 +44,7 @@ Usuario registrado, miembro de uno o varios grupos, administrador **de un grupo*
 | CU-03 Invitación | Admin activo | Busca ID exacto, invita; receptor acepta | ID inexistente genérico, rechazo, caducidad, revocación; no acceso prematuro |
 | CU-04 Roles/salida | Miembro activo | Admin transfiere; miembro sale | Último admin bloqueado y transacción revertida |
 | CU-05 Parentesco | Admin | Elige dos miembros, relación y guarda | Ciclo o grupo distinto rechazado |
-| CU-06 Mascota | Admin | Crea tarjeta, edita y elimina | Usuario normal recibe 403 |
+| CU-06 Mascota | Admin | Crea tarjeta, edita y elimina | Usuario normal no puede escribir; comprobar que RLS/RPC no modifica datos |
 | CU-07 Archivo | Miembro/titular | Crea carpeta propia, consiente compartir, sube archivo y familiar lo consulta | Tipo/tamaño/firma inválidos, malware o grupo externo: no publicación |
 | CU-08 Presupuesto | Miembro/titular | Crea hoja, categoría, movimientos y ve saldo | Monto/mes/año/categoría inválidos; no cambios parciales |
 | CU-09 Exportación | Titular | Elige año y descarga CSV | Sin sesión/hoja ajena: denegado; año vacío genera doce meses en cero |
