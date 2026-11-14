@@ -69,9 +69,15 @@ def main():
         check(status == 200 and bool(s1.get('access_token')), 'TC-AUTH-02: acceso confirmado permitido')
         status, s2 = request('/auth/v1/token?grant_type=password', {'email': email, 'password': password})
         check(status == 200 and s2['access_token'] != s1['access_token'], 'TC-SEC-03: segunda sesión independiente')
-        sql = f"insert into public.profiles(user_id,full_name) values ('{uuid.UUID(account_id)}','Persona HTTP ficticia');"
-        docker = os.environ.get('DOCKER_BIN', 'docker')
-        subprocess.run([docker, 'exec', '-i', 'supabase_db_nido', 'psql', '-U', 'postgres', '-d', 'postgres', '-v', 'ON_ERROR_STOP=1'], input=sql, text=True, capture_output=True, check=True)
+        profile = {'p_full_name':'Persona HTTP ficticia','p_blood_type':'O+','p_identity_card':'FICTICIO','p_birth_date':'2000-01-01','p_address':'Domicilio ficticio'}
+        status, created = request('/rest/v1/rpc/complete_profile', profile, token=s1['access_token'])
+        check(status == 200 and created['user_id'] == account_id and len(created['public_id']) == 32, 'TC-PRO-01 HU-02: RPC crea perfil del actor e ID opaco')
+        status, nested = request('/rest/v1/profiles?select=user_id,public_id,full_name,version,private_profiles(blood_type,identity_card,birth_date,address)', token=s1['access_token'])
+        check(status == 200 and nested[0]['private_profiles']['identity_card'] == 'FICTICIO', 'TC-PRO-01 HU-02: lectura móvil embebida autorizada')
+        status, changed = request('/rest/v1/rpc/update_profile', {**profile, 'p_expected_version':1}, token=s1['access_token'])
+        check(status == 200 and changed['version'] == 2 and changed['public_id'] == created['public_id'], 'TC-PRO-02 HU-02: edición preserva ID')
+        status, _ = request('/rest/v1/rpc/update_profile', {**profile, 'p_expected_version':1}, token=s1['access_token'])
+        check(status == 400, 'TC-PRO-01 HU-02: conflicto de versión HTTP sin sobrescritura')
         status, rows = request('/rest/v1/profiles?select=public_id', token=s1['access_token'])
         check(status == 200 and len(rows) == 1, 'TC-SEC-03: JWT de usuario lee fila autorizada')
         status, _ = request('/rest/v1/profiles?select=public_id')

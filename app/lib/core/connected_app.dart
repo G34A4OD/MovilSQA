@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import '../features/identity/domain/auth_repository.dart';
 import '../features/identity/presentation/auth_gate.dart';
 import '../features/identity/presentation/auth_view_model.dart';
+import '../features/identity/domain/profile.dart';
+import '../features/identity/presentation/account_home.dart';
 import 'app_theme.dart';
 
 class ConnectedNidoApp extends StatefulWidget {
-  const ConnectedNidoApp({super.key, required this.auth});
+  const ConnectedNidoApp({
+    super.key,
+    required this.auth,
+    required this.profiles,
+  });
   final AuthRepository auth;
+  final ProfileRepository profiles;
   @override
   State<ConnectedNidoApp> createState() => _ConnectedNidoAppState();
 }
@@ -26,36 +33,10 @@ class _ConnectedNidoAppState extends State<ConnectedNidoApp> {
     theme: AppTheme.light,
     home: AuthGate(
       model: model,
-      signedInBuilder: (context, m) => Scaffold(
-        appBar: AppBar(
-          title: const Text('Mi Nido'),
-          actions: [
-            IconButton(
-              tooltip: 'Cerrar sesión en este dispositivo',
-              onPressed: m.busy ? null : m.signOut,
-              icon: const Icon(Icons.logout),
-            ),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Tu cuenta está conectada',
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SizedBox(height: 12),
-              Text(m.session!.email),
-              const SizedBox(height: 20),
-              const Text(
-                'El perfil y tus grupos se habilitan con las siguientes historias.',
-              ),
-              if (m.message != null) Text(m.message!),
-            ],
-          ),
-        ),
+      signedInBuilder: (context, m) => AccountHome(
+        key: ValueKey(m.session!.userId),
+        auth: m,
+        repository: widget.profiles,
       ),
     ),
   );
