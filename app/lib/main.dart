@@ -5,6 +5,7 @@ import 'core/secure_session_storage.dart';
 import 'core/supabase_config.dart';
 import 'features/identity/data/supabase_auth_repository.dart';
 import 'features/identity/data/supabase_profile_repository.dart';
+import 'features/family/data/supabase_family_repository.dart';
 import 'core/app_theme.dart';
 import 'core/money.dart';
 import 'demo/demo_data.dart';
@@ -45,6 +46,7 @@ Future<void> main() async {
       ConnectedNidoApp(
         auth: SupabaseAuthRepository(supabase.client),
         profiles: SupabaseProfileRepository(supabase.client),
+        families: SupabaseFamilyRepository(supabase.client),
       ),
     );
   } catch (_) {

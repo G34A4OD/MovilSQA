@@ -68,6 +68,8 @@ Todas las RPC extraen auth.uid(), comprueban sesión/permisos y trabajan sobre r
 
 Las lecturas de grupos/membresías/invitaciones/parentescos/mascotas son select filtrados y paginados, siempre sujetos a RLS. El ID público por sí solo nunca otorga acceso.
 
+HU-03 implementa update_family(p_family_id,p_name,p_expected_version) y delete_family(p_family_id,p_expected_version,p_confirmation), donde p_confirmation es el nombre exacto. El borrado marca families.deleted_at y encola private.cleanup_jobs sin retirar metadata antes de limpiar archivos. Los helpers de pertenencia/admin/grupo común excluyen familias borradas. La reautenticación se comprueba por método password reciente en amr (10 minutos), no por iat de un JWT renovado. El móvil confirma con Auth antes de llamar a delete_family. La purga física corresponde a la integración OPS/documentos y se demuestra aparte.
+
 ## Documentos y archivos · Eva
 
 Carpeta: name no vacío de hasta 100 caracteres, family_id y exactamente uno de owner_user_id o pet_id. Miembro crea para sí; admin puede crear para mascota. Todos los IDs asociados deben pertenecer al mismo grupo mediante FK/checks y autorización.

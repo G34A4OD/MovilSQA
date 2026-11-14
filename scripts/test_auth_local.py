@@ -29,6 +29,7 @@ def main():
     service_key = config.get('SECRET_KEY') or config['SERVICE_ROLE_KEY']
     passed = []
     account_id = None
+    family_ids = []
     email = f'nido-{uuid.uuid4().hex}@example.test'
     password = secrets.token_urlsafe(24) + 'Aa1!'
 
@@ -78,6 +79,22 @@ def main():
         check(status == 200 and changed['version'] == 2 and changed['public_id'] == created['public_id'], 'TC-PRO-02 HU-02: edición preserva ID')
         status, _ = request('/rest/v1/rpc/update_profile', {**profile, 'p_expected_version':1}, token=s1['access_token'])
         check(status == 400, 'TC-PRO-01 HU-02: conflicto de versión HTTP sin sobrescritura')
+        request_id = str(uuid.uuid4())
+        status, family = request('/rest/v1/rpc/create_family', {'p_name':'Familia HTTP ficticia','p_request_id':request_id}, token=s1['access_token'])
+        check(status == 200 and bool(family.get('id')), 'TC-FAM-01 HU-03: creación real de grupo/admin por RPC')
+        family_ids.append(family['id'])
+        status, retry = request('/rest/v1/rpc/create_family', {'p_name':'Familia HTTP ficticia','p_request_id':request_id}, token=s1['access_token'])
+        check(status == 200 and retry['id'] == family['id'], 'TC-FAM-01 HU-03: reintento HTTP idempotente')
+        status, rows = request('/rest/v1/memberships?select=is_admin,families!inner(id,name,version)', token=s1['access_token'])
+        check(status == 200 and len(rows) == 1 and rows[0]['is_admin'] and rows[0]['families']['id'] == family['id'], 'TC-FAM-01 HU-03: consulta móvil multigrupo embebida')
+        status, rows = request('/rest/v1/memberships?select=user_id,is_admin,profiles!inner(full_name,public_id)', token=s1['access_token'])
+        check(status == 200 and len(rows) == 1 and rows[0]['profiles']['full_name'] == profile['p_full_name'], 'TC-FAM-01 HU-03: consulta móvil de familiares')
+        status, family = request('/rest/v1/rpc/update_family', {'p_family_id':family['id'],'p_name':'Familia HTTP editada','p_expected_version':1}, token=s1['access_token'])
+        check(status == 200 and family['version'] == 2, 'TC-FAM-01 HU-03: edición real versionada')
+        status, _ = request('/rest/v1/rpc/delete_family', {'p_family_id':family['id'],'p_expected_version':2,'p_confirmation':'Familia HTTP editada'}, token=s1['access_token'])
+        check(status in (200,204), 'TC-FAM-01 HU-03: borrado con password reciente')
+        status, rows = request('/rest/v1/families?select=id', token=s1['access_token'])
+        check(status == 200 and rows == [], 'TC-SEC-02 HU-03: grupo borrado no visible por REST')
         status, rows = request('/rest/v1/profiles?select=public_id', token=s1['access_token'])
         check(status == 200 and len(rows) == 1, 'TC-SEC-03: JWT de usuario lee fila autorizada')
         status, _ = request('/rest/v1/profiles?select=public_id')
@@ -108,6 +125,13 @@ def main():
         check(status == 200, 'TC-AUTH-03: acceso con contraseña nueva')
         print(json.dumps({'status': 'PASS', 'tests': len(passed), 'cases': passed}, ensure_ascii=False, indent=2))
     finally:
+        for family_id in family_ids:
+            # Trusted LOCAL fixture cleanup only. Explicit grants remain closed
+            # in the API; do not loosen them to make the test administrator work.
+            fid = str(uuid.UUID(family_id))
+            sql = f"delete from private.cleanup_jobs where family_id='{fid}'; delete from public.families where id='{fid}';"
+            docker = os.environ.get('DOCKER_BIN', 'docker')
+            subprocess.run([docker, 'exec', '-i', 'supabase_db_nido', 'psql', '-U', 'postgres', '-d', 'postgres', '-v', 'ON_ERROR_STOP=1'], input=sql, text=True, capture_output=True, check=True)
         if account_id:
             status, _ = request('/auth/v1/admin/users/' + account_id, admin=True, method='DELETE')
             if status != 200:
