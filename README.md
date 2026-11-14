@@ -11,6 +11,8 @@ Proyecto móvil de SQA de **Gerardo, Eva y Waldir**. Flutter + API Laravel + Pos
    - [Waldir](equipo/WALDIR.md): presupuesto, categorías, movimientos, CSV y métricas.
 3. Sigue [el flujo GitHub y Planner](docs/COLABORACION.md). La rama compartida de integración será `develop`; `main` se reserva para releases revisados.
 
+La preparación está en el [PR #21](https://github.com/G34A4OD/MovilSQA/pull/21). Hasta su revisión e integración, obtenerla con gh pr checkout 21 después de aceptar la invitación. Las nuevas historias salen de develop cuando la base esté integrada.
+
 ## Ejecutar la base móvil
 
 Se conserva el proyecto existente en `app/`. Versión validada: Flutter 3.41.9 / Dart 3.11.5.

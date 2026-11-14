@@ -10,6 +10,8 @@ Repositorio: https://github.com/G34A4OD/MovilSQA. Cada integrante usa su cuenta 
 4. Proteger `main` y `develop`: PR obligatorio, una aprobación de otro integrante, descartar aprobación con nuevos commits, conversaciones resueltas, check `flutter-quality` obligatorio; bloquear force push y borrado. El check debe existir tras la primera ejecución antes de seleccionarlo. Incluir administradores cuando el plan del repo lo permita. Si GitHub rechaza protección por plan/licencia, registrar limitación y revisión manual, sin decir que está activa.
 5. Activar Issues/Actions. Configurar permisos mínimos y confirmar visibilidad del repositorio antes de subir material del curso o evidencias; solo datos ficticios.
 
+Preparación realizada: PR #21, veinte issues, cuatro milestones y ramas protegidas. Eva/pizzatoev y Waldir/riblawaldir tienen invitación Write enviada. Tras aceptarla, volver a ejecutar el bootstrap con -Apply completa asignaciones sin duplicar issues. Antes de nuevas historias, uno de ellos debe probar y revisar el PR #21 desde su cuenta; luego integrar la base mediante el flujo protegido.
+
 ## Trabajo diario
 
 ```powershell

@@ -8,8 +8,8 @@ import subprocess
 parser = argparse.ArgumentParser()
 parser.add_argument("--repo",default="G34A4OD/MovilSQA")
 parser.add_argument("--gerardo",default="G34A4OD")
-parser.add_argument("--eva",default="")
-parser.add_argument("--waldir",default="")
+parser.add_argument("--eva",default="pizzatoev")
+parser.add_argument("--waldir",default="riblawaldir")
 parser.add_argument("--apply",action="store_true")
 args = parser.parse_args()
 if not re.fullmatch(r"[\w.-]+/[\w.-]+",args.repo):
@@ -27,6 +27,13 @@ if not args.apply:
 def gh(*arguments):
     return subprocess.check_output(["gh",*arguments],text=True,encoding="utf-8").strip()
 print("Cuenta activa:",gh("api","user","--jq",".login"))
+assignable = set()
+for handle in filter(None,handles.values()):
+    check = subprocess.run(["gh","api",f"repos/{args.repo}/assignees/{handle}","--silent"],capture_output=True)
+    if check.returncode == 0:
+        assignable.add(handle)
+    else:
+        print(f"Asignación pendiente para {handle}: aceptar invitación o revisar acceso.")
 for label in ["feature","movil","api","test","security","docs","gerardo","eva","waldir","priority:P0","priority:P1"]:
     gh("label","create",label,"--repo",args.repo,"--color","386653","--force")
 milestones = json.loads(gh("api",f"repos/{args.repo}/milestones?state=all&per_page=100"))
@@ -34,7 +41,7 @@ for title in sorted(set(item["milestone"] for item in items)):
     if title not in {m["title"] for m in milestones}:
         gh("api","--method","POST",f"repos/{args.repo}/milestones","-f",f"title={title}",
            "-f","description=Iteración propuesta; fechas pendientes de confirmar")
-existing = json.loads(gh("issue","list","--repo",args.repo,"--state","all","--limit","1000","--json","number,title,body,url"))
+existing = json.loads(gh("issue","list","--repo",args.repo,"--state","all","--limit","1000","--json","number,title,body,url,assignees"))
 body_dir = root/"tmp/github-bodies"
 body_dir.mkdir(parents=True,exist_ok=True)
 result = []
@@ -45,6 +52,10 @@ for item in items:
         raise SystemExit(f"Issues duplicadas para {item['id']}.")
     if found:
         issue = found[0]
+        handle = handles[item["owner"]]
+        current = {user["login"].lower() for user in issue.get("assignees",[])}
+        if handle in assignable and handle.lower() not in current:
+            gh("issue","edit",str(issue["number"]),"--repo",args.repo,"--add-assignee",handle)
         print("Existe:",issue["url"])
     else:
         criteria = "\n".join("- [ ] "+criterion for criterion in item["criteria"])
@@ -73,7 +84,7 @@ No hay aprobación humana ni prueba de servidor/dispositivo hasta adjuntar evide
         arguments = ["issue","create","--repo",args.repo,"--title",f"[{item['edt']}] {item['id']} {item['title']}",
                      "--body-file",str(body_path),"--milestone",item["milestone"],
                      "--label",f"feature,movil,{item['owner'].lower()},priority:{item['priority']}"]
-        if handles[item["owner"]]:
+        if handles[item["owner"]] in assignable:
             arguments += ["--assignee",handles[item["owner"]]]
         url = gh(*arguments)
         issue = dict(number=int(url.split("/")[-1]),url=url)
@@ -82,4 +93,4 @@ No hay aprobación humana ni prueba de servidor/dispositivo hasta adjuntar evide
                   {"number":issue["number"],"url":issue["url"]})
     # Checkpoint each successful mutation so a partial failure is reviewable.
     (root/"planificacion/github-map.json").write_text(json.dumps(result,indent=2,ensure_ascii=False),encoding="utf-8")
-print("Mapa guardado. Eva/Waldir sin handle quedan identificados por label y texto; no asignados a una cuenta inventada.")
+print("Mapa guardado. Rerun tras aceptar invitaciones completa asignaciones sin duplicar issues.")

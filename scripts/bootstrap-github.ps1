@@ -1,8 +1,8 @@
 param(
     [string]$Repository = "G34A4OD/MovilSQA",
     [string]$Gerardo = "G34A4OD",
-    [string]$Eva = "",
-    [string]$Waldir = "",
+    [string]$Eva = "pizzatoev",
+    [string]$Waldir = "riblawaldir",
     [switch]$Apply
 )
 $scriptArgs = @((Join-Path $PSScriptRoot "bootstrap_github.py"),"--repo",$Repository,"--gerardo",$Gerardo)
