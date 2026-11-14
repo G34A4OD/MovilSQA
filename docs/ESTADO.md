@@ -1,6 +1,14 @@
-# Estado de la entrega de preparación
+# Estado de Nido
 
 Fecha de preparación: 14 de noviembre de 2026, America/La_Paz.
+
+## Avance G0 · 14/11/2026 · issue #22
+
+Supabase MCP conectado a nido-dev (dcwfnnttrxbtavshrbfj). Migración compartida aplicada al entorno de desarrollo: profiles/private_profiles/profile_shares, families/memberships, tablas privadas de auditoría/idempotencia y helpers restringidos de sesión/membresía. Todas las tablas tienen RLS; las escrituras críticas permanecen cerradas hasta sus RPC. Esquema vacío, sin datos familiares reales. Historial local alineado con la versión asignada por MCP 20261114163113, sin cambiar el SQL aplicado.
+
+Supabase CLI 3.1.0/Docker local: reconstrucción desde cero y 25 assertions pgTAP aprobadas con roles de cliente. Flutter: análisis sin incidencias y 20 tests aprobados; reporte local g0-22. SDK fijado a 2.18.3, versión estable resuelta por pub; adaptadores de sesión/PKCE en almacenamiento seguro preparados, todavía sin inicialización en la demo.
+
+Entrega objetivo comunicada: martes 17/11/2026. Revisión humana/docente y ejecución en dispositivo pendientes. La sección de preparación de abajo es histórica; no certifica funcionalidades futuras. Ver supabase/LOCAL.md.
 
 ## Incluido
 
