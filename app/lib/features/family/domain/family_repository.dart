@@ -1,5 +1,6 @@
 import 'invitation_repository.dart';
 import 'relationship_repository.dart';
+import 'pet_repository.dart';
 
 class FamilyRecord {
   const FamilyRecord({
@@ -31,6 +32,7 @@ abstract interface class FamilyRepository {
   String? get currentUserId;
   InvitationRepository get invitations;
   RelationshipRepository get relationships;
+  PetRepository get pets;
   Future<void> setAdmin(String familyId, String targetUserId, bool value);
   Future<void> leave(String familyId);
   Future<void> remove(String familyId, String targetUserId);

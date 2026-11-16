@@ -82,6 +82,8 @@ HU-06 amplía kinds a parent/grandparent/uncle (dirigidos) y sibling/cousin/part
 
 Firmas HU-06: save_relationship(p_family_id,p_relationship_id,p_from_user_id,p_to_user_id,p_kind,p_expected_version,p_request_id) devuelve relación; id/version null para creación. delete_relationship(p_family_id,p_relationship_id,p_expected_version). Toda creación/edición se deduplica por actor/request/cuerpo. El árbol móvil dibuja ascendencia y lista también los vínculos laterales con texto accesible.
 
+HU-07: pets tiene unique(family_id,id) para FK compuestas de Eva, sin cuenta Auth. save_pet(p_family_id,p_pet_id,p_name,p_species,p_birth_date,p_notes,p_expected_version,p_request_id), id/version null al crear; nombre/especie obligatorios, nacimiento opcional y notas limitadas. Todas las escrituras pasan por RPC admin. delete_pet(p_pet_id,p_expected_version) marca deleted_at y encola limpieza, sin borrar metadata antes de los archivos. Los permisos de carpetas/documentos de mascota deben exigir mascota vigente del mismo grupo además de lector/actor autorizado; una FK sola no comprueba deleted_at.
+
 ## Documentos y archivos · Eva
 
 Carpeta: name no vacío de hasta 100 caracteres, family_id y exactamente uno de owner_user_id o pet_id. Miembro crea para sí; admin puede crear para mascota. Todos los IDs asociados deben pertenecer al mismo grupo mediante FK/checks y autorización.
