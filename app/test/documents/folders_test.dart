@@ -142,9 +142,9 @@ void main() {
       expect(find.text('Identidad'), findsOneWidget);
       await tester.tap(find.byTooltip('Opciones de Identidad'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Eliminar'));
+      await tester.tap(find.text('Eliminar').last);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Eliminar carpeta'));
+      await tester.tap(find.byKey(const Key('folder-delete-confirm')));
       await tester.pumpAndSettle();
       expect(find.text('Identidad'), findsNothing);
     },

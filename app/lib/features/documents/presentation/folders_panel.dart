@@ -89,10 +89,11 @@ class _FoldersPanelState extends State<FoldersPanel> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancelar'),
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar carpeta'),
-          ),
+                          FilledButton(
+                            key: const Key('folder-delete-confirm'),
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('Eliminar carpeta'),
+                          ),
         ],
       ),
     );
