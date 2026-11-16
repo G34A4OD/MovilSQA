@@ -53,7 +53,16 @@ void main() {
   });
   test('TC-DOC-01 HU-08 nombre obligatorio y sin ruta proporcionada', () {
     expect(DocumentPolicy.folderName('  Salud  '), 'Salud');
-    for (final value in ['', '   ', '../private', 'a/b', 'a\\b']) {
+    expect(DocumentPolicy.folderName('a' * 100), 'a' * 100);
+    for (final value in [
+      '',
+      '   ',
+      '../private',
+      'a/b',
+      'a\\b',
+      'linea\nnueva',
+      'a' * 101,
+    ]) {
       expect(() => DocumentPolicy.folderName(value), throwsFormatException);
     }
   });
