@@ -1,0 +1,40 @@
+name: Calidad Flutter
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: flutter-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  flutter-quality:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.9'
+          channel: stable
+          cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verificar el generador de reportes
+        shell: pwsh
+        run: python -m unittest discover -s scripts/tests -v
+      - name: Validar y generar reporte
+        shell: pwsh
+        run: ./scripts/verify.ps1 -RunId "ci-${{ github.run_id }}-${{ github.run_attempt }}"
+      - name: Conservar evidencia incluso con fallos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencia-sqa-${{ github.run_id }}-${{ github.run_attempt }}
+          path: evidencias/ejecuciones/
+          if-no-files-found: error
+          retention-days: 30

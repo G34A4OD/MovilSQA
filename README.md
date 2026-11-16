@@ -1,2 +1,55 @@
-# MovilSQA
-Proyecto ControlFamiliar, para la AS de SQA Movil
+# Nido · Archivo y presupuesto familiar
+
+Proyecto móvil de SQA de **Gerardo, Eva y Waldir**. **Flutter + Supabase directo**: Auth para cuentas, PostgreSQL con RLS para datos, Storage privado para archivos y funciones SQL/RPC para reglas transaccionales. Producto único móvil con Material 3 en español. [Configuración de Supabase](docs/SUPABASE.md).
+
+## Empieza aquí
+
+1. Lee [el estado real](docs/ESTADO.md), [el alcance](docs/REQUISITOS.md) y [el plan SQA](docs/sqa/TEST_PLAN.md).
+2. Cada integrante usa su cuenta de GitHub, acepta la invitación a [MovilSQA](https://github.com/G34A4OD/MovilSQA) y trabaja con su guía:
+   - [Gerardo](equipo/GERARDO.md): identidad, grupos, parentescos, seguridad transversal e integración.
+   - [Eva](equipo/EVA.md): carpetas, documentos, archivos privados, automatización y reporte.
+   - [Waldir](equipo/WALDIR.md): presupuesto, categorías, movimientos, CSV y métricas.
+3. Sigue [el flujo GitHub y GitHub Projects](docs/COLABORACION.md). La rama compartida de integración será `develop`; `main` se reserva para releases revisados.
+
+La preparación está en el [PR #21](https://github.com/G34A4OD/MovilSQA/pull/21). Hasta su revisión e integración, obtenerla con gh pr checkout 21 después de aceptar la invitación. Las nuevas historias salen de develop cuando la base esté integrada.
+
+## Ejecutar la base móvil
+
+Se conserva el proyecto existente en `app/`. Versión validada: Flutter 3.41.9 / Dart 3.11.5.
+
+```powershell
+cd app
+flutter pub get
+flutter run
+```
+
+La pantalla inicial indica **Demostración local**. Usa exclusivamente datos ficticios en memoria; al reiniciar se descartan los cambios. Auth, los repositorios basados en supabase_flutter, las migraciones/RLS y los módulos persistentes son trabajo de las historias del backlog. Cambiar los documentos no significa que la conexión Supabase ya esté implementada.
+
+```powershell
+# Desde la raíz; genera evidencia con fecha, entorno, casos y métricas.
+./scripts/verify.ps1
+```
+
+## Organización
+
+| Ruta | Contenido |
+|---|---|
+| `app/lib/core/` | Dinero, validaciones y tema compartidos |
+| `app/lib/features/` | Módulos por funcionalidad, con dominio/presentación |
+| `supabase/` | Guía y rutas reservadas para migraciones, pruebas SQL/RLS y Edge Functions; infraestructura pendiente |
+| `app/config/` | Plantilla pública para la futura conexión de la app; no contiene credenciales privilegiadas |
+| `docs/api/` | Contrato del SDK Supabase, tablas, permisos y RPC para trabajar en paralelo |
+| `docs/sqa/` | Test Plan, casos, trazabilidad, auditoría y herramientas |
+| `planificacion/` | Backlog, EDT, estimaciones y cálculo reproducible PERT/CPM |
+| `.github/` | CI, plantillas de issue y PR |
+| `evidencias/` | Índice de entrega y resultados reales |
+
+Los PDF del curso permanecen en la carpeta local y se excluyen del repositorio. Sus páginas de referencia se registran en [FUENTES.md](docs/FUENTES.md).
+
+## Situación de GitHub
+
+GitHub CLI autorizado; veinte issues, cuatro milestones, `develop` como default y `main`/`develop` protegidas. Invitaciones Write enviadas a Eva (`pizzatoev`) y Waldir (`riblawaldir`), pendientes de aceptación. Ver [estado remoto](docs/GITHUB_ESTADO.md) y [flujo de colaboración](docs/COLABORACION.md). La base se entrega por PR para revisión independiente; todavía no hay release final. No guardar tokens ni contraseñas en archivos o chats.
+
+## Tablero de trabajo
+
+[GitHub Projects · MovilSQA](https://github.com/users/G34A4OD/projects/1/views/1): 20 issues vinculadas, con Responsable, Revisor SQA, sprint, prioridad, puntos y dependencias. Gerardo: 9; Eva: 5; Waldir: 6. Usar Responsable para filtrar las tareas mientras los invitados aceptan el repositorio. PREP-01 está en revisión; el resto en Backlog. No se necesitan cuentas Microsoft 365.

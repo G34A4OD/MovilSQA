@@ -1,0 +1,365 @@
+[
+  {
+    "id": "PREP-01",
+    "edt": "1.0",
+    "title": "Preparar base, contrato y plan SQA",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S1 - Base e identidad",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [],
+    "criteria": [
+      "Base Flutter y tests reales",
+      "Contrato, reparto y Test Plan revisables",
+      "CI y evidencia, sin simular revisión de compañeros"
+    ]
+  },
+  {
+    "id": "HU-01",
+    "edt": "3.1",
+    "title": "Crear cuenta, verificar correo, iniciar/cerrar sesión y recuperar contraseña",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S1 - Base e identidad",
+    "priority": "P0",
+    "points": 5,
+    "depends_on": [
+      "PREP-01"
+    ],
+    "criteria": [
+      "Crear cuenta, verificar correo, iniciar/cerrar sesión y recuperar contraseña. Contraseña nunca recuperable en texto.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-02",
+    "edt": "3.1",
+    "title": "Perfil: nombre completo, sangre con «No sé», CI, nacimiento completo válido, domicilio y ID públi...",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S1 - Base e identidad",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [
+      "HU-01"
+    ],
+    "criteria": [
+      "Perfil: nombre completo, sangre con «No sé», CI, nacimiento completo válido, domicilio y ID público aleatorio único. Edición por titular.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-03",
+    "edt": "3.2",
+    "title": "Crear, ver, renombrar y eliminar grupo; creador es admin",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S2 - Familia y archivos",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [
+      "HU-01"
+    ],
+    "criteria": [
+      "Crear, ver, renombrar y eliminar grupo; creador es admin. Listar todos mis grupos y cambiar grupo activo sin mezclar datos. Borrado confirmado y auditado.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-04",
+    "edt": "3.2",
+    "title": "Solo admin busca ID público exacto e invita; receptor acepta/rechaza, solo una vez",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S2 - Familia y archivos",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [
+      "HU-02",
+      "HU-03"
+    ],
+    "criteria": [
+      "Solo admin busca ID público exacto e invita; receptor acepta/rechaza, solo una vez. Invitación pendiente no da acceso. No duplicados ni auto invitación.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-05",
+    "edt": "3.2",
+    "title": "Admin promueve/degrada/elimina miembros",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S2 - Familia y archivos",
+    "priority": "P0",
+    "points": 5,
+    "depends_on": [
+      "HU-04"
+    ],
+    "criteria": [
+      "Admin promueve/degrada/elimina miembros. Cada miembro puede salir o renunciar a admin; último admin debe transferir antes. Operación atómica incluso con concurrencia.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-06",
+    "edt": "3.3",
+    "title": "Admin asigna parentescos con otro miembro del mismo grupo",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S3 - Presupuesto e integración",
+    "priority": "P1",
+    "points": 5,
+    "depends_on": [
+      "HU-05"
+    ],
+    "criteria": [
+      "Admin asigna parentescos con otro miembro del mismo grupo. Guardar padre/madre-progenitor, pareja y hermanos sin auto relaciones ni ciclos de ascendencia; mostrar árbol/red.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-07",
+    "edt": "3.3",
+    "title": "Admin crea/edita/elimina mascota; tarjeta separada, especie/nombre/fecha opcional y carpetas docu...",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S3 - Presupuesto e integración",
+    "priority": "P1",
+    "points": 3,
+    "depends_on": [
+      "HU-03"
+    ],
+    "criteria": [
+      "Admin crea/edita/elimina mascota; tarjeta separada, especie/nombre/fecha opcional y carpetas documentales.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-08",
+    "edt": "3.4",
+    "title": "Cada miembro crea/edita/elimina carpetas propias **dentro de un grupo** con nombre libre no vacío...",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S2 - Familia y archivos",
+    "priority": "P1",
+    "points": 3,
+    "depends_on": [
+      "HU-03"
+    ],
+    "criteria": [
+      "Cada miembro crea/edita/elimina carpetas propias **dentro de un grupo** con nombre libre no vacío; selecciona titular humano o mascota bajo autorización.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-09",
+    "edt": "3.4",
+    "title": "Cargar foto JPG/PNG o PDF, título, descripción y vencimiento opcional",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S2 - Familia y archivos",
+    "priority": "P0",
+    "points": 8,
+    "depends_on": [
+      "HU-08"
+    ],
+    "criteria": [
+      "Dividir en subissues de 1-3 días: carga, cuarentena/escaneo, consulta/edición y descarga",
+      "Cargar foto JPG/PNG o PDF, título, descripción y vencimiento opcional. Reemplazar, consultar, descargar y eliminar propio; miembro activo lee compartido del grupo.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-10",
+    "edt": "3.4",
+    "title": "Categorías orientativas: identidad/cívico, estado civil/cierre de vida, seguridad social/laboral/...",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S3 - Presupuesto e integración",
+    "priority": "P1",
+    "points": 3,
+    "depends_on": [
+      "HU-09",
+      "HU-07"
+    ],
+    "criteria": [
+      "Categorías orientativas: identidad/cívico, estado civil/cierre de vida, seguridad social/laboral/tributario, salud. Alergias, consultas, recetas y vacunas se registran como documentos/notas con autor y fechas.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-11",
+    "edt": "3.5",
+    "title": "Cualquier miembro crea varias hojas propias, elige grupo al crearlas y nombre; otros miembros no ...",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S2 - Familia y archivos",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [
+      "HU-03"
+    ],
+    "criteria": [
+      "Cualquier miembro crea varias hojas propias, elige grupo al crearlas y nombre; otros miembros no acceden a sus finanzas por defecto. CRUD del titular.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-12",
+    "edt": "3.5",
+    "title": "CRUD categorías por hoja, nombre, descripción y tipo ingreso/egreso",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S2 - Familia y archivos",
+    "priority": "P1",
+    "points": 3,
+    "depends_on": [
+      "HU-11"
+    ],
+    "criteria": [
+      "CRUD categorías por hoja, nombre, descripción y tipo ingreso/egreso. Categoría usada no se borra ni cambia de tipo hasta reasignar movimientos.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-13",
+    "edt": "3.5",
+    "title": "Año buscable 1-9999, doce columnas mensuales, CRUD de múltiples ingresos/egresos por mes con cate...",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S3 - Presupuesto e integración",
+    "priority": "P0",
+    "points": 5,
+    "depends_on": [
+      "HU-12"
+    ],
+    "criteria": [
+      "Año buscable 1-9999, doce columnas mensuales, CRUD de múltiples ingresos/egresos por mes con categoría del mismo tipo/hoja, monto positivo y descripción.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-14",
+    "edt": "3.5",
+    "title": "Totales ingreso, egreso y saldo por mes y año; déficit/superávit/equilibrio explícitos",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S3 - Presupuesto e integración",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [
+      "HU-13"
+    ],
+    "criteria": [
+      "Totales ingreso, egreso y saldo por mes y año; déficit/superávit/equilibrio explícitos. Aislar por hoja y año; usar enteros en centavos BOB, sin coma flotante.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "HU-15",
+    "edt": "3.5",
+    "title": "Descargar CSV por hoja y año, UTF-8, escapado de comillas/comas/saltos y fórmulas de planilla neu...",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S3 - Presupuesto e integración",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [
+      "HU-14"
+    ],
+    "criteria": [
+      "Descargar CSV por hoja y año, UTF-8, escapado de comillas/comas/saltos y fórmulas de planilla neutralizadas. Encabezados y totales de los doce meses.",
+      "Tests positivos y negativos con TC/HU, Flutter/Supabase/RLS y evidencia",
+      "Revisión cruzada, CI y aceptación real antes de Done"
+    ]
+  },
+  {
+    "id": "QA-01",
+    "edt": "4.1",
+    "title": "Comparar herramientas y preparar presentación",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S1 - Base e identidad",
+    "priority": "P1",
+    "points": 3,
+    "depends_on": [
+      "PREP-01"
+    ],
+    "criteria": [
+      "4 herramientas web y 4 móvil: tres abiertas y una comercial en cada matriz",
+      "Matriz Word/Excel, presentación breve, fuentes oficiales y flujo CI",
+      "Piloto real y justificación Clase XIX"
+    ]
+  },
+  {
+    "id": "QA-02",
+    "edt": "4.2",
+    "title": "Ejecutar E2E, accesibilidad y reporte móvil",
+    "owner": "Eva",
+    "reviewer": "Gerardo",
+    "milestone": "S4 - Calidad y entrega",
+    "priority": "P0",
+    "points": 5,
+    "depends_on": [
+      "HU-09",
+      "HU-15",
+      "HU-06"
+    ],
+    "criteria": [
+      "Flujo Flutter/Auth/RLS/RPC/Storage real en Android; iOS explícito",
+      "Logs, capturas de fallos, metadatos y TC/HU Clase XX",
+      "Exploración, 200% texto, red y segundo plano"
+    ]
+  },
+  {
+    "id": "QA-03",
+    "edt": "4.3",
+    "title": "Medir calidad y auditar cada sprint",
+    "owner": "Waldir",
+    "reviewer": "Eva",
+    "milestone": "S4 - Calidad y entrega",
+    "priority": "P1",
+    "points": 3,
+    "depends_on": [
+      "QA-02"
+    ],
+    "criteria": [
+      "GitHub Projects/CPM y métricas con denominador real",
+      "Auditoría cruzada, correctivas y revalidación",
+      "Carga staging p95/error rate; no inventar resultados"
+    ]
+  },
+  {
+    "id": "OPS-01",
+    "edt": "5.1",
+    "title": "Preparar entrega y release revisado",
+    "owner": "Gerardo",
+    "reviewer": "Waldir",
+    "milestone": "S4 - Calidad y entrega",
+    "priority": "P0",
+    "points": 3,
+    "depends_on": [
+      "QA-03"
+    ],
+    "criteria": [
+      "Backup/restauración y rollback probados",
+      "PR develop a main, tag y APK checksum tras revisión",
+      "Índice de evidencias y participación real de los tres"
+    ]
+  }
+]
