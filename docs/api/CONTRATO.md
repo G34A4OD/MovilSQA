@@ -70,6 +70,10 @@ Las lecturas de grupos/membresías/invitaciones/parentescos/mascotas son select 
 
 HU-03 implementa update_family(p_family_id,p_name,p_expected_version) y delete_family(p_family_id,p_expected_version,p_confirmation), donde p_confirmation es el nombre exacto. El borrado marca families.deleted_at y encola private.cleanup_jobs sin retirar metadata antes de limpiar archivos. Los helpers de pertenencia/admin/grupo común excluyen familias borradas. La reautenticación se comprueba por método password reciente en amr (10 minutos), no por iat de un JWT renovado. El móvil confirma con Auth antes de llamar a delete_family. La purga física corresponde a la integración OPS/documentos y se demuestra aparte.
 
+HU-04: Edge lookup-user verifica el JWT mediante Auth y llama lookup_family_user(p_family_id,p_public_id) con el JWT del usuario, sin secret/service_role. El RPC también es alcanzable directamente por authenticated: aplica los mismos controles de admin, sesión vigente, ID exacto y límite de 10 consultas/minuto por actor, incluso para búsquedas sin coincidencia. No existe un directorio abierto ni búsqueda por nombre/correo/CI. La función Edge valida Auth en su cuerpo (verify_jwt=false para compatibilidad con claves de firma actuales); esto no permite uso anónimo.
+
+invite_member devuelve {error: invitation_unavailable} para destinos no disponibles/repetidos; el adaptador lo transforma en fallo de dominio. No se lanza excepción en ese resultado, para que el contador de intentos se confirme en la transacción. Los permisos/sesión y demás RPC siguen devolviendo errores SQL estables. accepted/rejected/revoked/expired son estados finales; caducidad y permisos del invitador se revalidan al aceptar. Familias borradas no muestran invitaciones.
+
 ## Documentos y archivos · Eva
 
 Carpeta: name no vacío de hasta 100 caracteres, family_id y exactamente uno de owner_user_id o pet_id. Miembro crea para sí; admin puede crear para mascota. Todos los IDs asociados deben pertenecer al mismo grupo mediante FK/checks y autorización.

@@ -5,6 +5,10 @@
 # working directory name when running `supabase init`.
 project_id = "nido"
 
+[functions.lookup-user]
+# New signing keys are verified explicitly with Auth in the handler, then live-session SQL.
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.

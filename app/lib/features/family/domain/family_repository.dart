@@ -1,3 +1,5 @@
+import 'invitation_repository.dart';
+
 class FamilyRecord {
   const FamilyRecord({
     required this.id,
@@ -25,6 +27,7 @@ class FamilyMember {
 }
 
 abstract interface class FamilyRepository {
+  InvitationRepository get invitations;
   Future<List<FamilyRecord>> list();
   Future<List<FamilyMember>> members(String familyId);
   Future<void> create(String name, String requestId);
