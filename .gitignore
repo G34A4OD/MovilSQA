@@ -24,3 +24,4 @@
 /evidencias/ejecuciones/*
 !/evidencias/ejecuciones/.gitkeep
 .DS_Store
+*.local.log
