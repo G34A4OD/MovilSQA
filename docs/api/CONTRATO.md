@@ -40,12 +40,14 @@ Profiles no es un directorio abierto para todos los usuarios autenticados. Si se
 | Acceso | auth.signInWithPassword | AuthResponse o AuthException; no enumerar cuentas en UI |
 | Recuperación | auth.resetPasswordForEmail + deep link y auth.updateUser | Flujo propio de Auth; no endpoint de contraseña casero |
 | Salida | auth.signOut, scope explícito | Limpiar sesión/cachés; JWT previo puede vivir hasta expirar |
-| Completar perfil | rpc complete_profile(p_full_name,p_blood_type,p_identity_card,p_birth_date,p_address) | Actor actual; validación y creación/edición atómica de perfil; public_id generado en DB |
-| Editar perfil | rpc update_profile(campos propios,p_expected_version) | Lista permitida; no is_admin/public_id/user_id arbitrarios |
+| Completar perfil | rpc complete_profile(p_full_name,p_blood_type,p_identity_card,p_birth_date,p_address) | Actor actual; creación atómica inicial; public_id generado en DB. Perfil existente exige update_profile para no eludir versión |
+| Editar perfil | rpc update_profile(p_full_name,p_blood_type,p_identity_card,p_birth_date,p_address,p_expected_version) | Campos propios; no is_admin/public_id/user_id arbitrarios |
 | Compartir datos | rpc set_profile_share(p_family_id,p_selected_fields,p_request_id) | Solo titular y miembro activo; guardar consentimiento y únicamente campos seleccionados |
 | Borrar cuenta | Edge delete-account | JWT verificado, reautenticación reciente, resolver último admin y limpieza; Auth Admin solo en función confiable |
 
 Las contraseñas solo llegan a Supabase Auth. No guardar datos sensibles en user_metadata/app_metadata o claims. Tokens persistidos con almacenamiento seguro; para datos sensibles implementar/probar guard de sesión vigente como en SEGURIDAD.md.
+
+HU-02 implementa p_selected_fields como text[] con nombres de campos permitidos (blood_type, identity_card, birth_date, address). El servidor copia solo esos valores del perfil propio al snapshot consentido; [] retira los datos compartidos. Actualizar el perfil privado no cambia silenciosamente un consentimiento previo: volver a compartir para publicar un nuevo snapshot. Reintentos con mismo request/cuerpo son idempotentes; otro cuerpo da request_conflict. complete_profile repetido da profile_exists; update_profile sin versión vigente da version_conflict.
 
 ## Familia · Gerardo
 
