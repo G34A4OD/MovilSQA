@@ -18,6 +18,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Iniciar entorno efímero local
         run: npx --yes supabase@3.1.0 start -x studio,imgproxy,realtime,logflare,vector,supavisor,edge-runtime,postgres-meta > /tmp/nido-start.log 2>&1
       - name: Ejecutar contratos SQL y RLS con roles de cliente
@@ -28,6 +31,8 @@ jobs:
           git rev-parse HEAD > evidencias/ejecuciones/sql/commit.txt
           date -u --iso-8601=seconds > evidencias/ejecuciones/sql/inicio.txt
           npx --yes supabase@3.1.0 test db 2>&1 | tee evidencias/ejecuciones/sql/pgtap.log
+      - name: Auth real y revocación de sesión por HTTP local
+        run: python scripts/test_auth_local.py > evidencias/ejecuciones/sql/auth-http.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

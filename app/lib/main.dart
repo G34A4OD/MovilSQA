@@ -1,11 +1,66 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/connected_app.dart';
+import 'core/secure_session_storage.dart';
+import 'core/supabase_config.dart';
+import 'features/identity/data/supabase_auth_repository.dart';
 import 'core/app_theme.dart';
 import 'core/money.dart';
 import 'demo/demo_data.dart';
 import 'features/budget/presentation/budget_page.dart';
 import 'features/budget/presentation/budget_view_model.dart';
 
-void main() => runApp(const NidoApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (const bool.fromEnvironment('NIDO_DEMO')) {
+    runApp(const NidoApp());
+    return;
+  }
+  try {
+    const config = SupabaseConfig.fromEnvironment;
+    config.validate();
+    final host = Uri.parse(config.url).host;
+    final supabase = await Supabase.initialize(
+      url: config.url,
+      publishableKey: config.publishableKey,
+      debug: false,
+      authOptions: FlutterAuthClientOptions(
+        authFlowType: AuthFlowType.pkce,
+        localStorage: SecureSessionStorage(
+          nidoSecureStorage,
+          projectHost: host,
+        ),
+        pkceAsyncStorage: SecurePkceStorage(
+          nidoSecureStorage,
+          projectHost: host,
+        ),
+        detectSessionInUriPredicate: (uri) =>
+            uri.scheme == 'nido' &&
+            uri.host == 'auth' &&
+            uri.path == '/callback',
+      ),
+    );
+    runApp(ConnectedNidoApp(auth: SupabaseAuthRepository(supabase.client)));
+  } catch (_) {
+    runApp(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: const Scaffold(
+          body: SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(24),
+              child: Center(
+                child: Text(
+                  'No se pudo iniciar Nido. Revisa la configuración pública de Supabase o vuelve a abrir la aplicación.',
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class NidoApp extends StatelessWidget {
   const NidoApp({super.key});
