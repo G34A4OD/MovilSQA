@@ -2,11 +2,21 @@
 
 Repositorio: https://github.com/G34A4OD/MovilSQA. Usa tu cuenta real **G34A4OD**; no hagas commits en nombre de Eva o Waldir.
 
+## Actualización vigente · 14/11/2026
+
+Identidad/familia ya están implementadas y conectadas: PR #23..30, pendientes de revisión en pila desde #21. Leer docs/ESTADO.md y docs/INTEGRACION.md antes de actuar; estas notas sustituyen las referencias históricas de abajo a demo sin conexión, invitaciones pendientes y lotes de migración 0001xx..0004xx. Eva y Waldir aceptaron Write y ya tienen assignees reales en sus issues.
+
+Ya hay tareas asignadas en https://github.com/users/G34A4OD/projects/1/views/1. Tu agente debe revisar tus issues y dependencias al iniciar, mover a In progress al empezar, enlazar rama/PR y pruebas, pasar a In review al solicitar revisión y marcar Done solo tras revisión, CI, merge y aceptación real. Registrar bloqueos/resultados, sin inventar firmas ni actividad ajena. GitHub Projects sustituye a Planner.
+
+Crear migraciones mediante CLI 3.1.0 migration new, posteriores a sus dependencias reales en supabase/migrations; no usar timestamps de ejemplo antiguos. Tests SQL en supabase/tests/database con archivo propio por módulo. No editar migraciones aplicadas.
+
+Para ejecutar la app usar flutter run --dart-define-from-file=config/supabase.local.json; la demo se solicita explícitamente con NIDO_DEMO=true. URL y publishable key son configuración cliente; la cuenta Auth y RLS autorizan datos. No compartir la sesión de Gerardo ni claves elevadas. Dashboard de Supabase requiere invitación individual independiente; puede desarrollarse localmente y enviar migraciones por PR.
+
 ## Enfoque confirmado
 
 El producto es una app móvil Flutter + **Supabase directo**: `supabase_flutter`, Supabase Auth, PostgreSQL con RLS, Storage privado y funciones SQL/RPC para operaciones transaccionales. Edge Functions se añaden únicamente cuando un proceso de confianza lo necesite. El alcance actual no incluye un producto web ni una API propia.
 
-La base actual sigue siendo una demostración en memoria; estas instrucciones describen el trabajo por implementar y probar, no un backend conectado ni permisos ya validados.
+La base actual integra Auth, perfil y familia. Los incrementos todavía requieren revisión humana; documentos y presupuesto tienen su alcance pendiente según ESTADO.md.
 
 ## Tu participación y entregables
 
@@ -26,11 +36,11 @@ Divide filas grandes en issues de 1-3 días. Publica temprano migraciones, fixtu
 ## Rutas que custodias
 
 - Flutter: `app/lib/features/identity/**`, `app/lib/features/family/**`, `app/test/identity/**`, `app/test/family/**`.
-- Datos: migraciones propias en `supabase/migrations/` y tests de SQL/pgTAP en `supabase/tests/identity/**` y `supabase/tests/family/**`.
+- Datos: migraciones propias en `supabase/migrations/` y tests de SQL/pgTAP en `supabase/tests/database/00*_*.test.sql` para identidad/familia.
 - Edge Functions del contrato de identidad/familia: `supabase/functions/delete-account/**` y `supabase/functions/lookup-user/**`. Las demás reglas críticas de tu módulo son RPC SQL con los nombres y grants del contrato.
 - Integración: `core`, `main.dart`, `pubspec.yaml` y locks, `supabase/config.toml`, configuración de entorno de ejemplo, contrato compartido y CI.
 
-Coordina versiones de migración por timestamp válido, sin dos archivos con la misma versión. Lote inicial reservado: `202611140001xx_*` para identidad y `202611140002xx_*` para familia; sustituir xx por segundos 00-59 antes de crear archivos, por ejemplo `20261114000100_identity_base.sql`. Eva usa lote 0003xx y Waldir 0004xx. Si hace falta otro lote o cambia el orden de dependencias, acordarlo antes del PR. Nunca editar una migración ya aplicada: agregar otra.
+Coordina versiones de migración por timestamp válido, sin dos archivos con la misma versión. Usar migration new de CLI 3.1.0 y versión posterior a las dependencias reales; los lotes antiguos quedan retirados. Si hace falta otro lote o cambia el orden de dependencias, acordarlo antes del PR. Nunca editar una migración ya aplicada: agregar otra.
 
 Los compañeros solicitan cambios de composición, dependencias, configuración o contrato mediante PR pequeño previo. Los nombres de tablas, funciones y parámetros se toman de `docs/api/CONTRATO.md`; no crear variantes incompatibles mientras otro agente implementa un consumidor.
 
@@ -47,19 +57,19 @@ Supabase Auth gestiona sesión/refresh. Cerrar sesión elimina la sesión local 
 ## Preparación de GitHub y GitHub Projects
 
 1. Comprueba `gh auth status` y nombre/correo Git propios. No compartas tokens.
-2. Las invitaciones Write se enviaron a Eva/pizzatoev y Waldir/riblawaldir; comprobar aceptación actual antes de asignar o solicitar revisión.
+2. Eva/pizzatoev y Waldir/riblawaldir aceptaron Write; las issues ya tienen assignees reales y las solicitudes de revisión están enviadas.
 3. Sigue `docs/GITHUB_ESTADO.md` y `docs/COLABORACION.md`: base en PR #21, develop como integración y ramas protegidas. No recrear ni debilitar protecciones existentes.
 4. Revisa `scripts/bootstrap-github.ps1` sin -Apply; tras aceptar invitaciones, -Apply completa asignaciones de issues existentes sin duplicarlas.
 5. GitHub Projects se completa con el equipo y con fechas confirmadas; no inventar un calendario ni firmas.
 
-Configuración cliente prevista: `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`; usar la inicialización `publishableKey` de la versión fijada del SDK. `anonKey` queda como alternativa heredada si el contrato lo documenta. La plantilla `app/config/supabase.example.json` solo describe valores públicos y todavía no conecta la demo; seguir `supabase/README.md` antes de inicializar el SDK.
+Configuración cliente prevista: `SUPABASE_URL` y `SUPABASE_PUBLISHABLE_KEY`; usar la inicialización `publishableKey` de la versión fijada del SDK. `anonKey` queda como alternativa heredada si el contrato lo documenta. La plantilla `app/config/supabase.example.json` contiene marcadores públicos; usar su copia local ignorada para ejecutar la app conectada. El SDK ya está inicializado en main.dart.
 
 ## Prompt inicial para tu agente
 
 ~~~text
 Trabajas conmigo, Gerardo, en Nido, proyecto móvil SQA del equipo Gerardo/Eva/Waldir. Repo https://github.com/G34A4OD/MovilSQA. Lee AGENTS.md, README.md, docs/ESTADO.md, docs/REQUISITOS.md, docs/ARQUITECTURA.md, docs/SEGURIDAD.md, docs/SUPABASE.md, docs/api/CONTRATO.md, docs/sqa/TEST_PLAN.md, docs/COLABORACION.md y equipo/GERARDO.md. Si están los PDF locales, revisa Plan SQA móvil y las clases XP/XIX/XX; el usuario aclaró que el stack de otro proyecto no restringe este proyecto móvil. Si faltan, usa docs/FUENTES.md sin inventar contenido.
 
-Verifica git status, remoto, rama, mi autoría, gh auth status e issues reales. Conserva cambios ajenos. Una historia por rama desde origin/develop, número real en rama/commits/PR y commits pequeños. No trabajar directo en main/develop ni hacer commits de compañeros. La base debe estar integrada antes de iniciar historias dependientes.
+Verifica git status, remoto, rama, mi autoría, gh auth status e issues reales. Conserva cambios ajenos. Una historia por rama desde origin/develop, número real en rama/commits/PR y commits pequeños. No trabajar directo en main/develop ni hacer commits de compañeros. La integración compartida se hace en develop; cualquier preparación sobre una rama apilada debe declarar su dependencia según docs/INTEGRACION.md.
 
 Arquitectura: Flutter Material 3 + Supabase directo mediante supabase_flutter, Auth, PostgreSQL/RLS, Storage privado y RPC SQL. No crear un segundo producto ni una API propia. Mi área es HU-01..07, configuración y seguridad compartidas. Prepara proyecto local/de pruebas, migraciones y fixtures; pide solo identificadores públicos y configuración local segura cuando hagan falta credenciales. Usa repositorios inyectados, DTOs y ViewModels; la demo sigue explícita hasta que el reemplazo real esté integrado y probado.
 

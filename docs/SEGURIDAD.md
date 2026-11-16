@@ -1,6 +1,6 @@
 # Seguridad y privacidad con Supabase directo
 
-Estado: requisitos para implementar y probar. La demo local no certifica Auth, RLS, RPC, Storage ni seguridad de datos reales.
+Estado 14/11/2026: Auth, perfiles y familia tienen RLS/RPC y pruebas SQL/HTTP/concurrentes implementadas. Storage/documentos/presupuesto y limpieza física aún requieren integración. Estos controles no autorizan usar datos reales ni equivalen a auditoría independiente; ver ESTADO.md y evidencias por HU.
 
 | Riesgo | Control requerido | Evidencia / dueño |
 |---|---|---|
@@ -56,4 +56,4 @@ Las claves elevadas y accesos de CI tienen alcance mínimo y viven en secretos; 
 
 Datos sintéticos: A/B grupos distintos, usuario multigrupo, admin, dos admins y último admin, miembro, ajeno, invitado pendiente, expulsado y sesión terminada. Ejecutar select/insert/update/delete y cada RPC con IDs ajenos mediante SDK/Data API real, intentando también saltarse las RPC con escritura directa. Verificar denegación o cero filas autorizadas, y ausencia de efectos secundarios; no exigir un código HTTP único para todos los casos de RLS.
 
-Probar Storage con JWT, anon, sesión terminada y acceso revocado; controles de bytes y estado, no solo UI. Para JWT no expirado después de logout, comprobar el guard de sesión que se haya implementado, o registrar la vigencia residual como hallazgo. pgTAP/SQL debe cubrir policies, grants, FK y funciones; concurrencia necesita dos transacciones PostgreSQL reales. Los tests Flutter actuales solo verifican dominio y widgets.
+Probar Storage con JWT, anon, sesión terminada y acceso revocado; controles de bytes y estado, no solo UI. Para JWT no expirado después de logout, comprobar el guard de sesión que se haya implementado, o registrar la vigencia residual como hallazgo. pgTAP/SQL debe cubrir policies, grants, FK y funciones; concurrencia necesita dos transacciones PostgreSQL reales. Las suites SQL/HTTP de identidad/familia y el escenario Android se registran por separado; no acreditan permisos de bytes Storage todavía pendientes.

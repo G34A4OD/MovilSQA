@@ -92,6 +92,7 @@ class AuthViewModel extends ChangeNotifier {
     await repository.signOut();
     session = null;
     recovery = false;
+    mode = AuthMode.signIn;
   });
   @override
   void dispose() {

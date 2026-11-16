@@ -1,0 +1,27 @@
+{
+  "started_utc": "2026-11-14T20:43:35.918459+00:00",
+  "commit": "05973fd9ec80212041cd2a4e4f051b751d3a8103",
+  "environment": "Supabase LOCAL PostgreSQL / synthetic",
+  "storage_bytes_tested": false,
+  "status": "PASS",
+  "checks": {
+    "live_session": true,
+    "own_private": 1,
+    "peer_private": 0,
+    "members": 2,
+    "pets": 1,
+    "admin": true
+  },
+  "dump_sha256": "c11e0de5792618d4e1afcaf6ba34cbbb203efdea756ebefcf6f2a8708663086c",
+  "dump_bytes": 543987,
+  "restore_role": "supabase_admin (local only)",
+  "assertion_role": "authenticated",
+  "preserved_owners_and_acl": true,
+  "excluded_orchestration": [
+    "cron",
+    "net",
+    "pg_cron",
+    "pg_net"
+  ],
+  "finished_utc": "2026-11-14T20:43:47.076853+00:00"
+}

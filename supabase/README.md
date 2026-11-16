@@ -1,23 +1,11 @@
 # Infraestructura de Nido · Supabase directo
 
-Esta carpeta reserva el lugar de migraciones PostgreSQL/RLS, pruebas y Edge Functions. **No hay un proyecto Supabase inicializado, políticas desplegadas ni funciones implementadas todavía.** El contrato está en [CONTRATO.md](../docs/api/CONTRATO.md); la preparación, en [SUPABASE.md](../docs/SUPABASE.md).
+Entorno CLI 3.1.0 inicializado. Siete migraciones identity/family aplicadas a nido-dev y reproducidas localmente; lookup-user desplegada. [Contrato](../docs/api/CONTRATO.md), [estado](../docs/ESTADO.md) y [comandos locales](LOCAL.md).
 
-Flutter usa supabase_flutter para Auth, consultas protegidas por RLS, RPC y Storage privado. No se desarrolla un sitio web ni un servidor HTTP intermedio.
+Gerardo mantiene Auth/perfil/grupos/admins/parentescos/mascotas y helpers comunes. Eva agrega documentos/Storage/cuarentena/escaneo; Waldir presupuesto/RPC/CSV. Cada módulo crea migraciones nuevas posteriores a sus dependencias y tests pgTAP propios en tests/database; no reescribir SQL aplicado.
 
-| Integrante | Rutas | Responsabilidad |
-|---|---|---|
-| Gerardo | migrations identity/family, tests identity/family, configuración común | Auth, perfiles/consentimientos, grupos/admins, relaciones/mascotas; RLS y RPC base |
-| Eva | migrations documents, tests documents, functions de documentos | Carpetas, metadata, políticas Storage, cuarentena/escaneo y limpieza |
-| Waldir | migrations budget, tests budget | Hojas/categorías/movimientos, RLS de propietario, RPC y totales |
+RLS desde creación, escrituras críticas solo RPC, actor derivado de Auth y sesión vigente. private no está expuesto por Data API. lookup-user verifica JWT y llama la RPC con ese JWT; no usa service_role. Nunca distribuir claves elevadas ni contraseña DB en Flutter, Git o evidencias.
 
-Gerardo inicializa el proyecto local/CLI y el esquema común primero; cada módulo agrega migraciones nuevas y tests propios. Nombres reales de migración: timestamp válido generado por CLI y sufijo del módulo, con dependencias ordenadas. No editar una migración aplicada ni copiar un timestamp de ejemplo sin comprobar colisiones. Cada PR indica tablas/RPC/policies modificadas y se prueba sobre migraciones limpias.
+Documentos/Storage/presupuesto, delete-account y worker físico de cleanup_jobs siguen pendientes de integración. La cola retira acceso lógico; no acredita purga de archivos. No hay datos reales ni permisos globales como puente de desarrollo.
 
-## Próximas tareas
-
-1. Configurar CLI oficial y entorno local de pruebas conforme a la versión elegida y fijada. Inicializar config.toml bajo una issue; esta documentación no lo reemplaza.
-2. Crear migraciones y fixtures sintéticos, incluidos grants/revoke, RLS y permisos Storage. SQL de mantenimiento/administración nunca se ejecuta desde Flutter.
-3. Usar RPC con auth.uid(), autorización y transacciones para invariantes. Una Edge Function con secret key también debe autorizar identidad y grupo.
-4. Incorporar pgTAP/SQL y pruebas SDK con usuarios distintos. SELECT sin filas no basta para probar escritura denegada: verificar ausencia de efectos secundarios.
-5. Publicar a staging tras revisión y negativos Auth/RLS/RPC/Storage. La suite CI actual solo valida Flutter y el reportador.
-
-Nunca copiar SUPABASE_ACCESS_TOKEN, contraseñas DB o secret/service_role a la app, documentos, Git o capturas. No aplicar pruebas destructivas a producción.
+CI reproduce SQL/pgTAP, Auth/Edge/familia HTTP y concurrencia local. Restauración y Android real tienen scripts separados. No ejecutar reset ni scripts destructivos contra el entorno remoto.

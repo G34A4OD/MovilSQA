@@ -1,6 +1,6 @@
 # Contrato Supabase v2 · Nido móvil
 
-**Diseño para implementación.** Sustituye el contrato de rutas de servidor propio. Flutter consume Supabase con supabase_flutter: Auth, Data API protegida por RLS, RPC PostgreSQL y Storage privado; Edge Functions solo para tareas que lo necesitan. No hay endpoints propios bajo /api/v1 ni controles ya desplegados. Gerardo custodia cambios de contrato antes de consumidores.
+**Contrato de integración; estado por módulo.** Sustituye el contrato de rutas de servidor propio. Flutter consume Supabase con supabase_flutter: Auth, Data API protegida por RLS, RPC PostgreSQL y Storage privado; Edge Functions solo para tareas que lo necesitan. Identidad/familia y lookup-user están desplegados; documentos/Storage, presupuesto, delete-account y worker de purga siguen previstos. No hay endpoints propios bajo /api/v1. Gerardo custodia cambios de contrato antes de consumidores.
 
 ## Convenciones
 
@@ -12,7 +12,7 @@ Select devuelve las filas autorizadas por RLS, no un envelope propio de paginaci
 
 ## Tablas y acceso directo previsto
 
-La siguiente es una matriz a implementar mediante **grants, policies, FK, checks y funciones**. Permisos no mencionados están denegados; anon no lee datos familiares.
+La matriz se implementa mediante **grants, policies, FK, checks y funciones**. Identidad/familia están implementadas; folders/documents/budget_sheets/categories/entries son contrato para los siguientes módulos. Permisos no mencionados están denegados; anon no lee datos familiares.
 
 | Tabla | SELECT authenticated | Escritura desde cliente |
 |---|---|---|
@@ -43,9 +43,11 @@ Profiles no es un directorio abierto para todos los usuarios autenticados. Si se
 | Completar perfil | rpc complete_profile(p_full_name,p_blood_type,p_identity_card,p_birth_date,p_address) | Actor actual; creación atómica inicial; public_id generado en DB. Perfil existente exige update_profile para no eludir versión |
 | Editar perfil | rpc update_profile(p_full_name,p_blood_type,p_identity_card,p_birth_date,p_address,p_expected_version) | Campos propios; no is_admin/public_id/user_id arbitrarios |
 | Compartir datos | rpc set_profile_share(p_family_id,p_selected_fields,p_request_id) | Solo titular y miembro activo; guardar consentimiento y únicamente campos seleccionados |
-| Borrar cuenta | Edge delete-account | JWT verificado, reautenticación reciente, resolver último admin y limpieza; Auth Admin solo en función confiable |
+| Borrar cuenta (pendiente, no desplegado) | Edge delete-account | JWT verificado, reautenticación reciente, resolver último admin y limpieza; Auth Admin solo en función confiable |
 
 Las contraseñas solo llegan a Supabase Auth. No guardar datos sensibles en user_metadata/app_metadata o claims. Tokens persistidos con almacenamiento seguro; para datos sensibles implementar/probar guard de sesión vigente como en SEGURIDAD.md.
+
+La opción de tipo de sangre «No sé» se persiste como null. Solo se aceptan los ocho grupos sanguíneos del check; no se amplía a texto libre. Ajuste solicitado por Waldir en la revisión del PR #25, entregado en OPS-01 #20.
 
 HU-02 implementa p_selected_fields como text[] con nombres de campos permitidos (blood_type, identity_card, birth_date, address). El servidor copia solo esos valores del perfil propio al snapshot consentido; [] retira los datos compartidos. Actualizar el perfil privado no cambia silenciosamente un consentimiento previo: volver a compartir para publicar un nuevo snapshot. Reintentos con mismo request/cuerpo son idempotentes; otro cuerpo da request_conflict. complete_profile repetido da profile_exists; update_profile sin versión vigente da version_conflict.
 
@@ -136,6 +138,6 @@ Si durante una exportación concurrente se necesita snapshot consistente de fila
 
 uuid es un marcador, no un ID para enviar. Repositorios transforman DTOs; no pasar mapas crudos a widgets. Grants y RLS se comprueban también intentando escrituras directas y RPC con IDs ajenos; una llamada mediante service_role no prueba permisos del móvil.
 
-Antes de Done: tests SQL/pgTAP de policies/grants/FK/RPC, dos transacciones reales para último admin, integración Auth/Storage con cuentas A/B y pruebas Android/iOS. El CI actual solo ejecuta la base Flutter/reportes; estos contratos no certifican seguridad ya aplicada.
+Antes de Done: tests SQL/pgTAP de policies/grants/FK/RPC, dos transacciones reales para último admin, integración Auth/Storage con cuentas A/B y pruebas Android/iOS. CI ejecuta Flutter/reportes y SQL/Auth/Edge/concurrencia de identidad/familia; OPS agrega compilación Android. Storage y presupuesto no se dan por probados por esos resultados.
 
 Fuentes primarias: [SDK Flutter](https://supabase.com/docs/reference/dart/initializing), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [funciones](https://supabase.com/docs/guides/database/functions), [Storage privado](https://supabase.com/docs/guides/storage/buckets/fundamentals), [sesiones](https://supabase.com/docs/guides/auth/sessions).

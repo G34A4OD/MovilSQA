@@ -1,0 +1,566 @@
+{
+  "status": "PASS",
+  "passed": 45,
+  "failed": 0,
+  "skipped": 0,
+  "total": 45,
+  "suite_complete_success": true,
+  "success_rate": "100.00%",
+  "coverage_hits": 1053,
+  "coverage_lines": 2008,
+  "coverage_rate": "52.44%",
+  "domain_coverage_rate": "88.81%",
+  "domain_hits": 246,
+  "domain_lines": 277,
+  "duration_seconds": 20.315,
+  "source_sha256": "183dee7a0b5d10548fad6c62aeb80466ee969a643158b54d11e54bd4c2538cbc",
+  "metadata": {
+    "run_id": "ops-20-final",
+    "started_utc": "2026-11-14T23:28:33.4960552Z",
+    "commit": "05973fd9ec80212041cd2a4e4f051b751d3a8103",
+    "dirty": true,
+    "os": "Microsoft Windows NT 10.0.26200.0",
+    "flutter": "Flutter 3.41.9 • channel stable • https://github.com/flutter/flutter.git",
+    "pub_exit": 0,
+    "format_exit": 0,
+    "analyze_exit": 0,
+    "test_exit": 0
+  },
+  "tests": [
+    {
+      "name": "TC-SEC-01: HTTP solo loopback de pruebas con bandera explícita y build debug",
+      "result": "success",
+      "tc": [
+        "TC-SEC-01"
+      ],
+      "hu": [],
+      "error": "",
+      "seconds": 0.062
+    },
+    {
+      "name": "TC-SEC-01: solo configuración pública HTTPS, sin credenciales de servidor",
+      "result": "success",
+      "tc": [
+        "TC-SEC-01"
+      ],
+      "hu": [],
+      "error": "",
+      "seconds": 0.009
+    },
+    {
+      "name": "TC-BUD-02 HU-14 suma mensual/anual y separa años",
+      "result": "success",
+      "tc": [
+        "TC-BUD-02"
+      ],
+      "hu": [
+        "HU-14"
+      ],
+      "error": "",
+      "seconds": 0.108
+    },
+    {
+      "name": "TC-BUD-02 HU-13 editar y eliminar recalcula sin duplicados",
+      "result": "success",
+      "tc": [
+        "TC-BUD-02"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.007
+    },
+    {
+      "name": "TC-BUD-03 HU-12 categoría usada no cambia tipo ni se elimina",
+      "result": "success",
+      "tc": [
+        "TC-BUD-03"
+      ],
+      "hu": [
+        "HU-12"
+      ],
+      "error": "",
+      "seconds": 0.028
+    },
+    {
+      "name": "TC-BUD-01 HU-13 límites de mes/año/monto y categoría ajena",
+      "result": "success",
+      "tc": [
+        "TC-BUD-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.009
+    },
+    {
+      "name": "TC-BUD-04 HU-15 CSV con doce meses, totales y fórmulas neutralizadas",
+      "result": "success",
+      "tc": [
+        "TC-BUD-04"
+      ],
+      "hu": [
+        "HU-15"
+      ],
+      "error": "",
+      "seconds": 0.021
+    },
+    {
+      "name": "TC-BUD-03 HU-12 nombre de categoría vacío rechazado",
+      "result": "success",
+      "tc": [
+        "TC-BUD-03"
+      ],
+      "hu": [
+        "HU-12"
+      ],
+      "error": "",
+      "seconds": 0.008
+    },
+    {
+      "name": "TC-DOC-02 HU-09 valida firma y tamaño de PDF/JPG/PNG",
+      "result": "success",
+      "tc": [
+        "TC-DOC-02"
+      ],
+      "hu": [
+        "HU-09"
+      ],
+      "error": "",
+      "seconds": 0.123
+    },
+    {
+      "name": "TC-DOC-01 HU-08 nombre obligatorio y sin ruta proporcionada",
+      "result": "success",
+      "tc": [
+        "TC-DOC-01"
+      ],
+      "hu": [
+        "HU-08"
+      ],
+      "error": "",
+      "seconds": 0.051
+    },
+    {
+      "name": "TC-FAM-01 HU-03 creador admin y solo admin invita",
+      "result": "success",
+      "tc": [
+        "TC-FAM-01"
+      ],
+      "hu": [
+        "HU-03"
+      ],
+      "error": "",
+      "seconds": 0.068
+    },
+    {
+      "name": "TC-FAM-02 HU-04 invitación no concede acceso; receptor decide una vez",
+      "result": "success",
+      "tc": [
+        "TC-FAM-02"
+      ],
+      "hu": [
+        "HU-04"
+      ],
+      "error": "",
+      "seconds": 0.009
+    },
+    {
+      "name": "TC-FAM-02 HU-04 rechazo y duplicado pendiente",
+      "result": "success",
+      "tc": [
+        "TC-FAM-02"
+      ],
+      "hu": [
+        "HU-04"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-FAM-04 HU-05 último admin no sale ni renuncia",
+      "result": "success",
+      "tc": [
+        "TC-FAM-04"
+      ],
+      "hu": [
+        "HU-05"
+      ],
+      "error": "",
+      "seconds": 0.006
+    },
+    {
+      "name": "TC-FAM-03 HU-05 transferencia, renuncia y salida",
+      "result": "success",
+      "tc": [
+        "TC-FAM-03"
+      ],
+      "hu": [
+        "HU-05"
+      ],
+      "error": "",
+      "seconds": 0.008
+    },
+    {
+      "name": "TC-FAM-05 HU-06 ascendencia rechaza ciclos, autorrelación y ajenos",
+      "result": "success",
+      "tc": [
+        "TC-FAM-05"
+      ],
+      "hu": [
+        "HU-06"
+      ],
+      "error": "",
+      "seconds": 0.007
+    },
+    {
+      "name": "TC-SEC-01 HU-03 mismo usuario en dos grupos sin compartir permisos",
+      "result": "success",
+      "tc": [
+        "TC-SEC-01"
+      ],
+      "hu": [
+        "HU-03"
+      ],
+      "error": "",
+      "seconds": 0.006
+    },
+    {
+      "name": "TC-BUD-01 HU-13 decimal exacto y coma local",
+      "result": "success",
+      "tc": [
+        "TC-BUD-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.066
+    },
+    {
+      "name": "TC-BUD-01 HU-13 rechaza montos ambiguos y fuera de límite",
+      "result": "success",
+      "tc": [
+        "TC-BUD-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.014
+    },
+    {
+      "name": "TC-FAM-04 HU-05: último admin explica bloqueo y conserva selección",
+      "result": "success",
+      "tc": [
+        "TC-FAM-04"
+      ],
+      "hu": [
+        "HU-05"
+      ],
+      "error": "",
+      "seconds": 0.087
+    },
+    {
+      "name": "TC-FAM-01 HU-03: reintento conserva request_id y pérdida de acceso vacía selección",
+      "result": "success",
+      "tc": [
+        "TC-FAM-01"
+      ],
+      "hu": [
+        "HU-03"
+      ],
+      "error": "",
+      "seconds": 0.017
+    },
+    {
+      "name": "TC-FAM-01 HU-03: paginación devuelve más de 100 familias sin omisiones",
+      "result": "success",
+      "tc": [
+        "TC-FAM-01"
+      ],
+      "hu": [
+        "HU-03"
+      ],
+      "error": "",
+      "seconds": 0.01
+    },
+    {
+      "name": "TC-AUTH-04 TC-SEC-03: logout elimina rutas y datos de la familia abierta",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-04",
+        "TC-SEC-03"
+      ],
+      "hu": [],
+      "error": "",
+      "seconds": 3.064
+    },
+    {
+      "name": "TC-FAM-03 HU-04: invitación recibida se acepta desde pantalla y refresca grupos",
+      "result": "success",
+      "tc": [
+        "TC-FAM-03"
+      ],
+      "hu": [
+        "HU-04"
+      ],
+      "error": "",
+      "seconds": 1.946
+    },
+    {
+      "name": "TC-FAM-06 HU-07: fecha opcional y límites, sin identidad humana",
+      "result": "success",
+      "tc": [
+        "TC-FAM-06"
+      ],
+      "hu": [
+        "HU-07"
+      ],
+      "error": "",
+      "seconds": 0.135
+    },
+    {
+      "name": "TC-FAM-06 HU-07: reintento estable y CRUD conserva versión esperada",
+      "result": "success",
+      "tc": [
+        "TC-FAM-06"
+      ],
+      "hu": [
+        "HU-07"
+      ],
+      "error": "",
+      "seconds": 0.029
+    },
+    {
+      "name": "TC-FAM-06 HU-07: miembro ve ficha separada y no acciones de admin",
+      "result": "success",
+      "tc": [
+        "TC-FAM-06"
+      ],
+      "hu": [
+        "HU-07"
+      ],
+      "error": "",
+      "seconds": 1.653
+    },
+    {
+      "name": "TC-FAM-05 HU-06: hijo/nieto/sobrino invierten dirección, parentesco no concede admin",
+      "result": "success",
+      "tc": [
+        "TC-FAM-05"
+      ],
+      "hu": [
+        "HU-06"
+      ],
+      "error": "",
+      "seconds": 0.07
+    },
+    {
+      "name": "TC-FAM-05 HU-06: generaciones, abuelo explícito y ciclo defensivo",
+      "result": "success",
+      "tc": [
+        "TC-FAM-05"
+      ],
+      "hu": [
+        "HU-06"
+      ],
+      "error": "",
+      "seconds": 0.015
+    },
+    {
+      "name": "TC-FAM-05 HU-06: reintento no cambia request y conflicto conserva grafo",
+      "result": "success",
+      "tc": [
+        "TC-FAM-05"
+      ],
+      "hu": [
+        "HU-06"
+      ],
+      "error": "",
+      "seconds": 0.029
+    },
+    {
+      "name": "TC-FAM-05 HU-06: árbol renderiza tres generaciones sin desbordar",
+      "result": "success",
+      "tc": [
+        "TC-FAM-05"
+      ],
+      "hu": [
+        "HU-06"
+      ],
+      "error": "",
+      "seconds": 1.444
+    },
+    {
+      "name": "TC-FAM-02 HU-04: ID incompleto no busca; editar lo buscado retira candidato",
+      "result": "success",
+      "tc": [
+        "TC-FAM-02"
+      ],
+      "hu": [
+        "HU-04"
+      ],
+      "error": "",
+      "seconds": 0.021
+    },
+    {
+      "name": "TC-FAM-02/03 HU-04: reintentos conservan request, éxito actualiza pendientes",
+      "result": "success",
+      "tc": [
+        "TC-FAM-02"
+      ],
+      "hu": [
+        "HU-04"
+      ],
+      "error": "",
+      "seconds": 0.013
+    },
+    {
+      "name": "TC-AUTH-01/04 HU-01: formulario limpia contraseña y gate elimina cuenta al salir",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-01"
+      ],
+      "hu": [
+        "HU-01"
+      ],
+      "error": "",
+      "seconds": 2.271
+    },
+    {
+      "name": "TC-PRO-01 HU-02: fecha imposible y futuro rechazados antes de enviar",
+      "result": "success",
+      "tc": [
+        "TC-PRO-01"
+      ],
+      "hu": [
+        "HU-02"
+      ],
+      "error": "",
+      "seconds": 0.067
+    },
+    {
+      "name": "TC-PRO-01 HU-02: creación, versión y conflicto no sustituyen datos locales",
+      "result": "success",
+      "tc": [
+        "TC-PRO-01"
+      ],
+      "hu": [
+        "HU-02"
+      ],
+      "error": "",
+      "seconds": 0.018
+    },
+    {
+      "name": "TC-PRO-01 HU-02: validación no llama al repositorio",
+      "result": "success",
+      "tc": [
+        "TC-PRO-01"
+      ],
+      "hu": [
+        "HU-02"
+      ],
+      "error": "",
+      "seconds": 0.006
+    },
+    {
+      "name": "TC-UI-01 HU-14 navegar y agregar monto exacto en demo",
+      "result": "success",
+      "tc": [
+        "TC-UI-01"
+      ],
+      "hu": [
+        "HU-14"
+      ],
+      "error": "",
+      "seconds": 2.676
+    },
+    {
+      "name": "TC-AUTH-01 HU-01: alta exige contraseña fuerte y no presupone sesión",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-01"
+      ],
+      "hu": [
+        "HU-01"
+      ],
+      "error": "",
+      "seconds": 0.007
+    },
+    {
+      "name": "TC-AUTH-02 HU-01: error genérico no filtra respuesta interna",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-02"
+      ],
+      "hu": [
+        "HU-01"
+      ],
+      "error": "",
+      "seconds": 0.006
+    },
+    {
+      "name": "TC-AUTH-01 HU-01: datos inválidos y doble envío no generan llamadas duplicadas",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-01"
+      ],
+      "hu": [
+        "HU-01"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-AUTH-03 HU-01: recuperación no confirma existencia de cuenta",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-03"
+      ],
+      "hu": [
+        "HU-01"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-AUTH-03 HU-01: enlace de recuperación exige nueva contraseña y limpia estado",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-03"
+      ],
+      "hu": [
+        "HU-01"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-AUTH-04 HU-01: logout fallido no finge revocación remota",
+      "result": "success",
+      "tc": [
+        "TC-AUTH-04"
+      ],
+      "hu": [
+        "HU-01"
+      ],
+      "error": "",
+      "seconds": 0.005
+    },
+    {
+      "name": "TC-UI-01 HU-13 monto inválido conserva formulario",
+      "result": "success",
+      "tc": [
+        "TC-UI-01"
+      ],
+      "hu": [
+        "HU-13"
+      ],
+      "error": "",
+      "seconds": 0.479
+    }
+  ]
+}

@@ -18,6 +18,7 @@ class LocalSupabase:
         result = subprocess.run([npx, '--yes', 'supabase@3.1.0', 'status', '-o', 'json'], cwd=ROOT, capture_output=True, text=True, check=True)
         config = json.loads(result.stdout)
         self.url = config['API_URL']
+        self.mail_url=config['MAILPIT_URL']
         assert urllib.parse.urlparse(self.url).hostname in ('127.0.0.1', 'localhost'), 'Local-only fixtures'
         self.key = config['PUBLISHABLE_KEY']
         self.admin_key = config.get('SECRET_KEY') or config['SERVICE_ROLE_KEY']
@@ -50,7 +51,7 @@ class LocalSupabase:
         self.users.append(user['id'])
         status,session = self.request('/auth/v1/token?grant_type=password',{'email':email,'password':password})
         assert status==200,'Login synthetic fixture'
-        actor = {'user_id':user['id'],'token':session['access_token']}
+        actor = {'user_id':user['id'],'token':session['access_token'],'email':email,'password':password}
         status,profile = self.rpc('complete_profile',{'p_full_name':label,'p_blood_type':'O+','p_identity_card':'FICTICIO','p_birth_date':'2000-01-01','p_address':'Domicilio ficticio'},actor)
         assert status==200,'Create synthetic profile through user RPC'
         actor['public_id']=profile['public_id']
@@ -63,6 +64,14 @@ class LocalSupabase:
         return family
 
     def close(self):
+        # Device/UI tests can create a family before returning its generated ID.
+        # Discover only families created by this fixture's exact synthetic users.
+        if self.users:
+            users=','.join("'"+str(uuid.UUID(value))+"'" for value in self.users)
+            created=self.sql(f'select id from public.families where created_by in ({users});')
+            for value in created.splitlines():
+                if value and value not in self.families:
+                    self.families.append(str(uuid.UUID(value)))
         if self.families:
             ids=','.join("'"+str(uuid.UUID(value))+"'" for value in self.families)
             sql=f'delete from private.cleanup_jobs where family_id in ({ids}); delete from public.families where id in ({ids});'

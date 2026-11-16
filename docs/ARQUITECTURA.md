@@ -4,7 +4,7 @@
 
 **Una aplicación móvil Flutter + Supabase directo.** El usuario aclaró que el stack de servidor de las diapositivas correspondía a otro proyecto; no es requisito de este producto. Supabase Auth gestiona las cuentas, PostgreSQL conserva los datos con RLS y Storage mantiene los archivos privados. No se construye un portal web ni una API propia intermedia.
 
-Estado: arquitectura y contratos preparados para implementar. La app actual sigue siendo una demostración en memoria; no hay conexión, migraciones, RLS o funciones desplegadas que estos documentos certifiquen.
+Estado 14/11/2026: identidad y familia conectadas, siete migraciones RLS/RPC aplicadas y lookup-user desplegada. Documentos/Storage y presupuesto persistente siguen pendientes de sus módulos. La demo en memoria es una opción explícita. Detalle y límites en ESTADO.md.
 
 Flutter se organiza por funcionalidades: identity, family, documents y budget. Cada módulo tiene presentación, dominio y datos. La UI observa un ViewModel (ChangeNotifier inicialmente), los casos de uso operan sobre repositorios abstractos y el adaptador Supabase transforma DTOs en entidades. Inyección por constructor en el punto de composición; cliente Supabase compartido e inyectado, sin estado global mutable de usuario/grupo. La [guía oficial de Flutter](https://docs.flutter.dev/app-architecture/guide) fundamenta la separación de vistas, modelos de vista y repositorios.
 
@@ -86,4 +86,4 @@ Preferir SECURITY INVOKER. Si una RPC necesita SECURITY DEFINER por grants revoc
 
 Para datos familiares, RLS consulta membresía vigente en DB en lugar de guardar el rol de familia únicamente en el JWT. El logout limpia sesión y cachés del cliente, pero un JWT previamente emitido puede seguir válido hasta expirar; para acciones sensibles se requiere diseñar/probar además un helper restringido que compruebe session_id contra auth.sessions. Los bytes ya descargados no se revocan retroactivamente. [Sesiones Supabase](https://supabase.com/docs/guides/auth/sessions).
 
-El CI actual prueba Flutter y el generador de reportes. Tests SQL/pgTAP y de integración Auth/RLS/Storage sobre un entorno Supabase de pruebas se agregan en las historias correspondientes; no están implementados por este cambio documental.
+CI ejecuta Flutter/reportes, SQL/pgTAP, Auth/Edge/HTTP y concurrencia de identidad/familia; OPS agrega compilación Android. Storage y módulos financieros se incorporan con Eva/Waldir. El dispositivo real se registra aparte del CI.

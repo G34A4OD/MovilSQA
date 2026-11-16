@@ -19,6 +19,10 @@
 **/*.jks
 **/*.keystore
 /app/config/supabase.local.json
+/app/config/*.local.json
+*.apk
+*.aab
+*.dump
 /supabase/.temp/
 /supabase/.branches/
 /evidencias/ejecuciones/*
