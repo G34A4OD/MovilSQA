@@ -61,9 +61,15 @@ select lives_ok(
   $$update public.folders set name='Salud familiar',version=1 where id=current_setting('test.folder_id')::uuid$$,
   'TC-DOC-01 HU-08: titular renombra carpeta propia');
 select is((select version from public.folders where id=current_setting('test.folder_id')::uuid),2,'TC-DOC-01 HU-08: versión incrementa al renombrar');
-select throws_ok(
-  $$update public.folders set name='Hack',version=2 where name='Vacunas mascota'$$,
-  '42501',null,'TC-DOC-01 HU-08: miembro no renombra carpeta de mascota');
+select is(
+  (select count(*)::int from public.folders where name='Vacunas mascota' and version=1),
+  1,
+  'TC-DOC-01 HU-08: miembro ve carpeta de mascota sin poder mutarla aún');
+update public.folders set name='Hack',version=2 where name='Vacunas mascota';
+select is(
+  (select name from public.folders where name in ('Vacunas mascota','Hack') order by name limit 1),
+  'Vacunas mascota',
+  'TC-DOC-01 HU-08: miembro no renombra carpeta de mascota (0 filas por RLS)');
 select throws_ok(
   $$update public.folders set owner_user_id='17000000-0000-0000-0000-000000000001',version=2 where id=current_setting('test.folder_id')::uuid$$,
   '42501',null,'TC-SEC-04 HU-08: no reasignar titular por DML');
