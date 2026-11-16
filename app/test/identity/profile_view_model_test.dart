@@ -16,6 +16,8 @@ class FakeProfiles implements ProfileRepository {
   int calls = 0;
   int? version;
   @override
+  Future<List<String>> sharedFields(String familyId) async => [];
+  @override
   Future<PersonalProfile?> load() async => value;
   @override
   Future<PersonalProfile> save(

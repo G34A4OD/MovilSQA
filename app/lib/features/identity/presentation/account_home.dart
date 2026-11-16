@@ -3,11 +3,19 @@ import '../domain/profile.dart';
 import 'auth_view_model.dart';
 import 'profile_view_model.dart';
 import 'profile_editor.dart';
+import '../../family/domain/family_repository.dart';
+import '../../family/presentation/family_page.dart';
 
 class AccountHome extends StatefulWidget {
-  const AccountHome({super.key, required this.auth, required this.repository});
+  const AccountHome({
+    super.key,
+    required this.auth,
+    required this.repository,
+    required this.families,
+  });
   final AuthViewModel auth;
   final ProfileRepository repository;
+  final FamilyRepository families;
   @override
   State<AccountHome> createState() => _AccountHomeState();
 }
@@ -112,8 +120,19 @@ class _AccountHomeState extends State<AccountHome> {
               ),
               if (widget.auth.message != null) Text(widget.auth.message!),
               const SizedBox(height: 24),
-              const Text(
-                'Tus grupos familiares se habilitan en la siguiente historia.',
+              FilledButton.icon(
+                icon: const Icon(Icons.diversity_1_outlined),
+                label: const Text('Mis familias'),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => FamilyPage(
+                      repository: widget.families,
+                      profiles: widget.repository,
+                      reauthenticate: (password) => widget.auth.repository
+                          .signIn(widget.auth.session!.email, password),
+                    ),
+                  ),
+                ),
               ),
             ],
           );

@@ -5,6 +5,21 @@ class SupabaseProfileRepository implements ProfileRepository {
   const SupabaseProfileRepository(this.client);
   final SupabaseClient client;
   @override
+  Future<List<String>> sharedFields(String familyId) async {
+    final actor = client.auth.currentUser?.id;
+    if (actor == null) throw StateError('forbidden');
+    final row = await client
+        .from('profile_shares')
+        .select('selected_fields')
+        .eq('family_id', familyId)
+        .eq('user_id', actor)
+        .maybeSingle();
+    return row == null
+        ? <String>[]
+        : (row['selected_fields'] as Map<String, dynamic>).keys.toList();
+  }
+
+  @override
   Future<PersonalProfile?> load() async {
     final actor = client.auth.currentUser?.id;
     if (actor == null) throw StateError('forbidden');

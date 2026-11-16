@@ -66,4 +66,5 @@ abstract interface class ProfileRepository {
   Future<PersonalProfile?> load();
   Future<PersonalProfile> save(ProfileInput input, {int? expectedVersion});
   Future<void> share(String familyId, List<String> fields, String requestId);
+  Future<List<String>> sharedFields(String familyId);
 }
