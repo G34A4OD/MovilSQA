@@ -13,6 +13,30 @@ import '../identity/profile_view_model_test.dart' show FakeProfiles, valid;
 
 class FakeFamilies implements FamilyRepository {
   @override
+  String? get currentUserId => 'persona';
+  bool lastAdmin = false;
+  @override
+  Future<void> setAdmin(
+    String familyId,
+    String targetUserId,
+    bool value,
+  ) async {
+    if (lastAdmin) {
+      throw const FamilyFailure('last_admin');
+    }
+  }
+
+  @override
+  Future<void> leave(String familyId) async {
+    if (lastAdmin) {
+      throw const FamilyFailure('last_admin');
+    }
+    values = [];
+  }
+
+  @override
+  Future<void> remove(String familyId, String targetUserId) async {}
+  @override
   InvitationRepository get invitations => FakeInvitations();
   List<FamilyRecord> values = [
     const FamilyRecord(
@@ -52,6 +76,22 @@ class FakeFamilies implements FamilyRepository {
 }
 
 void main() {
+  test(
+    'TC-FAM-04 HU-05: último admin explica bloqueo y conserva selección',
+    () async {
+      final repo = FakeFamilies()..lastAdmin = true;
+      final vm = FamilyViewModel(repo);
+      addTearDown(vm.dispose);
+      await vm.load();
+      await vm.select(vm.families.first);
+      expect(await vm.leave(vm.selected!), false);
+      expect(vm.selected, isNotNull);
+      expect(vm.message, contains('Designa otro'));
+      repo.lastAdmin = false;
+      expect(await vm.leave(vm.selected!), true);
+      expect(vm.selected, isNull);
+    },
+  );
   test(
     'TC-FAM-01 HU-03: reintento conserva request_id y pérdida de acceso vacía selección',
     () async {

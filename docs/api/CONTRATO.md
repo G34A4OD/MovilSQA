@@ -74,6 +74,10 @@ HU-04: Edge lookup-user verifica el JWT mediante Auth y llama lookup_family_user
 
 invite_member devuelve {error: invitation_unavailable} para destinos no disponibles/repetidos; el adaptador lo transforma en fallo de dominio. No se lanza excepción en ese resultado, para que el contador de intentos se confirme en la transacción. Los permisos/sesión y demás RPC siguen devolviendo errores SQL estables. accepted/rejected/revoked/expired son estados finales; caducidad y permisos del invitador se revalidan al aceptar. Familias borradas no muestran invitaciones.
 
+HU-05: set_member_admin/leave_family/remove_member bloquean primero families y vuelven a validar sesión/membresía/admin. membership_revision cambia bajo ese lock para impedir snapshots obsoletos también en REPEATABLE READ. La salida/expulsión inactiva membresía, quita admin, retira profile_shares y revoca invitaciones pendientes del saliente; cambiar parentesco nunca cambia administración. El último admin recibe last_admin. Un reingreso explícito entra sin restaurar privilegios previos.
+
+La salida rota memberships.access_epoch. **Integración obligatoria de Eva:** folders/documents de titular humano guardan owner_access_epoch obtenido del servidor y sus policies/RPC exigen dueño activo y coincidencia con memberships.access_epoch además del lector activo. Así un reingreso no vuelve a compartir archivos antiguos sin nuevo consentimiento. Para mascotas se aplica pertenencia/admin y estado de mascota; no hay usuario Auth de mascota. Un cliente no elige el epoch ni el dueño. private.cleanup_jobs guarda la generación retirada en metadata; el worker limpia solo generaciones retiradas y usa corte temporal/lease para no borrar archivos de un reingreso. Hasta demostrar RLS/Storage del módulo de archivos, las pruebas de membresía no acreditan revocación de bytes.
+
 ## Documentos y archivos · Eva
 
 Carpeta: name no vacío de hasta 100 caracteres, family_id y exactamente uno de owner_user_id o pet_id. Miembro crea para sí; admin puede crear para mascota. Todos los IDs asociados deben pertenecer al mismo grupo mediante FK/checks y autorización.

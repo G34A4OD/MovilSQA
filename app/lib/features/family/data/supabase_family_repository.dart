@@ -8,6 +8,36 @@ class SupabaseFamilyRepository implements FamilyRepository {
   const SupabaseFamilyRepository(this.client);
   final SupabaseClient client;
   @override
+  String? get currentUserId => client.auth.currentUser?.id;
+  Future<void> _membership(
+    String operation,
+    Map<String, dynamic> params,
+  ) async {
+    try {
+      await client.rpc(operation, params: params);
+    } on PostgrestException catch (e) {
+      throw FamilyFailure(
+        e.message == 'last_admin' ? 'last_admin' : 'forbidden',
+      );
+    }
+  }
+
+  @override
+  Future<void> setAdmin(String familyId, String targetUserId, bool value) =>
+      _membership('set_member_admin', {
+        'p_family_id': familyId,
+        'p_target_user_id': targetUserId,
+        'p_is_admin': value,
+      });
+  @override
+  Future<void> leave(String familyId) =>
+      _membership('leave_family', {'p_family_id': familyId});
+  @override
+  Future<void> remove(String familyId, String targetUserId) => _membership(
+    'remove_member',
+    {'p_family_id': familyId, 'p_target_user_id': targetUserId},
+  );
+  @override
   InvitationRepository get invitations => SupabaseInvitationRepository(client);
   @override
   Future<List<FamilyRecord>> list() async {

@@ -39,6 +39,8 @@ jobs:
         run: npx --yes supabase@3.1.0 functions serve lookup-user > /tmp/nido-edge.log 2>&1 &
       - name: Invitaciones y Edge con tres cuentas reales de pruebas
         run: python scripts/test_family_local.py > evidencias/ejecuciones/sql/family-http.json
+      - name: Último administrador con conexiones simultáneas
+        run: python scripts/test_membership_concurrency.py > evidencias/ejecuciones/sql/membership-concurrency.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
