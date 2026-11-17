@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import '../data/document_file_picker.dart';
 import '../domain/document_repository.dart';
 import 'document_view_model.dart';
 
-/// Fuente de bytes inyectable. La selección real en dispositivo requiere
-/// acordar `file_picker` (u otro) con Gerardo antes de añadirlo a pubspec.
+/// Fuente de bytes inyectable (tests). En dispositivo se usa file_picker.
 typedef DocumentBytesPicker =
     Future<({String filename, Uint8List bytes})?> Function();
 
@@ -151,26 +151,42 @@ class _UploadDialogState extends State<_UploadDialog> {
   }
 
   Future<void> pickFile() async {
-    final picker = widget.pickBytes;
-    if (picker == null) {
+    try {
+      final picker = widget.pickBytes ?? pickDocumentBytesWithFilePicker;
+      final picked = await picker();
+      if (!mounted) {
+        return;
+      }
+      // Cancelación del selector: no cierra el diálogo ni crea reserva.
+      if (picked == null) {
+        return;
+      }
+      final prepared = prepareDocumentPick(
+        filename: picked.filename,
+        bytes: picked.bytes,
+      );
       setState(() {
-        error =
-            'La selección de archivo en dispositivo está pendiente de acordar la dependencia compartida (file_picker) con Gerardo.';
+        filename = prepared.filename;
+        bytes = prepared.bytes;
+        error = null;
       });
-      return;
+    } on FormatException catch (e) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        filename = null;
+        bytes = null;
+        error = e.message;
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        error = 'No se pudo leer el archivo. Prueba otro JPG, PNG o PDF.';
+      });
     }
-    final picked = await picker();
-    if (!mounted) {
-      return;
-    }
-    if (picked == null) {
-      return;
-    }
-    setState(() {
-      filename = picked.filename;
-      bytes = picked.bytes;
-      error = null;
-    });
   }
 
   @override
