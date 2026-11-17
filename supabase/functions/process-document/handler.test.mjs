@@ -33,6 +33,86 @@ function mockClamdConnect(reply) {
   });
 }
 
+test('TC-SEC-05: clamd acepta solo respuesta completa y explícita, incluso fragmentada', async () => {
+  const enc = new TextEncoder();
+  const connect = (parts) => async () => ({
+    write: async (buf) => Math.min(buf.length, 3),
+    readable: new ReadableStream({
+      start(controller) {
+        for (const part of parts) controller.enqueue(enc.encode(part));
+        controller.close();
+      },
+    }),
+    close() {},
+  });
+  assert.equal((await scanWithClamd(pdf, { connect: connect(['stream: ', 'OK\0']) })).status, 'clean');
+  assert.equal((await scanWithClamd(pdf, { connect: connect(['stream: Test FOUND\0']) })).status, 'infected');
+  assert.equal((await scanWithClamd(pdf, { connect: connect(['stream: OK']) })).status, 'unavailable');
+  assert.equal((await scanWithClamd(pdf, { connect: mockClamdConnect('stream: BROKEN ERROR\0') })).status, 'unavailable');
+  assert.equal((await scanWithClamd(pdf, { connect: async () => new Promise(() => {}), timeoutMs: 30 })).status, 'unavailable');
+});
+
+test('TC-SEC-05: escáner HTTP exige HTTPS autenticado y veredicto explícito', async () => {
+  const make = (body, status = 200) => createScanner({
+    mode: 'http', url: 'https://scanner.example.test/scan', token: 'test-token',
+    fetcher: async (_url, options) => {
+      assert.equal(options.headers.Authorization, 'Bearer test-token');
+      assert.equal(options.redirect, 'error');
+      return new Response(body, { status });
+    },
+  })(pdf);
+  assert.equal((await make('{"status":"clean"}')).status, 'clean');
+  assert.equal((await make('{"status":"infected"}')).status, 'infected');
+  assert.equal((await make('{"status":"error"}')).status, 'unavailable');
+  assert.equal((await make('OK')).status, 'unavailable');
+  assert.equal((await make('', 500)).status, 'unavailable');
+  assert.equal((await createScanner({
+    mode: 'http', url: 'https://scanner.example.test/scan', token: 'test-token',
+    fetcher: async () => new Promise(() => {}), timeoutMs: 30,
+  })(pdf)).status, 'unavailable');
+  assert.equal((await createScanner({ mode:'http', url:'https://scanner.example.test/scan', fetcher: () => { throw Error('must not call'); } })(pdf)).status, 'unavailable');
+  assert.equal((await createScanner({ mode:'http', url:'http://scanner.example.test/scan', token:'test-token', fetcher: () => { throw Error('must not call'); } })(pdf)).status, 'unavailable');
+});
+
+test('TC-SEC-05: veredicto desconocido no publica documentos', async () => {
+  let published = false;
+  const handler = createProcessDocumentHandler({
+    url: 'http://local', key: 'anon', serviceKey: 'service',
+    scanner: async () => ({ status: 'unknown', evidence: 'clamav' }),
+    fetcher: async (url) => {
+      if (url.endsWith('/auth/v1/user')) return Response.json({ id: 'actor' });
+      if (url.includes('authorize_document_process')) return Response.json(quarantineAuthz());
+      if (url.includes('/storage/v1/object/nido-quarantine/')) return new Response(pdf);
+      if (url.includes('complete_document_process')) return Response.json({ status:'quarantine' });
+      if (url.includes('/storage/v1/object/nido-documents/')) { published = true; return new Response(null, {status:200}); }
+      throw new Error('unexpected request');
+    },
+  });
+  assert.equal((await handler(request())).status, 503);
+  assert.equal(published, false);
+});
+
+test('TC-SEC-05: confirmación incierta conserva ambas copias para reconciliar', async () => {
+  const calls = [];
+  const handler = createProcessDocumentHandler({
+    url:'http://local', key:'anon', serviceKey:'service',
+    scanner:async () => ({ status:'clean', evidence:'clamav' }),
+    fetcher:async (url, options={}) => {
+      calls.push([url,options.method ?? 'GET']);
+      if (url.endsWith('/auth/v1/user')) return Response.json({id:'actor'});
+      if (url.includes('authorize_document_process')) return Response.json(quarantineAuthz());
+      if (url.includes('/storage/v1/object/nido-quarantine/')) return new Response(pdf);
+      if (url.includes('/storage/v1/object/nido-documents/') && options.method==='POST') return new Response(null,{status:200});
+      if (url.includes('/storage/v1/object/nido-documents/') && options.method==='DELETE') return new Response(null,{status:200});
+      if (url.includes('complete_document_process')) return Response.json({message:'version_conflict'},{status:409});
+      throw new Error('unexpected request');
+    },
+  });
+  const result=await handler(request());
+  assert.equal((await result.json()).error, 'publish_commit_unconfirmed');
+  assert.equal(calls.some(([,method])=>method==='DELETE'),false);
+});
+
 function quarantineAuthz(size = pdf.length) {
   return {
     id: DOC,
@@ -224,9 +304,10 @@ test('TC-DOC-02 HU-09: simulate bloqueado sin allowSimulate conserva cuarentena'
   assert.equal(scan.evidence, 'simulate_blocked');
 });
 
-test('TC-DOC-02 HU-09: ClamAV limpio publica y marca approved (evidencia real)', async () => {
+test('TC-DOC-02 HU-09: respuesta ClamAV simulada limpia publica y marca approved', async () => {
   const completes = [];
   let published = false;
+  let cleanupPath;
   const handler = createProcessDocumentHandler({
     url: 'http://local',
     key: 'anon',
@@ -247,7 +328,8 @@ test('TC-DOC-02 HU-09: ClamAV limpio publica y marca approved (evidencia real)',
         published = true;
         return new Response(null, { status: 200 });
       }
-      if (url.includes('/storage/v1/object/nido-quarantine/') && options.method === 'DELETE') {
+      if (url.endsWith('/storage/v1/object/nido-quarantine') && options.method === 'DELETE') {
+        cleanupPath = JSON.parse(options.body).prefixes;
         return new Response(null, { status: 200 });
       }
       if (url.includes('complete_document_process')) {
@@ -263,9 +345,10 @@ test('TC-DOC-02 HU-09: ClamAV limpio publica y marca approved (evidencia real)',
   assert.equal(body.status, 'approved');
   assert.equal(published, true);
   assert.equal(completes[0].p_outcome, 'approved');
+  assert.deepEqual(cleanupPath, [PATH]);
 });
 
-test('TC-DOC-02 HU-09: ClamAV FOUND rechaza (evidencia real)', async () => {
+test('TC-DOC-02 HU-09: respuesta ClamAV simulada FOUND rechaza', async () => {
   const handler = createProcessDocumentHandler({
     url: 'http://local',
     key: 'anon',

@@ -60,61 +60,77 @@ export function validateDocumentBytes(bytes, declaredMime, expectedSize) {
  */
 export async function scanWithClamd(
   bytes,
-  { host = '127.0.0.1', port = 3310, connect = null, chunkSize = 2048 } = {},
+  { host = '127.0.0.1', port = 3310, connect = null, chunkSize = 2048, timeoutMs = 10000 } = {},
 ) {
-  if (typeof connect !== 'function') {
+  if (typeof connect !== 'function' || !Number.isInteger(chunkSize) || chunkSize < 1) {
     return { status: 'unavailable', reason: 'scanner_unavailable' };
   }
   let conn;
+  let reader;
+  let timer;
+  let timedOut = false;
   try {
-    conn = await connect({ hostname: host, port: Number(port) });
-    const encoder = new TextEncoder();
-    const write = async (data) => {
-      const buf = typeof data === 'string' ? encoder.encode(data) : data;
-      let offset = 0;
-      while (offset < buf.length) {
-        const written = await conn.write(buf.subarray(offset));
-        if (written == null || written <= 0) throw new Error('write_failed');
-        offset += written;
+    return await Promise.race([(async () => {
+      const opened = await connect({ hostname: host, port: Number(port) });
+      if (timedOut) { opened.close?.(); throw new Error('timeout'); }
+      conn = opened;
+      const encoder = new TextEncoder();
+      const write = async (data) => {
+        const buf = typeof data === 'string' ? encoder.encode(data) : data;
+        let offset = 0;
+        while (offset < buf.length) {
+          const written = await conn.write(buf.subarray(offset));
+          if (written == null || written <= 0) throw new Error('write_failed');
+          offset += written;
+        }
+      };
+      await write('zINSTREAM\0');
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
+        const header = new Uint8Array(4);
+        new DataView(header.buffer).setUint32(0, chunk.length, false);
+        await write(header);
+        await write(chunk);
       }
-    };
-    await write('zINSTREAM\0');
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-      const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
-      const header = new Uint8Array(4);
-      new DataView(header.buffer).setUint32(0, chunk.length, false);
-      await write(header);
-      await write(chunk);
-    }
-    const end = new Uint8Array(4);
-    await write(end);
-    const reader = conn.readable?.getReader?.()
-      ? conn.readable.getReader()
-      : null;
-    let reply = '';
-    if (reader) {
-      const { value } = await reader.read();
-      reply = new TextDecoder().decode(value ?? new Uint8Array());
-      try {
-        reader.releaseLock();
-      } catch {
-        /* ignore */
+      const end = new Uint8Array(4);
+      await write(end);
+      reader = typeof conn.readable?.getReader === 'function' ? conn.readable.getReader() : null;
+      const replyBytes = [];
+      let complete = false;
+      while (!complete) {
+        let chunk;
+        if (reader) {
+          const result = await reader.read();
+          if (result.done) throw new Error('incomplete_reply');
+          chunk = result.value;
+        } else if (typeof conn.read === 'function') {
+          const buf = new Uint8Array(512);
+          const n = await conn.read(buf);
+          if (!n) throw new Error('incomplete_reply');
+          chunk = buf.subarray(0, n);
+        } else throw new Error('read_unavailable');
+        for (const byte of chunk) {
+          if (complete) throw new Error('invalid_reply');
+          if (byte === 0) complete = true;
+          else if (replyBytes.push(byte) > 4096) throw new Error('reply_too_long');
+        }
       }
-    } else if (typeof conn.read === 'function') {
-      const buf = new Uint8Array(512);
-      const n = await conn.read(buf);
-      reply = new TextDecoder().decode(buf.subarray(0, n ?? 0));
-    }
-    if (/FOUND/i.test(reply)) {
-      return { status: 'infected', reason: 'clamav_detected', evidence: 'clamav' };
-    }
-    if (/OK/i.test(reply)) {
-      return { status: 'clean', evidence: 'clamav' };
-    }
-    return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'clamav' };
+      const reply = new TextDecoder('utf-8', { fatal: true }).decode(new Uint8Array(replyBytes));
+      if (/^stream: [^\r\n\0]+ FOUND$/.test(reply)) {
+        return { status: 'infected', reason: 'clamav_detected', evidence: 'clamav' };
+      }
+      if (reply === 'stream: OK') {
+        return { status: 'clean', evidence: 'clamav' };
+      }
+      return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'clamav' };
+    })(), new Promise((_, reject) => {
+      timer = setTimeout(() => { timedOut = true; try { conn?.close?.(); } catch {} reject(new Error('timeout')); }, timeoutMs);
+    })]);
   } catch {
     return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'clamav' };
   } finally {
+    clearTimeout(timer);
+    try { reader?.releaseLock(); } catch { /* pending read */ }
     try {
       conn?.close?.();
     } catch {
@@ -133,9 +149,11 @@ export function createScanner({
   mode = 'off',
   fetcher = fetch,
   url,
+  token,
   host = '127.0.0.1',
   port = 3310,
   connect = null,
+  timeoutMs = 10000,
   allowSimulate = false,
 } = {}) {
   return async (bytes) => {
@@ -155,24 +173,34 @@ export function createScanner({
       return { status: 'clean', evidence: 'simulate' };
     }
     if (mode === 'clamav') {
-      return scanWithClamd(bytes, { host, port, connect });
+      return scanWithClamd(bytes, { host, port, connect, timeoutMs });
     }
-    if (mode === 'http' && url) {
+    if (mode === 'http' && url && token) {
+      let timer;
       try {
-        const response = await fetcher(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/octet-stream' },
-          body: bytes,
-        });
-        if (response.status === 503) {
-          return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'http' };
-        }
-        if (!response.ok) {
-          return { status: 'infected', reason: 'scanner_rejected', evidence: 'http' };
-        }
-        return { status: 'clean', evidence: 'http' };
+        const endpoint = new URL(url);
+        if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password) throw new Error('invalid_url');
+        const controller = new AbortController();
+        return await Promise.race([(async () => {
+          const response = await fetcher(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/octet-stream', Authorization: `Bearer ${token}` },
+            redirect: 'error',
+            signal: controller.signal,
+            body: bytes,
+          });
+          if (!response.ok) throw new Error('scanner_error');
+          const verdict = await response.json();
+          if (verdict?.status === 'clean') return { status: 'clean', evidence: 'http' };
+          if (verdict?.status === 'infected') return { status: 'infected', reason: 'scanner_rejected', evidence: 'http' };
+          throw new Error('invalid_verdict');
+        })(), new Promise((_, reject) => {
+          timer = setTimeout(() => { controller.abort(); reject(new Error('timeout')); }, timeoutMs);
+        })]);
       } catch {
         return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'http' };
+      } finally {
+        clearTimeout(timer);
       }
     }
     return { status: 'unavailable', reason: 'scanner_unavailable' };
@@ -206,6 +234,7 @@ export function createProcessDocumentHandler({
       headers,
       body: JSON.stringify(params),
     });
+    if (!response.ok) throw new Error('completion_failed');
     return readJson(response);
   }
 
@@ -309,14 +338,14 @@ export function createProcessDocumentHandler({
 
       // Escaneo solo tras validar bytes reales. approved exige evidencia clamav|http.
       const scan = await scanner(buffer);
-      const realEvidence = scan.evidence === 'clamav' || scan.evidence === 'http';
-      if (scan.status === 'unavailable' || (scan.status === 'clean' && !realEvidence)) {
+      const realEvidence = scan?.evidence === 'clamav' || scan?.evidence === 'http';
+      if (scan?.status !== 'infected' && (scan?.status !== 'clean' || !realEvidence)) {
         const done = await complete(serviceHeaders, {
           p_document_id: documentId,
           p_expected_version: authz.version,
           p_outcome: 'quarantine',
           p_detected_mime: validation.mime,
-          p_error: scan.reason || 'scanner_unavailable',
+          p_error: scan?.reason || 'scanner_unavailable',
           p_published_path: null,
         });
         return json(
@@ -324,7 +353,7 @@ export function createProcessDocumentHandler({
             id: documentId,
             status: 'quarantine',
             error: 'scanner_unavailable',
-            scan_evidence: scan.evidence ?? null,
+            scan_evidence: scan?.evidence ?? null,
             process_attempts: done?.process_attempts,
             note: 'Bloqueo: no hay escáner acordado/operativo; el archivo permanece en cuarentena.',
           },
@@ -381,23 +410,31 @@ export function createProcessDocumentHandler({
         );
       }
 
-      const done = await complete(serviceHeaders, {
-        p_document_id: documentId,
-        p_expected_version: authz.version,
-        p_outcome: 'approved',
-        p_detected_mime: validation.mime,
-        p_error: null,
-        p_published_path: publishedPath,
-      });
+      let done;
+      try {
+        done = await complete(serviceHeaders, {
+          p_document_id: documentId,
+          p_expected_version: authz.version,
+          p_outcome: 'approved',
+          p_detected_mime: validation.mime,
+          p_error: null,
+          p_published_path: publishedPath,
+        });
+        if (done?.status !== 'approved') throw new Error('completion_unconfirmed');
+      } catch {
+        // La respuesta pudo perderse tras el commit: conservar ambas copias para reconciliación.
+        return json({ error: 'publish_commit_unconfirmed' }, 503);
+      }
 
       // Limpieza best-effort de cuarentena; fallo no revierte approved.
-      await fetcher(
-        `${url}/storage/v1/object/nido-quarantine/${encodeURIComponent(authz.storage_path)}`,
+      try { await fetcher(
+        `${url}/storage/v1/object/nido-quarantine`,
         {
           method: 'DELETE',
-          headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` },
+          headers: serviceHeaders,
+          body: JSON.stringify({ prefixes: [authz.storage_path] }),
         },
-      );
+      ); } catch { /* La copia en cuarentena queda pendiente de limpieza. */ }
 
       return json({
         id: documentId,

@@ -14,6 +14,7 @@ if (scannerMode === 'simulate') {
   scannerMode = 'off';
 }
 const scannerUrl = Deno.env.get('NIDO_DOCUMENT_SCANNER_URL') ?? undefined;
+const scannerToken = Deno.env.get('NIDO_DOCUMENT_SCANNER_TOKEN') ?? undefined;
 const clamHost = Deno.env.get('NIDO_CLAMD_HOST') ?? '127.0.0.1';
 const clamPort = Deno.env.get('NIDO_CLAMD_PORT') ?? '3310';
 
@@ -30,6 +31,7 @@ Deno.serve(
     scanner: createScanner({
       mode: scannerMode,
       url: scannerUrl,
+      token: scannerToken,
       host: clamHost,
       port: clamPort,
       connect,
