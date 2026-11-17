@@ -51,6 +51,8 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
         initialTitle: replaces?.title,
         initialDescription: replaces?.description,
         initialExpiresOn: replaces?.expiresOn,
+        initialCategory: replaces?.category,
+        initialHealthNoteKind: replaces?.healthNoteKind,
         dialogTitle: replaces == null
             ? 'Cargar documento'
             : 'Reemplazar archivo',
@@ -284,12 +286,16 @@ class _UploadDialog extends StatefulWidget {
     this.initialTitle,
     this.initialDescription,
     this.initialExpiresOn,
+    this.initialCategory,
+    this.initialHealthNoteKind,
     this.dialogTitle = 'Cargar documento',
   });
   final DocumentBytesPicker? pickBytes;
   final String? initialTitle;
   final String? initialDescription;
   final DateTime? initialExpiresOn;
+  final DocumentCategory? initialCategory;
+  final HealthNoteKind? initialHealthNoteKind;
   final String dialogTitle;
 
   @override
@@ -302,8 +308,12 @@ class _UploadDialogState extends State<_UploadDialog> {
     text: widget.initialDescription ?? '',
   );
   late DateTime? expiresOn = widget.initialExpiresOn;
-  DocumentCategory category = DocumentCategory.health;
-  HealthNoteKind? healthNoteKind = HealthNoteKind.vaccine;
+  // Carga nueva: sin categoría hasta elegir. Reemplazo: conserva originales.
+  late DocumentCategory? category = widget.initialCategory;
+  late HealthNoteKind? healthNoteKind =
+      widget.initialCategory == DocumentCategory.health
+      ? widget.initialHealthNoteKind
+      : null;
   String? filename;
   Uint8List? bytes;
   String? error;
@@ -378,6 +388,7 @@ class _UploadDialogState extends State<_UploadDialog> {
             decoration: const InputDecoration(
               labelText: 'Categoría orientativa',
             ),
+            hint: const Text('Elegir categoría'),
             items: const [
               DropdownMenuItem(
                 value: DocumentCategory.identityCivic,
@@ -397,23 +408,26 @@ class _UploadDialogState extends State<_UploadDialog> {
               ),
             ],
             onChanged: (value) {
-              if (value == null) {
-                return;
-              }
               setState(() {
                 category = value;
-                healthNoteKind = value == DocumentCategory.health
-                    ? (healthNoteKind ?? HealthNoteKind.vaccine)
-                    : null;
+                if (value != DocumentCategory.health) {
+                  healthNoteKind = null;
+                }
               });
             },
           ),
           if (category == DocumentCategory.health)
-            DropdownButtonFormField<HealthNoteKind>(
+            DropdownButtonFormField<HealthNoteKind?>(
               key: const Key('document-health-kind'),
               initialValue: healthNoteKind,
-              decoration: const InputDecoration(labelText: 'Nota de salud'),
+              decoration: const InputDecoration(
+                labelText: 'Nota de salud (opcional)',
+              ),
               items: const [
+                DropdownMenuItem<HealthNoteKind?>(
+                  value: null,
+                  child: Text('Documento general'),
+                ),
                 DropdownMenuItem(
                   value: HealthNoteKind.allergy,
                   child: Text('Alergia'),
@@ -493,8 +507,9 @@ class _UploadDialogState extends State<_UploadDialog> {
             setState(() => error = 'Adjunta un archivo JPG, PNG o PDF.');
             return;
           }
-          if (category == DocumentCategory.health && healthNoteKind == null) {
-            setState(() => error = 'Elige el tipo de nota de salud.');
+          final selectedCategory = category;
+          if (selectedCategory == null) {
+            setState(() => error = 'Elige una categoría orientativa.');
             return;
           }
           Navigator.pop(
@@ -505,8 +520,8 @@ class _UploadDialogState extends State<_UploadDialog> {
               filename: fileName,
               bytes: fileBytes,
               expiresOn: expiresOn,
-              category: category,
-              healthNoteKind: category == DocumentCategory.health
+              category: selectedCategory,
+              healthNoteKind: selectedCategory == DocumentCategory.health
                   ? healthNoteKind
                   : null,
             ),

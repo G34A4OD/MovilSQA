@@ -172,16 +172,16 @@ void main() {
     );
   });
 
-  test('TC-DOC-03 HU-10: salud exige tipo de nota', () {
+  test('TC-DOC-03 HU-10: salud admite general o nota específica', () {
     expect(
       DocumentUploadInput(
-        title: 'Alergia',
+        title: 'Lab',
         description: '',
         filename: 'a.pdf',
         bytes: _pdf(),
         category: DocumentCategory.health,
       ).isValid,
-      false,
+      true,
     );
     expect(
       DocumentUploadInput(
@@ -193,6 +193,17 @@ void main() {
         healthNoteKind: HealthNoteKind.allergy,
       ).isValid,
       true,
+    );
+    expect(
+      DocumentUploadInput(
+        title: 'CI',
+        description: '',
+        filename: 'a.pdf',
+        bytes: _pdf(),
+        category: DocumentCategory.identityCivic,
+        healthNoteKind: HealthNoteKind.allergy,
+      ).isValid,
+      false,
     );
   });
 
@@ -303,6 +314,8 @@ void main() {
         storagePath: 'old-path',
         version: 2,
         publishedPath: 'old-path',
+        category: DocumentCategory.health,
+        healthNoteKind: HealthNoteKind.vaccine,
       );
       repo.values = [approved];
       final vm = DocumentViewModel(repo, 'carpeta-1');
@@ -316,11 +329,15 @@ void main() {
             description: 'reemplazo',
             filename: 'v2.pdf',
             bytes: _pdf(),
+            category: DocumentCategory.health,
+            healthNoteKind: HealthNoteKind.vaccine,
           ),
         ),
         true,
       );
       expect(repo.uploads.single.replacesDocumentId, 'doc-old');
+      expect(repo.uploads.single.category, DocumentCategory.health);
+      expect(repo.uploads.single.healthNoteKind, HealthNoteKind.vaccine);
       expect(
         vm.items.where((d) => d.status == DocumentStatus.approved),
         isNotEmpty,
@@ -331,6 +348,85 @@ void main() {
       );
     },
   );
+
+  test(
+    'TC-DOC-03 HU-10: reemplazo conserva identidad/cívico sin forzar vacuna',
+    () async {
+      final repo = FakeDocuments();
+      final approved = DocumentRecord(
+        id: 'doc-id',
+        folderId: 'carpeta-1',
+        familyId: 'familia',
+        title: 'CI ficticio',
+        description: '',
+        mimeType: 'application/pdf',
+        sizeBytes: 8,
+        status: DocumentStatus.approved,
+        storagePath: 'ci-path',
+        version: 2,
+        publishedPath: 'ci-path',
+        category: DocumentCategory.identityCivic,
+      );
+      repo.values = [approved];
+      final vm = DocumentViewModel(repo, 'carpeta-1');
+      addTearDown(vm.dispose);
+      await vm.load();
+      expect(
+        await vm.replace(
+          approved,
+          DocumentUploadInput(
+            title: 'CI ficticio',
+            description: '',
+            filename: 'ci2.pdf',
+            bytes: _pdf(),
+            category: DocumentCategory.identityCivic,
+          ),
+        ),
+        true,
+      );
+      expect(repo.uploads.single.category, DocumentCategory.identityCivic);
+      expect(repo.uploads.single.healthNoteKind, isNull);
+    },
+  );
+
+  test('TC-DOC-03 HU-10: reemplazo conserva nota de salud existente', () async {
+    final repo = FakeDocuments();
+    final approved = DocumentRecord(
+      id: 'doc-al',
+      folderId: 'carpeta-1',
+      familyId: 'familia',
+      title: 'Alergia a polvo',
+      description: 'ficticio',
+      mimeType: 'application/pdf',
+      sizeBytes: 8,
+      status: DocumentStatus.approved,
+      storagePath: 'al-path',
+      version: 2,
+      publishedPath: 'al-path',
+      category: DocumentCategory.health,
+      healthNoteKind: HealthNoteKind.allergy,
+    );
+    repo.values = [approved];
+    final vm = DocumentViewModel(repo, 'carpeta-1');
+    addTearDown(vm.dispose);
+    await vm.load();
+    expect(
+      await vm.replace(
+        approved,
+        DocumentUploadInput(
+          title: 'Alergia a polvo',
+          description: 'ficticio',
+          filename: 'al2.pdf',
+          bytes: _pdf(),
+          category: DocumentCategory.health,
+          healthNoteKind: HealthNoteKind.allergy,
+        ),
+      ),
+      true,
+    );
+    expect(repo.uploads.single.category, DocumentCategory.health);
+    expect(repo.uploads.single.healthNoteKind, HealthNoteKind.allergy);
+  });
 
   testWidgets(
     'TC-DOC-02 HU-09: formulario reserva carga con archivo inyectado',
@@ -377,13 +473,90 @@ void main() {
         find.byKey(const Key('document-description')),
         'Ejemplo ficticio',
       );
+      await tester.tap(find.byKey(const Key('document-category')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Salud').last);
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('document-health-kind')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Vacuna').last);
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('document-pick')));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const Key('document-save')));
       await tester.pumpAndSettle();
       expect(docs.uploads, hasLength(1));
+      expect(docs.uploads.single.category, DocumentCategory.health);
+      expect(docs.uploads.single.healthNoteKind, HealthNoteKind.vaccine);
       expect(find.textContaining('cuarentena'), findsWidgets);
       expect(find.text('Vacunas'), findsWidgets);
+    },
+  );
+
+  testWidgets(
+    'TC-DOC-03 HU-10: diálogo de reemplazo inicia con categoría del documento',
+    (tester) async {
+      final folders = FakeFolders();
+      folders.values = [
+        const FolderRecord(
+          id: 'carpeta-1',
+          familyId: 'familia',
+          name: 'Docs',
+          version: 1,
+          ownerKind: FolderOwnerKind.human,
+          ownerUserId: 'yo',
+        ),
+      ];
+      final docs = FakeDocuments();
+      docs.values = [
+        DocumentRecord(
+          id: 'doc-ci',
+          folderId: 'carpeta-1',
+          familyId: 'familia',
+          title: 'CI ficticio',
+          description: '',
+          mimeType: 'application/pdf',
+          sizeBytes: 8,
+          status: DocumentStatus.approved,
+          storagePath: 'ci',
+          version: 2,
+          publishedPath: 'ci',
+          category: DocumentCategory.identityCivic,
+        ),
+      ];
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: FoldersPanel(
+                repository: folders,
+                familyId: 'familia',
+                isAdmin: false,
+                currentUserId: 'yo',
+                documents: docs,
+                pickDocumentBytes: () async =>
+                    (filename: 'ci2.pdf', bytes: _pdf()),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Docs'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('document-menu-doc-ci')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Reemplazar archivo'));
+      await tester.pumpAndSettle();
+      expect(find.text('Identidad/cívico'), findsWidgets);
+      expect(find.text('Vacuna'), findsNothing);
+      await tester.tap(find.byKey(const Key('document-pick')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('document-save')));
+      await tester.pumpAndSettle();
+      expect(docs.uploads, hasLength(1));
+      expect(docs.uploads.single.category, DocumentCategory.identityCivic);
+      expect(docs.uploads.single.healthNoteKind, isNull);
     },
   );
 }

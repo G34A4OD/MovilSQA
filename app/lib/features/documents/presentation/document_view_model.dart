@@ -111,7 +111,9 @@ class DocumentViewModel extends ChangeNotifier {
       expiresOn: input.expiresOn,
       replacesDocumentId: document.id,
       category: input.category,
-      healthNoteKind: input.healthNoteKind,
+      healthNoteKind: input.category == DocumentCategory.health
+          ? input.healthNoteKind
+          : null,
     );
     if (!replacement.isValid) {
       throw const FormatException(

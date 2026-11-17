@@ -65,9 +65,7 @@ class DocumentUploadInput {
       DocumentPolicy.description(description);
       DocumentPolicy.expiresOn(expiresOn);
       DocumentPolicy.detect(bytes, filename);
-      if (category == DocumentCategory.health && healthNoteKind == null) {
-        return false;
-      }
+      // Salud admite documento general (healthNoteKind null) o nota específica.
       if (category != DocumentCategory.health && healthNoteKind != null) {
         return false;
       }
