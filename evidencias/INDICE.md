@@ -2,7 +2,7 @@
 
 Cada evidencia identifica commit/build, autor real, fecha, entorno y resultado. Tener una plantilla no significa completar el requisito.
 
-[Incremento OPS y prueba Android real](OPS_20.md) · [G0](G0_22.md) · [HU-01](HU01_2.md) · [HU-02](HU02_3.md) · [HU-03](HU03_4.md) · [HU-04](HU04_5.md) · [HU-05](HU05_6.md) · [HU-06](HU06_7.md) · [HU-07](HU07_8.md). Metadatos/resúmenes revisados en ops/, capturas ficticias en ui/.
+[Incremento OPS y prueba Android real](OPS_20.md) · [G0](G0_22.md) · [HU-01](HU01_2.md) · [HU-02](HU02_3.md) · [HU-03](HU03_4.md) · [HU-04](HU04_5.md) · [HU-05](HU05_6.md) · [HU-06](HU06_7.md) · [HU-07](HU07_8.md) · [HU-08](HU08_9.md). Metadatos/resúmenes revisados en ops/, capturas ficticias en ui/.
 
 [Reporte local validado de la base](base/report.md) · [secuencia TDD real y límites](TDD.md). Los artifacts de CI corresponden al commit probado en GitHub Actions.
 
