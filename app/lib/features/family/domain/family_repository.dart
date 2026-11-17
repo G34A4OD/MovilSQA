@@ -1,3 +1,4 @@
+import '../../documents/domain/document_repository.dart';
 import '../../documents/domain/folder_repository.dart';
 import 'invitation_repository.dart';
 import 'relationship_repository.dart';
@@ -35,6 +36,7 @@ abstract interface class FamilyRepository {
   RelationshipRepository get relationships;
   PetRepository get pets;
   FolderRepository get folders;
+  DocumentRepository get documents;
   Future<void> setAdmin(String familyId, String targetUserId, bool value);
   Future<void> leave(String familyId);
   Future<void> remove(String familyId, String targetUserId);
