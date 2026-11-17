@@ -3,11 +3,7 @@ import 'document_policy.dart';
 enum FolderOwnerKind { human, pet }
 
 class FolderInput {
-  const FolderInput({
-    required this.name,
-    required this.ownerKind,
-    this.petId,
-  });
+  const FolderInput({required this.name, required this.ownerKind, this.petId});
   final String name;
   final FolderOwnerKind ownerKind;
   final String? petId;

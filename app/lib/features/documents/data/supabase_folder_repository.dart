@@ -77,10 +77,7 @@ class SupabaseFolderRepository implements FolderRepository {
   Future<void> delete(FolderRecord folder) async {
     await client.rpc(
       'delete_folder',
-      params: {
-        'p_folder_id': folder.id,
-        'p_expected_version': folder.version,
-      },
+      params: {'p_folder_id': folder.id, 'p_expected_version': folder.version},
     );
   }
 }

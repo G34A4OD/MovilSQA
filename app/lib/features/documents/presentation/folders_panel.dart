@@ -56,10 +56,7 @@ class _FoldersPanelState extends State<FoldersPanel> {
   Future<void> createFolder() async {
     final input = await showDialog<FolderInput>(
       context: context,
-      builder: (_) => _FolderDialog(
-        isAdmin: widget.isAdmin,
-        pets: widget.pets,
-      ),
+      builder: (_) => _FolderDialog(isAdmin: widget.isAdmin, pets: widget.pets),
     );
     if (input != null && mounted) {
       await model.create(input);
@@ -89,11 +86,11 @@ class _FoldersPanelState extends State<FoldersPanel> {
             onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancelar'),
           ),
-                          FilledButton(
-                            key: const Key('folder-delete-confirm'),
-                            onPressed: () => Navigator.pop(context, true),
-                            child: const Text('Eliminar carpeta'),
-                          ),
+          FilledButton(
+            key: const Key('folder-delete-confirm'),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Eliminar carpeta'),
+          ),
         ],
       ),
     );
@@ -217,7 +214,9 @@ class _FolderDialogState extends State<_FolderDialog> {
             controller: name,
             maxLength: 100,
             autofocus: true,
-            decoration: const InputDecoration(labelText: 'Nombre de la carpeta'),
+            decoration: const InputDecoration(
+              labelText: 'Nombre de la carpeta',
+            ),
           ),
           if (widget.isAdmin && widget.pets.isNotEmpty) ...[
             const SizedBox(height: 8),

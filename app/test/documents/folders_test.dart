@@ -62,14 +62,14 @@ class FakeFolders implements FolderRepository {
 void main() {
   test('TC-DOC-01 HU-08: input exige nombre y titular XOR', () {
     expect(
-      const FolderInput(name: 'Salud', ownerKind: FolderOwnerKind.human).isValid,
+      const FolderInput(
+        name: 'Salud',
+        ownerKind: FolderOwnerKind.human,
+      ).isValid,
       true,
     );
     expect(
-      const FolderInput(
-        name: 'a/b',
-        ownerKind: FolderOwnerKind.human,
-      ).isValid,
+      const FolderInput(name: 'a/b', ownerKind: FolderOwnerKind.human).isValid,
       false,
     );
     expect(
@@ -81,7 +81,10 @@ void main() {
       true,
     );
     expect(
-      const FolderInput(name: 'Vacunas', ownerKind: FolderOwnerKind.pet).isValid,
+      const FolderInput(
+        name: 'Vacunas',
+        ownerKind: FolderOwnerKind.pet,
+      ).isValid,
       false,
     );
   });
@@ -107,7 +110,10 @@ void main() {
       ),
       false,
     );
-    expect(repo.creates.where((c) => c.ownerKind == FolderOwnerKind.pet), isEmpty);
+    expect(
+      repo.creates.where((c) => c.ownerKind == FolderOwnerKind.pet),
+      isEmpty,
+    );
     expect(await vm.rename(vm.items.single, 'Salud familiar'), true);
     expect(vm.items.single.version, 2);
     expect(await vm.delete(vm.items.single), true);
