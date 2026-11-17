@@ -5,7 +5,7 @@ Solo para operaciones que requieren entorno confiable. Ver contrato. Verificar J
 | Función | Estado |
 |---|---|
 | `lookup-user` | Desplegada (identidad/familia) |
-| `process-document` | HU-09: valida bytes reales; sin `NIDO_DOCUMENT_SCANNER` operativo permanece en cuarentena |
+| `process-document` | HU-09: valida bytes reales; escaneo ClamAV/`http`; sin escáner operativo permanece en cuarentena |
 | `delete-account` | Pendiente |
 
-`NIDO_DOCUMENT_SCANNER=off` (default) o ausente → `scanner_unavailable`. `simulate` solo para evidencia de pruebas, no es escáner de producción.
+`NIDO_DOCUMENT_SCANNER`: `off` (default) → `scanner_unavailable` y cuarentena. `clamav` usa clamd TCP (`NIDO_CLAMD_HOST`/`NIDO_CLAMD_PORT`, default `127.0.0.1:3310`). `http` POST a `NIDO_DOCUMENT_SCANNER_URL`. Solo `clamav`/`http` limpios publican y marcan `approved`. `simulate` está bloqueado en runtime (solo tests unitarios con `allowSimulate`); no publica.

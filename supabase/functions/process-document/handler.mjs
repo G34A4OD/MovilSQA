@@ -54,18 +54,108 @@ export function validateDocumentBytes(bytes, declaredMime, expectedSize) {
   return { ok: true, mime: detected };
 }
 
-/** Escáner: unavailable | clean | infected. simulate* solo evidencia de prueba. */
-export function createScanner({ mode = 'off', fetcher = fetch, url } = {}) {
+/**
+ * Protocolo clamd INSTREAM (TCP). Escaneo real para pruebas locales / entorno confiable.
+ * connect: inyectable en tests; por defecto Deno.connect o null → unavailable.
+ */
+export async function scanWithClamd(
+  bytes,
+  { host = '127.0.0.1', port = 3310, connect = null, chunkSize = 2048 } = {},
+) {
+  if (typeof connect !== 'function') {
+    return { status: 'unavailable', reason: 'scanner_unavailable' };
+  }
+  let conn;
+  try {
+    conn = await connect({ hostname: host, port: Number(port) });
+    const encoder = new TextEncoder();
+    const write = async (data) => {
+      const buf = typeof data === 'string' ? encoder.encode(data) : data;
+      let offset = 0;
+      while (offset < buf.length) {
+        const written = await conn.write(buf.subarray(offset));
+        if (written == null || written <= 0) throw new Error('write_failed');
+        offset += written;
+      }
+    };
+    await write('zINSTREAM\0');
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
+      const header = new Uint8Array(4);
+      new DataView(header.buffer).setUint32(0, chunk.length, false);
+      await write(header);
+      await write(chunk);
+    }
+    const end = new Uint8Array(4);
+    await write(end);
+    const reader = conn.readable?.getReader?.()
+      ? conn.readable.getReader()
+      : null;
+    let reply = '';
+    if (reader) {
+      const { value } = await reader.read();
+      reply = new TextDecoder().decode(value ?? new Uint8Array());
+      try {
+        reader.releaseLock();
+      } catch {
+        /* ignore */
+      }
+    } else if (typeof conn.read === 'function') {
+      const buf = new Uint8Array(512);
+      const n = await conn.read(buf);
+      reply = new TextDecoder().decode(buf.subarray(0, n ?? 0));
+    }
+    if (/FOUND/i.test(reply)) {
+      return { status: 'infected', reason: 'clamav_detected', evidence: 'clamav' };
+    }
+    if (/OK/i.test(reply)) {
+      return { status: 'clean', evidence: 'clamav' };
+    }
+    return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'clamav' };
+  } catch {
+    return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'clamav' };
+  } finally {
+    try {
+      conn?.close?.();
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
+/**
+ * Escáner: unavailable | clean | infected.
+ * - off: sin escáner → cuarentena
+ * - clamav / http: escaneo real (único camino a approved en runtime)
+ * - simulate: SOLO evidencia de pruebas unitarias; no publica en producción
+ */
+export function createScanner({
+  mode = 'off',
+  fetcher = fetch,
+  url,
+  host = '127.0.0.1',
+  port = 3310,
+  connect = null,
+  allowSimulate = false,
+} = {}) {
   return async (bytes) => {
     if (!mode || mode === 'off') {
       return { status: 'unavailable', reason: 'scanner_unavailable' };
     }
     if (mode === 'simulate') {
-      const text = new TextDecoder('latin1').decode(bytes.subarray(0, Math.min(bytes.length, 256)));
-      if (text.includes('NIDO-SIMULATED-MALWARE')) {
-        return { status: 'infected', reason: 'simulated_malware' };
+      if (!allowSimulate) {
+        return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'simulate_blocked' };
       }
-      return { status: 'clean' };
+      const text = new TextDecoder('latin1').decode(
+        bytes.subarray(0, Math.min(bytes.length, 256)),
+      );
+      if (text.includes('NIDO-SIMULATED-MALWARE')) {
+        return { status: 'infected', reason: 'simulated_malware', evidence: 'simulate' };
+      }
+      return { status: 'clean', evidence: 'simulate' };
+    }
+    if (mode === 'clamav') {
+      return scanWithClamd(bytes, { host, port, connect });
     }
     if (mode === 'http' && url) {
       try {
@@ -75,14 +165,14 @@ export function createScanner({ mode = 'off', fetcher = fetch, url } = {}) {
           body: bytes,
         });
         if (response.status === 503) {
-          return { status: 'unavailable', reason: 'scanner_unavailable' };
+          return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'http' };
         }
         if (!response.ok) {
-          return { status: 'infected', reason: 'scanner_rejected' };
+          return { status: 'infected', reason: 'scanner_rejected', evidence: 'http' };
         }
-        return { status: 'clean' };
+        return { status: 'clean', evidence: 'http' };
       } catch {
-        return { status: 'unavailable', reason: 'scanner_unavailable' };
+        return { status: 'unavailable', reason: 'scanner_unavailable', evidence: 'http' };
       }
     }
     return { status: 'unavailable', reason: 'scanner_unavailable' };
@@ -217,8 +307,10 @@ export function createProcessDocumentHandler({
         );
       }
 
+      // Escaneo solo tras validar bytes reales. approved exige evidencia clamav|http.
       const scan = await scanner(buffer);
-      if (scan.status === 'unavailable') {
+      const realEvidence = scan.evidence === 'clamav' || scan.evidence === 'http';
+      if (scan.status === 'unavailable' || (scan.status === 'clean' && !realEvidence)) {
         const done = await complete(serviceHeaders, {
           p_document_id: documentId,
           p_expected_version: authz.version,
@@ -232,6 +324,7 @@ export function createProcessDocumentHandler({
             id: documentId,
             status: 'quarantine',
             error: 'scanner_unavailable',
+            scan_evidence: scan.evidence ?? null,
             process_attempts: done?.process_attempts,
             note: 'Bloqueo: no hay escáner acordado/operativo; el archivo permanece en cuarentena.',
           },
@@ -248,7 +341,13 @@ export function createProcessDocumentHandler({
           p_published_path: null,
         });
         return json(
-          { id: documentId, status: 'rejected', error: scan.reason, result: done },
+          {
+            id: documentId,
+            status: 'rejected',
+            error: scan.reason,
+            scan_evidence: scan.evidence ?? null,
+            result: done,
+          },
           422,
         );
       }
