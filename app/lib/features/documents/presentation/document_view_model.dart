@@ -75,6 +75,8 @@ class DocumentViewModel extends ChangeNotifier {
     required String title,
     required String description,
     DateTime? expiresOn,
+    DocumentCategory? category,
+    HealthNoteKind? healthNoteKind,
   }) => _run(() async {
     await repository.updateMetadata(
       documentId: document.id,
@@ -82,6 +84,8 @@ class DocumentViewModel extends ChangeNotifier {
       description: description,
       expectedVersion: document.version,
       expiresOn: expiresOn,
+      category: category,
+      healthNoteKind: healthNoteKind,
     );
   });
 
@@ -106,6 +110,10 @@ class DocumentViewModel extends ChangeNotifier {
       bytes: input.bytes,
       expiresOn: input.expiresOn,
       replacesDocumentId: document.id,
+      category: input.category,
+      healthNoteKind: input.category == DocumentCategory.health
+          ? input.healthNoteKind
+          : null,
     );
     if (!replacement.isValid) {
       throw const FormatException(
