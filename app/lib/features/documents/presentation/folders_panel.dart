@@ -127,7 +127,7 @@ class _FoldersPanelState extends State<FoldersPanel> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'Carpetas del grupo',
+                    'Carpetas',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
