@@ -40,6 +40,14 @@ class _FoldersPanelState extends State<FoldersPanel> {
   }
 
   @override
+  void didUpdateWidget(covariant FoldersPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.isAdmin != widget.isAdmin) {
+      model.updatePermissions(isAdmin: widget.isAdmin);
+    }
+  }
+
+  @override
   void dispose() {
     model.dispose();
     super.dispose();

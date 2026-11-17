@@ -391,7 +391,8 @@ class _FamilyFoldersPanelState extends State<_FamilyFoldersPanel> {
   @override
   void didUpdateWidget(covariant _FamilyFoldersPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.family.id != widget.family.id) {
+    if (oldWidget.family.id != widget.family.id ||
+        oldWidget.family.isAdmin != widget.family.isAdmin) {
       _loadPets();
     }
   }

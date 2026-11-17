@@ -188,4 +188,85 @@ void main() {
       expect(find.textContaining('sin rutas'), findsOneWidget);
     },
   );
+
+  testWidgets(
+    'TC-DOC-01 HU-08: promoción a admin sincroniza permisos sin salir',
+    (tester) async {
+      final repo = FakeFolders();
+      var isAdmin = false;
+      const pets = [FolderPetOption(id: 'luna', name: 'Luna ficticia')];
+
+      Future<void> pumpRole() => tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: FoldersPanel(
+                key: const Key('folders-family'),
+                repository: repo,
+                familyId: 'familia',
+                isAdmin: isAdmin,
+                currentUserId: 'yo',
+                pets: isAdmin ? pets : const [],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await pumpRole();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('folder-create')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('folder-owner-kind')), findsNothing);
+      await tester.tap(find.text('Cancelar'));
+      await tester.pumpAndSettle();
+
+      isAdmin = true;
+      await pumpRole();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('folder-create')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('folder-owner-kind')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('folder-owner-kind')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Mascota').last);
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.byKey(const Key('folder-name')),
+        'Vacunas Luna',
+      );
+      await tester.tap(find.byKey(const Key('folder-save')));
+      await tester.pumpAndSettle();
+      expect(repo.creates, hasLength(1));
+      expect(repo.creates.single.ownerKind, FolderOwnerKind.pet);
+      expect(repo.creates.single.petId, 'luna');
+      expect(find.text('Vacunas Luna'), findsOneWidget);
+
+      isAdmin = false;
+      await pumpRole();
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('folder-create')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('folder-owner-kind')), findsNothing);
+      await tester.tap(find.text('Cancelar'));
+      await tester.pumpAndSettle();
+      final demoted = FolderViewModel(repo, 'familia', isAdmin: true);
+      addTearDown(demoted.dispose);
+      demoted.updatePermissions(isAdmin: false);
+      expect(
+        await demoted.create(
+          const FolderInput(
+            name: 'Otra mascota',
+            ownerKind: FolderOwnerKind.pet,
+            petId: 'luna',
+          ),
+        ),
+        false,
+      );
+      expect(
+        repo.creates.where((c) => c.name.trim() == 'Otra mascota'),
+        isEmpty,
+      );
+    },
+  );
 }

@@ -3,14 +3,23 @@ import '../domain/document_policy.dart';
 import '../domain/folder_repository.dart';
 
 class FolderViewModel extends ChangeNotifier {
-  FolderViewModel(this.repository, this.familyId, {required this.isAdmin});
+  FolderViewModel(this.repository, this.familyId, {required bool isAdmin})
+    : isAdmin = isAdmin;
   final FolderRepository repository;
   final String familyId;
-  final bool isAdmin;
+  bool isAdmin;
   List<FolderRecord> items = [];
   bool busy = false;
   bool _disposed = false;
   String? message;
+
+  void updatePermissions({required bool isAdmin}) {
+    if (this.isAdmin == isAdmin) {
+      return;
+    }
+    this.isAdmin = isAdmin;
+    _notify();
+  }
 
   void _notify() {
     if (!_disposed) {
