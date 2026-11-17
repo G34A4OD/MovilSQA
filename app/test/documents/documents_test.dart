@@ -45,6 +45,10 @@ class FakeDocuments implements DocumentRepository {
       storagePath: 'path-${values.length + 1}',
       version: 1,
       expiresOn: input.expiresOn,
+      category: input.category,
+      healthNoteKind: input.healthNoteKind,
+      uploadedBy: 'yo',
+      createdAt: DateTime.utc(2026, 1, 1),
     );
     values = [...values, record];
     return record;
@@ -88,6 +92,8 @@ class FakeDocuments implements DocumentRepository {
     required String description,
     required int expectedVersion,
     DateTime? expiresOn,
+    DocumentCategory? category,
+    HealthNoteKind? healthNoteKind,
   }) async {
     final index = values.indexWhere((d) => d.id == documentId);
     final doc = values[index];
@@ -107,6 +113,10 @@ class FakeDocuments implements DocumentRepository {
       version: doc.version + 1,
       expiresOn: expiresOn,
       publishedPath: doc.publishedPath,
+      category: category ?? doc.category,
+      healthNoteKind: healthNoteKind ?? doc.healthNoteKind,
+      uploadedBy: doc.uploadedBy,
+      createdAt: doc.createdAt,
     );
     values = [...values]..[index] = updated;
     return updated;
@@ -159,6 +169,30 @@ void main() {
         bytes: Uint8List.fromList([60, 104, 116, 109, 108]),
       ).isValid,
       false,
+    );
+  });
+
+  test('TC-DOC-03 HU-10: salud exige tipo de nota', () {
+    expect(
+      DocumentUploadInput(
+        title: 'Alergia',
+        description: '',
+        filename: 'a.pdf',
+        bytes: _pdf(),
+        category: DocumentCategory.health,
+      ).isValid,
+      false,
+    );
+    expect(
+      DocumentUploadInput(
+        title: 'Alergia',
+        description: '',
+        filename: 'a.pdf',
+        bytes: _pdf(),
+        category: DocumentCategory.health,
+        healthNoteKind: HealthNoteKind.allergy,
+      ).isValid,
+      true,
     );
   });
 

@@ -143,6 +143,23 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
     DocumentStatus.rejected => 'Rechazado',
   };
 
+  String _categoryLabel(DocumentRecord doc) {
+    final cat = switch (doc.category) {
+      DocumentCategory.identityCivic => 'Identidad/cívico',
+      DocumentCategory.civilLife => 'Estado civil/cierre de vida',
+      DocumentCategory.socialLaborTax => 'Seguridad social/laboral/tributario',
+      DocumentCategory.health => 'Salud',
+    };
+    final note = switch (doc.healthNoteKind) {
+      HealthNoteKind.allergy => ' · Alergia',
+      HealthNoteKind.consultation => ' · Consulta',
+      HealthNoteKind.prescription => ' · Receta',
+      HealthNoteKind.vaccine => ' · Vacuna',
+      null => '',
+    };
+    return '$cat$note';
+  }
+
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: model,
@@ -198,8 +215,11 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
                 ),
                 title: Text(doc.title),
                 subtitle: Text(
-                  '${_statusLabel(doc.status)} · ${doc.mimeType} · ${doc.sizeBytes} B',
+                  '${_categoryLabel(doc)}\n'
+                  '${_statusLabel(doc.status)} · ${doc.mimeType} · ${doc.sizeBytes} B'
+                  '${doc.uploadedBy == null ? '' : ' · autor ${doc.uploadedBy}'}',
                 ),
+                isThreeLine: true,
                 trailing: Wrap(
                   spacing: 4,
                   children: [
@@ -282,6 +302,8 @@ class _UploadDialogState extends State<_UploadDialog> {
     text: widget.initialDescription ?? '',
   );
   late DateTime? expiresOn = widget.initialExpiresOn;
+  DocumentCategory category = DocumentCategory.health;
+  HealthNoteKind? healthNoteKind = HealthNoteKind.vaccine;
   String? filename;
   Uint8List? bytes;
   String? error;
@@ -350,6 +372,65 @@ class _UploadDialogState extends State<_UploadDialog> {
             maxLines: 3,
           ),
           const SizedBox(height: 8),
+          DropdownButtonFormField<DocumentCategory>(
+            key: const Key('document-category'),
+            initialValue: category,
+            decoration: const InputDecoration(labelText: 'Categoría orientativa'),
+            items: const [
+              DropdownMenuItem(
+                value: DocumentCategory.identityCivic,
+                child: Text('Identidad/cívico'),
+              ),
+              DropdownMenuItem(
+                value: DocumentCategory.civilLife,
+                child: Text('Estado civil/cierre de vida'),
+              ),
+              DropdownMenuItem(
+                value: DocumentCategory.socialLaborTax,
+                child: Text('Seguridad social/laboral/tributario'),
+              ),
+              DropdownMenuItem(
+                value: DocumentCategory.health,
+                child: Text('Salud'),
+              ),
+            ],
+            onChanged: (value) {
+              if (value == null) {
+                return;
+              }
+              setState(() {
+                category = value;
+                healthNoteKind = value == DocumentCategory.health
+                    ? (healthNoteKind ?? HealthNoteKind.vaccine)
+                    : null;
+              });
+            },
+          ),
+          if (category == DocumentCategory.health)
+            DropdownButtonFormField<HealthNoteKind>(
+              key: const Key('document-health-kind'),
+              initialValue: healthNoteKind,
+              decoration: const InputDecoration(labelText: 'Nota de salud'),
+              items: const [
+                DropdownMenuItem(
+                  value: HealthNoteKind.allergy,
+                  child: Text('Alergia'),
+                ),
+                DropdownMenuItem(
+                  value: HealthNoteKind.consultation,
+                  child: Text('Consulta'),
+                ),
+                DropdownMenuItem(
+                  value: HealthNoteKind.prescription,
+                  child: Text('Receta'),
+                ),
+                DropdownMenuItem(
+                  value: HealthNoteKind.vaccine,
+                  child: Text('Vacuna'),
+                ),
+              ],
+              onChanged: (value) => setState(() => healthNoteKind = value),
+            ),
           Row(
             children: [
               Expanded(
@@ -410,6 +491,10 @@ class _UploadDialogState extends State<_UploadDialog> {
             setState(() => error = 'Adjunta un archivo JPG, PNG o PDF.');
             return;
           }
+          if (category == DocumentCategory.health && healthNoteKind == null) {
+            setState(() => error = 'Elige el tipo de nota de salud.');
+            return;
+          }
           Navigator.pop(
             context,
             DocumentUploadInput(
@@ -418,6 +503,10 @@ class _UploadDialogState extends State<_UploadDialog> {
               filename: fileName,
               bytes: fileBytes,
               expiresOn: expiresOn,
+              category: category,
+              healthNoteKind: category == DocumentCategory.health
+                  ? healthNoteKind
+                  : null,
             ),
           );
         },

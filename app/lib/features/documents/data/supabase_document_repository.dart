@@ -20,6 +20,7 @@ class SupabaseDocumentRepository implements DocumentRepository {
 
   DocumentRecord _map(Map<String, dynamic> row) {
     final expires = row['expires_on'];
+    final created = row['created_at'];
     final mime =
         (row['detected_mime_type'] as String?) ??
         (row['declared_mime_type'] as String);
@@ -36,6 +37,10 @@ class SupabaseDocumentRepository implements DocumentRepository {
       version: row['version'] as int,
       expiresOn: expires == null ? null : DateTime.parse(expires as String),
       publishedPath: row['published_path'] as String?,
+      category: DocumentCategory.fromCode(row['category'] as String?),
+      healthNoteKind: HealthNoteKind.fromCode(row['health_note_kind'] as String?),
+      uploadedBy: row['uploaded_by'] as String?,
+      createdAt: created == null ? null : DateTime.parse(created as String),
     );
   }
 
@@ -47,7 +52,7 @@ class SupabaseDocumentRepository implements DocumentRepository {
           .select(
             'id,folder_id,family_id,title,description,declared_mime_type,'
             'detected_mime_type,size_bytes,status,storage_path,published_path,'
-            'version,expires_on',
+            'version,expires_on,category,health_note_kind,uploaded_by,created_at',
           )
           .eq('folder_id', folderId)
           .order('created_at')
@@ -80,6 +85,8 @@ class SupabaseDocumentRepository implements DocumentRepository {
         'p_size_bytes': input.bytes.length,
         'p_request_id': _uuid.v4(),
         'p_replaces_document_id': input.replacesDocumentId,
+        'p_category': input.category.code,
+        'p_health_note_kind': input.healthNoteKind?.code,
       },
     );
     final row = Map<String, dynamic>.from(reserved as Map);
@@ -141,6 +148,8 @@ class SupabaseDocumentRepository implements DocumentRepository {
     required String description,
     required int expectedVersion,
     DateTime? expiresOn,
+    DocumentCategory? category,
+    HealthNoteKind? healthNoteKind,
   }) async {
     final cleanTitle = DocumentPolicy.title(title);
     final cleanDescription = DocumentPolicy.description(description);
@@ -153,6 +162,8 @@ class SupabaseDocumentRepository implements DocumentRepository {
         'p_description': cleanDescription,
         'p_expires_on': expires?.toIso8601String().split('T').first,
         'p_expected_version': expectedVersion,
+        'p_category': category?.code,
+        'p_health_note_kind': healthNoteKind?.code,
       },
     );
     return _map(Map<String, dynamic>.from(result as Map));
