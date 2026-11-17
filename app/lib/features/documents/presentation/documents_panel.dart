@@ -51,7 +51,9 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
         initialTitle: replaces?.title,
         initialDescription: replaces?.description,
         initialExpiresOn: replaces?.expiresOn,
-        dialogTitle: replaces == null ? 'Cargar documento' : 'Reemplazar archivo',
+        dialogTitle: replaces == null
+            ? 'Cargar documento'
+            : 'Reemplazar archivo',
       ),
     );
     if (input == null || !mounted) {
@@ -204,9 +206,7 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
                     if (doc.status == DocumentStatus.quarantine)
                       TextButton(
                         key: Key('document-process-${doc.id}'),
-                        onPressed: model.busy
-                            ? null
-                            : () => model.process(doc),
+                        onPressed: model.busy ? null : () => model.process(doc),
                         child: const Text('Procesar'),
                       ),
                     if (doc.status == DocumentStatus.approved)
@@ -278,8 +278,9 @@ class _UploadDialog extends StatefulWidget {
 
 class _UploadDialogState extends State<_UploadDialog> {
   late final title = TextEditingController(text: widget.initialTitle ?? '');
-  late final description =
-      TextEditingController(text: widget.initialDescription ?? '');
+  late final description = TextEditingController(
+    text: widget.initialDescription ?? '',
+  );
   late DateTime? expiresOn = widget.initialExpiresOn;
   String? filename;
   Uint8List? bytes;

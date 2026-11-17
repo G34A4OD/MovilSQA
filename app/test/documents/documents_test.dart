@@ -253,41 +253,50 @@ void main() {
     expect(repo.deleted, [doc.id]);
   });
 
-  test('TC-DOC-02 HU-09: reemplazo reserva sin sobrescribir approved', () async {
-    final repo = FakeDocuments();
-    final approved = DocumentRecord(
-      id: 'doc-old',
-      folderId: 'carpeta-1',
-      familyId: 'familia',
-      title: 'Vacunas',
-      description: '',
-      mimeType: 'application/pdf',
-      sizeBytes: 8,
-      status: DocumentStatus.approved,
-      storagePath: 'old-path',
-      version: 2,
-      publishedPath: 'old-path',
-    );
-    repo.values = [approved];
-    final vm = DocumentViewModel(repo, 'carpeta-1');
-    addTearDown(vm.dispose);
-    await vm.load();
-    expect(
-      await vm.replace(
-        approved,
-        DocumentUploadInput(
-          title: 'Vacunas v2',
-          description: 'reemplazo',
-          filename: 'v2.pdf',
-          bytes: _pdf(),
+  test(
+    'TC-DOC-02 HU-09: reemplazo reserva sin sobrescribir approved',
+    () async {
+      final repo = FakeDocuments();
+      final approved = DocumentRecord(
+        id: 'doc-old',
+        folderId: 'carpeta-1',
+        familyId: 'familia',
+        title: 'Vacunas',
+        description: '',
+        mimeType: 'application/pdf',
+        sizeBytes: 8,
+        status: DocumentStatus.approved,
+        storagePath: 'old-path',
+        version: 2,
+        publishedPath: 'old-path',
+      );
+      repo.values = [approved];
+      final vm = DocumentViewModel(repo, 'carpeta-1');
+      addTearDown(vm.dispose);
+      await vm.load();
+      expect(
+        await vm.replace(
+          approved,
+          DocumentUploadInput(
+            title: 'Vacunas v2',
+            description: 'reemplazo',
+            filename: 'v2.pdf',
+            bytes: _pdf(),
+          ),
         ),
-      ),
-      true,
-    );
-    expect(repo.uploads.single.replacesDocumentId, 'doc-old');
-    expect(vm.items.where((d) => d.status == DocumentStatus.approved), isNotEmpty);
-    expect(vm.items.where((d) => d.status == DocumentStatus.quarantine), isNotEmpty);
-  });
+        true,
+      );
+      expect(repo.uploads.single.replacesDocumentId, 'doc-old');
+      expect(
+        vm.items.where((d) => d.status == DocumentStatus.approved),
+        isNotEmpty,
+      );
+      expect(
+        vm.items.where((d) => d.status == DocumentStatus.quarantine),
+        isNotEmpty,
+      );
+    },
+  );
 
   testWidgets(
     'TC-DOC-02 HU-09: formulario reserva carga con archivo inyectado',
