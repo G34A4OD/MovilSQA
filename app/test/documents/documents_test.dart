@@ -10,12 +10,20 @@ import 'folders_test.dart' show FakeFolders;
 
 class FakeDocuments implements DocumentRepository {
   final uploads = <DocumentUploadInput>[];
+  final processed = <String>[];
   List<DocumentRecord> values = [];
   bool fail = false;
+  DocumentProcessResult processResult = const DocumentProcessResult(
+    status: DocumentStatus.quarantine,
+    error: 'scanner_unavailable',
+  );
 
   @override
-  Future<List<DocumentRecord>> listQuarantine(String folderId) async =>
-      values.where((d) => d.folderId == folderId).toList();
+  Future<List<DocumentRecord>> listQuarantine(String folderId) async => values
+      .where(
+        (d) => d.folderId == folderId && d.status == DocumentStatus.quarantine,
+      )
+      .toList();
 
   @override
   Future<DocumentRecord> upload(
@@ -41,6 +49,34 @@ class FakeDocuments implements DocumentRepository {
     );
     values = [...values, record];
     return record;
+  }
+
+  @override
+  Future<DocumentProcessResult> process(String documentId) async {
+    processed.add(documentId);
+    if (fail) {
+      throw StateError('forbidden');
+    }
+    values = [
+      for (final doc in values)
+        if (doc.id == documentId)
+          DocumentRecord(
+            id: doc.id,
+            folderId: doc.folderId,
+            familyId: doc.familyId,
+            title: doc.title,
+            description: doc.description,
+            mimeType: doc.mimeType,
+            sizeBytes: doc.sizeBytes,
+            status: processResult.status,
+            storagePath: doc.storagePath,
+            version: doc.version + 1,
+            expiresOn: doc.expiresOn,
+          )
+        else
+          doc,
+    ];
+    return processResult;
   }
 }
 
@@ -95,6 +131,25 @@ void main() {
     expect(repo.uploads, hasLength(1));
     expect(vm.items.single.status, DocumentStatus.quarantine);
     expect(vm.items.single.title, 'Vacunas');
+  });
+
+  test('TC-DOC-02 HU-09: sin escáner process conserva cuarentena', () async {
+    final repo = FakeDocuments();
+    final vm = DocumentViewModel(repo, 'carpeta-1');
+    addTearDown(vm.dispose);
+    await vm.upload(
+      DocumentUploadInput(
+        title: 'Vacunas',
+        description: '',
+        filename: 'vacunas.pdf',
+        bytes: _pdf(),
+      ),
+    );
+    expect(await vm.process(vm.items.single), true);
+    expect(repo.processed, ['doc-1']);
+    expect(vm.items, hasLength(1));
+    expect(vm.items.single.status, DocumentStatus.quarantine);
+    expect(vm.message, contains('cuarentena'));
   });
 
   testWidgets(

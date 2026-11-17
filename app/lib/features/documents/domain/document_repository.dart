@@ -68,7 +68,19 @@ class DocumentUploadReservation {
   final String storagePath;
 }
 
+class DocumentProcessResult {
+  const DocumentProcessResult({
+    required this.status,
+    this.error,
+    this.idempotent = false,
+  });
+  final DocumentStatus status;
+  final String? error;
+  final bool idempotent;
+}
+
 abstract class DocumentRepository {
   Future<List<DocumentRecord>> listQuarantine(String folderId);
   Future<DocumentRecord> upload(String folderId, DocumentUploadInput input);
+  Future<DocumentProcessResult> process(String documentId);
 }

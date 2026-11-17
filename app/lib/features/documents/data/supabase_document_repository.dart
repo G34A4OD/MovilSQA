@@ -91,4 +91,40 @@ class SupabaseDocumentRepository implements DocumentRepository {
     }
     return _map(row);
   }
+
+  @override
+  Future<DocumentProcessResult> process(String documentId) async {
+    final session = client.auth.currentSession;
+    if (session == null) {
+      throw StateError('forbidden');
+    }
+    final response = await client.functions.invoke(
+      'process-document',
+      body: {'document_id': documentId},
+    );
+    final data = response.data;
+    final map = data is Map
+        ? Map<String, dynamic>.from(data)
+        : <String, dynamic>{};
+    final status = switch (map['status'] as String?) {
+      'approved' => DocumentStatus.approved,
+      'rejected' => DocumentStatus.rejected,
+      _ => DocumentStatus.quarantine,
+    };
+    if (response.status == 503 || map['error'] == 'scanner_unavailable') {
+      return DocumentProcessResult(
+        status: DocumentStatus.quarantine,
+        error: 'scanner_unavailable',
+        idempotent: map['idempotent'] == true,
+      );
+    }
+    if (response.status >= 400 && status == DocumentStatus.quarantine) {
+      throw StateError(map['error']?.toString() ?? 'process_failed');
+    }
+    return DocumentProcessResult(
+      status: status,
+      error: map['error'] as String?,
+      idempotent: map['idempotent'] == true,
+    );
+  }
 }

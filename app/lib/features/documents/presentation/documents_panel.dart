@@ -112,6 +112,13 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
                 subtitle: Text(
                   '${_statusLabel(doc.status)} · ${doc.mimeType} · ${doc.sizeBytes} B',
                 ),
+                trailing: doc.status == DocumentStatus.quarantine
+                    ? TextButton(
+                        key: Key('document-process-${doc.id}'),
+                        onPressed: model.busy ? null : () => model.process(doc),
+                        child: const Text('Procesar'),
+                      )
+                    : null,
               ),
           ],
         ),

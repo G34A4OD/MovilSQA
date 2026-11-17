@@ -58,6 +58,17 @@ class DocumentViewModel extends ChangeNotifier {
     await repository.upload(folderId, input);
   });
 
+  Future<bool> process(DocumentRecord document) => _run(() async {
+    final result = await repository.process(document.id);
+    if (result.status == DocumentStatus.quarantine &&
+        result.error == 'scanner_unavailable') {
+      message =
+          'El archivo sigue en cuarentena: no hay escáner acordado/operativo.';
+    } else if (result.status == DocumentStatus.rejected) {
+      message = 'El archivo fue rechazado tras validar los bytes.';
+    }
+  });
+
   @override
   void dispose() {
     _disposed = true;
