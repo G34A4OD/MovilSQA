@@ -129,14 +129,18 @@ select lives_ok(
   $$select public.delete_folder(current_setting('test.folder_id')::uuid,1)$$,
   'TC-DOC-01 HU-08: titular borra carpeta vacía');
 select is((select count(*)::int from public.folders where id=current_setting('test.folder_id')::uuid),0,
-  'TC-DOC-01 HU-08: carpeta eliminada');
+  'TC-DOC-01 HU-08: carpeta deja de publicarse tras borrado lógico');
 reset role;
+select isnt(
+  (select deleted_at from public.folders where id=current_setting('test.folder_id')::uuid),
+  null,
+  'TC-DOC-01 HU-08: tombstone conserva la fila tras delete_folder');
 select is(
   (select count(*)::int from private.audit_events where operation='delete_folder' and resource_id=current_setting('test.folder_id')::uuid),
   1,
   'TC-DOC-01 HU-08: borrado deja auditoría');
 select is(
-  (select count(*)::int from private.cleanup_jobs where operation='delete_folder' and resource_id=current_setting('test.folder_id')::uuid),
+  (select count(*)::int from private.cleanup_jobs where operation='delete_folder' and resource_id=current_setting('test.folder_id')::uuid and status='pending'),
   1,
   'TC-DOC-01 HU-08: borrado encola cleanup_jobs (purga física pendiente)');
 -- Enqueue failure must keep the folder (atomic RPC). Distinct from Auth session guard above.
@@ -169,5 +173,42 @@ select is(
 reset role;
 drop trigger test_block_folder_cleanup on private.cleanup_jobs;
 drop function private.test_block_folder_cleanup();
+
+-- Soft-delete keeps PK while cleanup_jobs is still pending; reuse must fail.
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"17000000-0000-0000-0000-000000000002","session_id":"27000000-0000-0000-0000-000000000002"}',true);
+select lives_ok(
+  $$insert into public.folders(id,family_id,name,owner_user_id)
+    values('57000000-0000-0000-0000-000000000001','37000000-0000-0000-0000-000000000001','Tumba ID','17000000-0000-0000-0000-000000000002')$$,
+  'TC-DOC-01 HU-08: prepara carpeta con ID conocido');
+select lives_ok(
+  $$select public.delete_folder('57000000-0000-0000-0000-000000000001',1)$$,
+  'TC-DOC-01 HU-08: borra lógicamente la carpeta con ID conocido');
+select throws_ok(
+  $$insert into public.folders(id,family_id,name,owner_user_id)
+    values('57000000-0000-0000-0000-000000000001','37000000-0000-0000-0000-000000000001','Reuso ID','17000000-0000-0000-0000-000000000002')$$,
+  '23505',null,
+  'TC-DOC-01 HU-08: rechaza reutilizar ID con limpieza pendiente');
+select is((select count(*)::int from public.folders where id='57000000-0000-0000-0000-000000000001'),0,
+  'TC-DOC-01 HU-08: tombstone no vuelve a publicarse a authenticated');
+reset role;
+select isnt(
+  (select deleted_at from public.folders where id='57000000-0000-0000-0000-000000000001'),
+  null,
+  'TC-DOC-01 HU-08: identidad de carpeta sigue reservada');
+select is(
+  (select count(*)::int from private.cleanup_jobs
+    where operation='delete_folder'
+      and resource_id='57000000-0000-0000-0000-000000000001'
+      and status='pending'),
+  1,
+  'TC-DOC-01 HU-08: trabajo original de limpieza sigue pendiente');
+select is(
+  (select metadata->>'owner_user_id' from private.cleanup_jobs
+    where operation='delete_folder'
+      and resource_id='57000000-0000-0000-0000-000000000001'),
+  '17000000-0000-0000-0000-000000000002',
+  'TC-DOC-01 HU-08: metadata de limpieza conserva titular');
+
 select * from finish();
 rollback;
