@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../documents/presentation/folders_panel.dart';
 import '../../identity/domain/profile.dart';
 import '../domain/family_repository.dart';
+import '../domain/pet_repository.dart';
 import 'family_view_model.dart';
 import 'invitations_panel.dart';
 import 'members_panel.dart';
@@ -333,6 +335,12 @@ class _FamilyPageState extends State<FamilyPage> {
                             isAdmin: f.isAdmin,
                           ),
                           const SizedBox(height: 12),
+                          _FamilyFoldersPanel(
+                            key: ValueKey('folders:${f.id}'),
+                            family: f,
+                            repository: widget.repository,
+                          ),
+                          const SizedBox(height: 12),
                           OutlinedButton.icon(
                             onPressed: model.busy
                                 ? null
@@ -357,4 +365,75 @@ class _FamilyPageState extends State<FamilyPage> {
       );
     },
   );
+}
+
+class _FamilyFoldersPanel extends StatefulWidget {
+  const _FamilyFoldersPanel({
+    super.key,
+    required this.family,
+    required this.repository,
+  });
+  final FamilyRecord family;
+  final FamilyRepository repository;
+  @override
+  State<_FamilyFoldersPanel> createState() => _FamilyFoldersPanelState();
+}
+
+class _FamilyFoldersPanelState extends State<_FamilyFoldersPanel> {
+  List<FolderPetOption> pets = const [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPets();
+  }
+
+  @override
+  void didUpdateWidget(covariant _FamilyFoldersPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.family.id != widget.family.id ||
+        oldWidget.family.isAdmin != widget.family.isAdmin) {
+      _loadPets();
+    }
+  }
+
+  Future<void> _loadPets() async {
+    if (!widget.family.isAdmin) {
+      if (mounted) {
+        setState(() => pets = const []);
+      }
+      return;
+    }
+    try {
+      final rows = await widget.repository.pets.list(widget.family.id);
+      if (!mounted) {
+        return;
+      }
+      setState(
+        () => pets = [
+          for (final PetRecord pet in rows)
+            FolderPetOption(id: pet.id, name: pet.details.name),
+        ],
+      );
+    } catch (_) {
+      if (mounted) {
+        setState(() => pets = const []);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userId = widget.repository.currentUserId;
+    if (userId == null) {
+      return const SizedBox.shrink();
+    }
+    return FoldersPanel(
+      repository: widget.repository.folders,
+      familyId: widget.family.id,
+      isAdmin: widget.family.isAdmin,
+      currentUserId: userId,
+      pets: pets,
+    );
+  }
 }
