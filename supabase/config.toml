@@ -13,6 +13,10 @@ verify_jwt = false
 # Auth se verifica en el handler; service_role solo tras authorize_document_process.
 verify_jwt = false
 
+[functions.download-document]
+# Auth + authorize_document_download; service_role solo para bytes. Sin URLs firmadas.
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.
