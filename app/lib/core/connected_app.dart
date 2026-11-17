@@ -37,6 +37,7 @@ class _ConnectedNidoAppState extends State<ConnectedNidoApp> {
       title: 'Nido',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
       home: AuthGate(
         model: model,
         signedInBuilder: (context, m) => AccountHome(

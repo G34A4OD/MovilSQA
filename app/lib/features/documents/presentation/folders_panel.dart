@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/widgets.dart';
 import '../domain/folder_repository.dart';
 import 'folder_view_model.dart';
 
@@ -27,11 +28,14 @@ class FoldersPanel extends StatefulWidget {
 }
 
 class _FoldersPanelState extends State<FoldersPanel> {
+  static const _searchThreshold = 4;
   late final model = FolderViewModel(
     widget.repository,
     widget.familyId,
     isAdmin: widget.isAdmin,
   );
+  final search = TextEditingController();
+  String query = '';
 
   @override
   void initState() {
@@ -49,6 +53,7 @@ class _FoldersPanelState extends State<FoldersPanel> {
 
   @override
   void dispose() {
+    search.dispose();
     model.dispose();
     super.dispose();
   }
@@ -82,27 +87,16 @@ class _FoldersPanelState extends State<FoldersPanel> {
   }
 
   Future<void> deleteFolder(FolderRecord folder) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Eliminar carpeta'),
-        content: Text(
+    final ok = await showConfirmDialog(
+      context,
+      title: 'Eliminar carpeta',
+      message:
           '¿Eliminar «${folder.name}»? Se retirará del grupo. Confirma solo si está vacía.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            key: const Key('folder-delete-confirm'),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar carpeta'),
-          ),
-        ],
-      ),
+      confirmLabel: 'Eliminar carpeta',
+      confirmKey: const Key('folder-delete-confirm'),
+      icon: Icons.folder_delete_outlined,
     );
-    if (ok == true && mounted) {
+    if (ok && mounted) {
       await model.delete(folder);
     }
   }
@@ -120,73 +114,137 @@ class _FoldersPanelState extends State<FoldersPanel> {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: model,
-    builder: (context, _) => Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.folder_outlined),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Carpetas',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                IconButton(
-                  tooltip: 'Actualizar carpetas',
-                  onPressed: model.busy ? null : model.load,
-                  icon: const Icon(Icons.refresh),
-                ),
-              ],
-            ),
-            if (model.busy) const LinearProgressIndicator(),
-            if (model.message != null) Text(model.message!),
-            if (model.items.isEmpty && !model.busy)
-              const Text('Crea una carpeta propia para organizar documentos.'),
-            for (final folder in model.items)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.folder_outlined),
-                title: Text(folder.name),
-                subtitle: Text(_subtitle(folder)),
-                trailing: _canManage(folder)
-                    ? PopupMenuButton<String>(
-                        enabled: !model.busy,
-                        tooltip: 'Opciones de ${folder.name}',
-                        onSelected: (action) async {
-                          if (action == 'rename') {
-                            await renameFolder(folder);
-                          } else {
-                            await deleteFolder(folder);
-                          }
+    builder: (context, _) {
+      final text = Theme.of(context).textTheme;
+      final showSearch = model.items.length > _searchThreshold;
+      final needle = query.trim().toLowerCase();
+      final folders = showSearch && needle.isNotEmpty
+          ? model.items
+                .where((f) => f.name.toLowerCase().contains(needle))
+                .toList()
+          : model.items;
+      return SectionCard(
+        icon: Icons.folder_outlined,
+        tone: Tone.warning,
+        title: 'Carpetas',
+        subtitle: model.items.isEmpty
+            ? null
+            : '${model.items.length} '
+                  '${model.items.length == 1 ? 'carpeta' : 'carpetas'}',
+        refreshTooltip: 'Actualizar carpetas',
+        onRefresh: model.load,
+        busy: model.busy,
+        message: model.message,
+        children: [
+          if (showSearch) ...[
+            TextField(
+              controller: search,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                labelText: 'Buscar carpeta',
+                prefixIcon: const Icon(Icons.search_rounded),
+                suffixIcon: query.isEmpty
+                    ? null
+                    : IconButton(
+                        tooltip: 'Limpiar búsqueda',
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () {
+                          search.clear();
+                          setState(() => query = '');
                         },
-                        itemBuilder: (_) => const [
-                          PopupMenuItem(
-                            value: 'rename',
-                            child: Text('Renombrar'),
-                          ),
-                          PopupMenuItem(
-                            value: 'delete',
-                            child: Text('Eliminar'),
-                          ),
-                        ],
-                      )
-                    : null,
+                      ),
               ),
-            OutlinedButton.icon(
-              key: const Key('folder-create'),
-              onPressed: model.busy ? null : createFolder,
-              icon: const Icon(Icons.create_new_folder_outlined),
-              label: const Text('Nueva carpeta'),
+              onChanged: (v) => setState(() => query = v),
+            ),
+            const SizedBox(height: Space.xs),
+          ],
+          if (model.items.isEmpty && !model.busy)
+            const EmptyState(
+              compact: true,
+              icon: Icons.create_new_folder_outlined,
+              title: 'Crea una carpeta propia para organizar documentos.',
+            )
+          else if (folders.isEmpty && !model.busy)
+            const EmptyState(
+              compact: true,
+              icon: Icons.search_off_rounded,
+              title: 'Ninguna carpeta coincide con la búsqueda.',
+            ),
+          for (final (i, folder) in folders.indexed) ...[
+            if (i > 0) const Divider(indent: 56),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: IconTile(
+                icon: folder.ownerKind == FolderOwnerKind.pet
+                    ? Icons.pets_rounded
+                    : folder.ownerUserId == widget.currentUserId
+                    ? Icons.folder_rounded
+                    : Icons.folder_shared_outlined,
+                tone: folder.ownerKind == FolderOwnerKind.pet
+                    ? Tone.success
+                    : folder.ownerUserId == widget.currentUserId
+                    ? Tone.warning
+                    : Tone.info,
+              ),
+              title: Text(
+                folder.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: text.titleSmall,
+              ),
+              subtitle: Text(_subtitle(folder)),
+              trailing: _canManage(folder)
+                  ? PopupMenuButton<String>(
+                      enabled: !model.busy,
+                      tooltip: 'Opciones de ${folder.name}',
+                      icon: const Icon(Icons.more_vert_rounded),
+                      onSelected: (action) async {
+                        if (action == 'rename') {
+                          await renameFolder(folder);
+                        } else {
+                          await deleteFolder(folder);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'rename',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.drive_file_rename_outline),
+                            title: Text('Renombrar'),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(
+                              Icons.delete_outline_rounded,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            title: Text(
+                              'Eliminar',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : null,
             ),
           ],
-        ),
-      ),
-    ),
+          const SizedBox(height: Space.xs),
+          OutlinedButton.icon(
+            key: const Key('folder-create'),
+            onPressed: model.busy ? null : createFolder,
+            icon: const Icon(Icons.create_new_folder_outlined),
+            label: const Text('Nueva carpeta'),
+          ),
+        ],
+      );
+    },
   );
 }
 
@@ -216,22 +274,28 @@ class _FolderDialogState extends State<_FolderDialog> {
     content: SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
             key: const Key('folder-name'),
             controller: name,
             maxLength: 100,
             autofocus: true,
+            textCapitalization: TextCapitalization.sentences,
             decoration: const InputDecoration(
               labelText: 'Nombre de la carpeta',
+              prefixIcon: Icon(Icons.folder_outlined),
             ),
           ),
           if (widget.isAdmin && widget.pets.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: Space.xs),
             DropdownButtonFormField<FolderOwnerKind>(
               key: const Key('folder-owner-kind'),
               initialValue: kind,
-              decoration: const InputDecoration(labelText: 'Titular'),
+              decoration: const InputDecoration(
+                labelText: 'Titular',
+                prefixIcon: Icon(Icons.person_pin_outlined),
+              ),
               items: const [
                 DropdownMenuItem(
                   value: FolderOwnerKind.human,
@@ -256,19 +320,24 @@ class _FolderDialogState extends State<_FolderDialog> {
                 });
               },
             ),
-            if (kind == FolderOwnerKind.pet)
+            if (kind == FolderOwnerKind.pet) ...[
+              const SizedBox(height: Space.sm),
               DropdownButtonFormField<String>(
                 key: const Key('folder-pet'),
                 initialValue: petId ?? widget.pets.first.id,
-                decoration: const InputDecoration(labelText: 'Mascota'),
+                decoration: const InputDecoration(
+                  labelText: 'Mascota',
+                  prefixIcon: Icon(Icons.pets_outlined),
+                ),
                 items: [
                   for (final pet in widget.pets)
                     DropdownMenuItem(value: pet.id, child: Text(pet.name)),
                 ],
                 onChanged: (value) => setState(() => petId = value),
               ),
+            ],
           ],
-          if (message != null) Text(message!),
+          InlineMessage(text: message, tone: Tone.danger),
         ],
       ),
     ),
@@ -324,15 +393,19 @@ class _RenameDialogState extends State<_RenameDialog> {
     title: const Text('Renombrar carpeta'),
     content: Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
           key: const Key('folder-rename'),
           controller: name,
           maxLength: 100,
           autofocus: true,
-          decoration: const InputDecoration(labelText: 'Nombre'),
+          decoration: const InputDecoration(
+            labelText: 'Nombre',
+            prefixIcon: Icon(Icons.drive_file_rename_outline),
+          ),
         ),
-        if (message != null) Text(message!),
+        InlineMessage(text: message, tone: Tone.danger),
       ],
     ),
     actions: [

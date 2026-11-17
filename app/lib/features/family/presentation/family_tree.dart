@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../../../core/app_theme.dart';
+import '../../../core/design/tokens.dart';
 import '../domain/family_repository.dart';
 import '../domain/relationship_repository.dart';
 
@@ -39,37 +39,61 @@ class FamilyTree extends StatelessWidget {
       math.max(360, maxColumns * 196 + 20).toDouble(),
       math.max(160, (maxLevel + 1) * 130 + 20).toDouble(),
     );
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Árbol de ascendencia · amplía o desliza para explorar'),
-        const SizedBox(height: 8),
-        SizedBox(
+        Row(
+          children: [
+            Icon(
+              Icons.pinch_outlined,
+              size: 16,
+              color: scheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: Space.xs),
+            Expanded(
+              child: Text(
+                'Árbol de ascendencia · amplía o desliza para explorar',
+                style: text.bodySmall,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: Space.xs),
+        Container(
           height: 380,
+          decoration: BoxDecoration(
+            color: scheme.surfaceContainerLow,
+            borderRadius: BorderRadius.circular(Radii.md + 2),
+            border: Border.all(color: scheme.outlineVariant),
+          ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: ColoredBox(
-              color: const Color(0xffedf2e9),
-              child: InteractiveViewer(
-                constrained: false,
-                minScale: .3,
-                maxScale: 2.5,
-                child: CustomPaint(
-                  size: size,
-                  painter: _TreePainter(
-                    members,
-                    relationships,
-                    positions,
-                    Theme.of(context).textTheme.bodyMedium?.fontFamily,
-                  ),
+            borderRadius: BorderRadius.circular(Radii.md + 2),
+            child: InteractiveViewer(
+              constrained: false,
+              minScale: .3,
+              maxScale: 2.5,
+              child: CustomPaint(
+                size: size,
+                painter: _TreePainter(
+                  members,
+                  relationships,
+                  positions,
+                  text.bodyMedium?.fontFamily,
+                  line: scheme.primary,
+                  node: scheme.surface,
+                  nodeBorder: scheme.outline,
+                  label: scheme.onSurface,
                 ),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 8),
-        const Text(
+        const SizedBox(height: Space.xs),
+        Text(
           'Los vínculos laterales y sus roles aparecen en la lista accesible de abajo.',
+          style: text.bodySmall,
         ),
       ],
     );
@@ -81,17 +105,30 @@ class _TreePainter extends CustomPainter {
     this.members,
     this.relationships,
     this.positions,
-    this.fontFamily,
-  );
+    this.fontFamily, {
+    required this.line,
+    required this.node,
+    required this.nodeBorder,
+    required this.label,
+  });
   final String? fontFamily;
+  final Color line;
+  final Color node;
+  final Color nodeBorder;
+  final Color label;
   final List<FamilyMember> members;
   final List<RelationshipRecord> relationships;
   final Map<String, Offset> positions;
   @override
   void paint(Canvas canvas, Size size) {
-    final line = Paint()
-      ..color = AppTheme.forest
+    final stroke = Paint()
+      ..color = line
       ..strokeWidth = 2
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    final border = Paint()
+      ..color = nodeBorder
+      ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke;
     for (final r in relationships.where((r) => r.isAncestry)) {
       final from = positions[r.fromUserId];
@@ -106,14 +143,14 @@ class _TreePainter extends CustomPainter {
         Path()
           ..moveTo(start.dx, start.dy)
           ..cubicTo(start.dx, mid, end.dx, mid, end.dx, end.dy),
-        line,
+        stroke,
       );
       canvas.drawPath(
         Path()
           ..moveTo(end.dx - 5, end.dy - 8)
           ..lineTo(end.dx, end.dy)
           ..lineTo(end.dx + 5, end.dy - 8),
-        line,
+        stroke,
       );
     }
     for (final member in members) {
@@ -122,14 +159,28 @@ class _TreePainter extends CustomPainter {
         point & const Size(168, 68),
         const Radius.circular(14),
       );
-      canvas.drawRRect(rect, Paint()..color = Colors.white);
-      canvas.drawRRect(rect, line);
+      canvas.drawRRect(
+        rect.shift(const Offset(0, 3)),
+        Paint()
+          ..color = const Color(0x140f172a)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
+      );
+      canvas.drawRRect(rect, Paint()..color = node);
+      canvas.drawRRect(rect, border);
+      canvas.drawRRect(
+        RRect.fromRectAndCorners(
+          Rect.fromLTWH(point.dx, point.dy + 14, 4, 40),
+          topRight: const Radius.circular(2),
+          bottomRight: const Radius.circular(2),
+        ),
+        Paint()..color = line,
+      );
       final text = TextPainter(
         text: TextSpan(
           text: member.fullName,
           style: TextStyle(
             fontFamily: fontFamily,
-            color: AppTheme.forest,
+            color: label,
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),

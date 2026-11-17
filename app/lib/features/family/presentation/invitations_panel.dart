@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/widgets.dart';
 import '../domain/invitation_repository.dart';
 import 'invitation_view_model.dart';
 
@@ -35,100 +36,147 @@ class _InvitationsPanelState extends State<InvitationsPanel> {
     super.dispose();
   }
 
+  static Tone _tone(String message) {
+    if (message.startsWith('Invitación enviada')) return Tone.success;
+    if (message.startsWith('Copia el ID') ||
+        message.startsWith('No hay una coincidencia')) {
+      return Tone.warning;
+    }
+    return Tone.danger;
+  }
+
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: model,
-    builder: (context, _) => Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    widget.familyId == null
-                        ? 'Mis invitaciones'
-                        : 'Invitar familiar',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                IconButton(
-                  tooltip: 'Actualizar invitaciones',
-                  onPressed: model.busy ? null : model.load,
-                  icon: const Icon(Icons.refresh),
-                ),
-              ],
+    builder: (context, _) {
+      final text = Theme.of(context).textTheme;
+      final scheme = Theme.of(context).colorScheme;
+      final inviting = widget.familyId != null;
+      return SectionCard(
+        icon: inviting ? Icons.person_add_alt_outlined : Icons.mail_outline,
+        title: inviting ? 'Invitar familiar' : 'Mis invitaciones',
+        subtitle: inviting
+            ? 'Solo puedes buscar con el ID completo que te comparte tu familiar.'
+            : 'Grupos que te invitaron a unirte.',
+        refreshTooltip: 'Actualizar invitaciones',
+        onRefresh: model.load,
+        busy: model.busy,
+        message: model.message,
+        messageTone: model.message == null ? Tone.info : _tone(model.message!),
+        children: [
+          if (inviting) ...[
+            const SizedBox(height: Space.xs),
+            TextField(
+              controller: publicId,
+              maxLength: 32,
+              autocorrect: false,
+              enableSuggestions: false,
+              style: moneyStyle(text.bodyLarge),
+              decoration: const InputDecoration(
+                labelText: 'ID único del usuario',
+                prefixIcon: Icon(Icons.badge_outlined),
+              ),
+              onChanged: (_) => model.clearCandidate(),
+              onSubmitted: (_) {
+                if (!model.busy) model.lookup(publicId.text);
+              },
+              enabled: !model.busy,
             ),
-            if (model.busy) const LinearProgressIndicator(),
-            if (widget.familyId != null) ...[
-              const Text(
-                'Solo puedes buscar con el ID completo que te comparte tu familiar.',
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: publicId,
-                maxLength: 32,
-                decoration: const InputDecoration(
-                  labelText: 'ID único del usuario',
-                ),
-                onChanged: (_) => model.clearCandidate(),
-                enabled: !model.busy,
-              ),
-              OutlinedButton(
-                onPressed: model.busy
-                    ? null
-                    : () => model.lookup(publicId.text),
-                child: const Text('Buscar familiar'),
-              ),
-              if (model.candidate != null) ...[
-                Text(model.candidate!.fullName),
-                FilledButton(
-                  onPressed: model.busy ? null : model.invite,
-                  child: const Text('Enviar invitación'),
-                ),
-              ],
-            ],
-            if (model.message != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(model.message!),
-              ),
-            if (model.items.isEmpty && !model.busy)
-              const Text('No hay invitaciones pendientes.'),
-            for (final item in model.items)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.familyId == null
-                          ? item.familyName
-                          : item.targetName,
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(
-                      item.actionable
-                          ? 'Pendiente · vence ${item.expiresAt.toLocal().toIso8601String().split('T').first}'
-                          : 'Invitación caducada',
-                    ),
-                    if (widget.familyId == null)
-                      Wrap(
-                        spacing: 8,
+            OutlinedButton.icon(
+              onPressed: model.busy ? null : () => model.lookup(publicId.text),
+              icon: const Icon(Icons.search_rounded),
+              label: const Text('Buscar familiar'),
+            ),
+            AnimatedSize(
+              duration: Motion.of(context, Motion.medium),
+              curve: Motion.curve,
+              child: model.candidate == null
+                  ? const SizedBox(width: double.infinity)
+                  : Container(
+                      margin: const EdgeInsets.only(top: Space.sm),
+                      padding: const EdgeInsets.all(Space.sm),
+                      decoration: BoxDecoration(
+                        color: scheme.primaryContainer.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(Radii.md),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          FilledButton(
-                            onPressed: model.busy || !item.actionable
-                                ? null
-                                : () async {
-                                    if (await model.respond(item, 'accept')) {
-                                      widget.onChanged();
-                                    }
-                                  },
-                            child: const Text('Aceptar'),
+                          Row(
+                            children: [
+                              AppAvatar(name: model.candidate!.fullName),
+                              const SizedBox(width: Space.sm),
+                              Expanded(
+                                child: Text(
+                                  model.candidate!.fullName,
+                                  style: text.titleSmall,
+                                ),
+                              ),
+                            ],
                           ),
-                          TextButton(
+                          const SizedBox(height: Space.sm),
+                          FilledButton.icon(
+                            onPressed: model.busy ? null : model.invite,
+                            icon: const Icon(Icons.send_rounded, size: 18),
+                            label: const Text('Enviar invitación'),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+            const Divider(height: Space.xxl),
+            Text('Pendientes', style: text.labelLarge),
+          ],
+          if (model.items.isEmpty && !model.busy)
+            const EmptyState(
+              compact: true,
+              icon: Icons.mark_email_read_outlined,
+              title: 'No hay invitaciones pendientes.',
+            ),
+          for (final item in model.items)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Space.xs),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      AppAvatar(
+                        name: inviting ? item.targetName : item.familyName,
+                        icon: inviting ? null : Icons.cottage_outlined,
+                      ),
+                      const SizedBox(width: Space.sm),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              inviting ? item.targetName : item.familyName,
+                              style: text.titleSmall,
+                            ),
+                            const SizedBox(height: Space.xxs),
+                            StatusBadge(
+                              label: item.actionable
+                                  ? 'Pendiente · vence ${item.expiresAt.toLocal().toIso8601String().split('T').first}'
+                                  : 'Invitación caducada',
+                              tone: item.actionable
+                                  ? Tone.warning
+                                  : Tone.neutral,
+                              icon: item.actionable
+                                  ? Icons.schedule_rounded
+                                  : Icons.event_busy_outlined,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: Space.xs),
+                  if (!inviting)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
                             onPressed: model.busy || !item.actionable
                                 ? null
                                 : () async {
@@ -138,19 +186,34 @@ class _InvitationsPanelState extends State<InvitationsPanel> {
                                   },
                             child: const Text('Rechazar'),
                           ),
-                        ],
-                      )
-                    else
-                      TextButton(
-                        onPressed: model.busy ? null : () => model.revoke(item),
-                        child: const Text('Revocar invitación'),
-                      ),
-                  ],
-                ),
+                        ),
+                        const SizedBox(width: Space.sm),
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: model.busy || !item.actionable
+                                ? null
+                                : () async {
+                                    if (await model.respond(item, 'accept')) {
+                                      widget.onChanged();
+                                    }
+                                  },
+                            child: const Text('Aceptar'),
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    TextButton.icon(
+                      style: destructiveTextStyle(context),
+                      onPressed: model.busy ? null : () => model.revoke(item),
+                      icon: const Icon(Icons.block_rounded, size: 18),
+                      label: const Text('Revocar invitación'),
+                    ),
+                ],
               ),
-          ],
-        ),
-      ),
-    ),
+            ),
+        ],
+      );
+    },
   );
 }
