@@ -3,8 +3,7 @@ import '../domain/document_policy.dart';
 import '../domain/folder_repository.dart';
 
 class FolderViewModel extends ChangeNotifier {
-  FolderViewModel(this.repository, this.familyId, {required bool isAdmin})
-    : isAdmin = isAdmin;
+  FolderViewModel(this.repository, this.familyId, {required this.isAdmin});
   final FolderRepository repository;
   final String familyId;
   bool isAdmin;
