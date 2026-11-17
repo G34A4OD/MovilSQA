@@ -110,7 +110,7 @@ Si Storage recibe la copia publicada pero la confirmación de la base de datos f
 
 La policy SELECT debe limitarse a object.get_authenticated y object.get_authenticated_info mediante storage.allow_any_operation, evitando que ese mismo permiso permita emitir URLs firmadas. Validar helper/operaciones de la versión desplegada y probar denegación de createSignedUrl con cliente adverso. Si no hay separación de operaciones disponible, usar Edge de lectura con JWT + autorización de metadata y retorno de bytes; en ese caso no conceder SELECT Storage directo al móvil. La ausencia de URLs firmadas es un control verificable, no una convención de UI.
 
-Documentos de salud/notas de alergias/recetas/vacunas llevan título, descripción, autor y fechas como el resto. El contenido no se copia a logs. Una copia descargada al teléfono no se revoca después; limpiar cachés y avisar antes de exportar.
+Documentos llevan categoría orientativa (`identity_civic`, `civil_life`, `social_labor_tax`, `health`) en metadata vía `begin_document_upload` / `update_document`. En `health`, `health_note_kind` es opcional: `null` = documento médico general; notas específicas usan `allergy`/`consultation`/`prescription`/`vaccine`. Fuera de `health`, `health_note_kind` debe ser null. Autor = `uploaded_by` y fechas = `created_at`/`updated_at`/`expires_on`. El contenido no se copia a logs. Una copia descargada al teléfono no se revoca después; limpiar cachés y avisar antes de exportar.
 
 ## Presupuesto · Waldir
 
