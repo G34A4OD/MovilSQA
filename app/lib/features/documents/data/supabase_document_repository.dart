@@ -38,7 +38,9 @@ class SupabaseDocumentRepository implements DocumentRepository {
       expiresOn: expires == null ? null : DateTime.parse(expires as String),
       publishedPath: row['published_path'] as String?,
       category: DocumentCategory.fromCode(row['category'] as String?),
-      healthNoteKind: HealthNoteKind.fromCode(row['health_note_kind'] as String?),
+      healthNoteKind: HealthNoteKind.fromCode(
+        row['health_note_kind'] as String?,
+      ),
       uploadedBy: row['uploaded_by'] as String?,
       createdAt: created == null ? null : DateTime.parse(created as String),
     );

@@ -375,7 +375,9 @@ class _UploadDialogState extends State<_UploadDialog> {
           DropdownButtonFormField<DocumentCategory>(
             key: const Key('document-category'),
             initialValue: category,
-            decoration: const InputDecoration(labelText: 'Categoría orientativa'),
+            decoration: const InputDecoration(
+              labelText: 'Categoría orientativa',
+            ),
             items: const [
               DropdownMenuItem(
                 value: DocumentCategory.identityCivic,
