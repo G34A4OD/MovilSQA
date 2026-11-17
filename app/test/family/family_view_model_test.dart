@@ -14,6 +14,8 @@ import 'package:app/features/identity/domain/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../documents/folders_test.dart' show FakeFolders;
+import '../budget/sheets_test.dart' show FakeSheets;
+import 'package:app/features/budget/domain/sheet_repository.dart';
 import '../identity/auth_view_model_test.dart' show FakeAuth;
 import '../identity/profile_view_model_test.dart' show FakeProfiles, valid;
 
@@ -22,6 +24,8 @@ class FakeFamilies implements FamilyRepository {
   PetRepository get pets => FakePets();
   @override
   FolderRepository get folders => FakeFolders();
+  @override
+  BudgetSheetRepository get sheets => FakeSheets();
   @override
   RelationshipRepository get relationships => FakeRelationships();
   @override

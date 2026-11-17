@@ -9,6 +9,8 @@ import '../domain/pet_repository.dart';
 import 'supabase_pet_repository.dart';
 import '../../documents/domain/folder_repository.dart';
 import '../../documents/data/supabase_folder_repository.dart';
+import '../../budget/domain/sheet_repository.dart';
+import '../../budget/data/supabase_sheet_repository.dart';
 
 class SupabaseFamilyRepository implements FamilyRepository {
   const SupabaseFamilyRepository(this.client);
@@ -17,6 +19,8 @@ class SupabaseFamilyRepository implements FamilyRepository {
   PetRepository get pets => SupabasePetRepository(client);
   @override
   FolderRepository get folders => SupabaseFolderRepository(client);
+  @override
+  BudgetSheetRepository get sheets => SupabaseBudgetSheetRepository(client);
   @override
   RelationshipRepository get relationships =>
       SupabaseRelationshipRepository(client);

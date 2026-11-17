@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../documents/presentation/folders_panel.dart';
+import '../../budget/presentation/sheets_panel.dart';
 import '../../identity/domain/profile.dart';
 import '../domain/family_repository.dart';
 import '../domain/pet_repository.dart';
@@ -339,6 +340,12 @@ class _FamilyPageState extends State<FamilyPage> {
                             key: ValueKey('folders:${f.id}'),
                             family: f,
                             repository: widget.repository,
+                          ),
+                          const SizedBox(height: 12),
+                          SheetsPanel(
+                            key: ValueKey('sheets:${f.id}'),
+                            repository: widget.repository.sheets,
+                            familyId: f.id,
                           ),
                           const SizedBox(height: 12),
                           OutlinedButton.icon(
