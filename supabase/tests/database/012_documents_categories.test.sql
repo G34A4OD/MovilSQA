@@ -27,11 +27,11 @@ select lives_ok(
   'TC-DOC-03 HU-10: carpeta humana');
 select set_config('test.folder',(select id::text from public.folders where name='Docs Cat'),true);
 
-select throws_ok(
+select lives_ok(
   $$select public.begin_document_upload(
-    current_setting('test.folder')::uuid,'Alergia','',null,'a.pdf',10,
+    current_setting('test.folder')::uuid,'Lab general','ficticio',null,'lab.pdf',10,
     '5a000000-0000-0000-0000-000000000001',null,'health',null)$$,
-  'P0001','validation_error','TC-DOC-03 HU-10: salud exige tipo de nota');
+  'TC-DOC-03 HU-10: salud permite documento general sin tipo de nota');
 
 select lives_ok(
   $$select public.begin_document_upload(
