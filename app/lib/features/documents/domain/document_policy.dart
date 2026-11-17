@@ -41,4 +41,35 @@ abstract final class DocumentPolicy {
     }
     return trimmed;
   }
+
+  static String title(String value) => folderName(value);
+
+  static String description(String value) {
+    if (value.length > 1000) {
+      throw const FormatException(
+        'La descripción admite hasta 1000 caracteres.',
+      );
+    }
+    return value;
+  }
+
+  static DateTime? expiresOn(DateTime? value, {DateTime? today}) {
+    if (value == null) {
+      return null;
+    }
+    final day = DateTime(value.year, value.month, value.day);
+    final floor = today == null
+        ? DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+          )
+        : DateTime(today.year, today.month, today.day);
+    if (day.isBefore(floor)) {
+      throw const FormatException(
+        'El vencimiento opcional no puede ser una fecha pasada.',
+      );
+    }
+    return day;
+  }
 }

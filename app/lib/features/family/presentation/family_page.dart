@@ -434,6 +434,7 @@ class _FamilyFoldersPanelState extends State<_FamilyFoldersPanel> {
       isAdmin: widget.family.isAdmin,
       currentUserId: userId,
       pets: pets,
+      documents: widget.repository.documents,
     );
   }
 }

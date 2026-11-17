@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import '../domain/document_repository.dart';
 import '../domain/folder_repository.dart';
+import 'documents_panel.dart';
 import 'folder_view_model.dart';
 
 class FolderPetOption {
@@ -16,12 +18,16 @@ class FoldersPanel extends StatefulWidget {
     required this.isAdmin,
     required this.currentUserId,
     this.pets = const [],
+    this.documents,
+    this.pickDocumentBytes,
   });
   final FolderRepository repository;
   final String familyId;
   final bool isAdmin;
   final String currentUserId;
   final List<FolderPetOption> pets;
+  final DocumentRepository? documents;
+  final DocumentBytesPicker? pickDocumentBytes;
   @override
   State<FoldersPanel> createState() => _FoldersPanelState();
 }
@@ -32,6 +38,7 @@ class _FoldersPanelState extends State<FoldersPanel> {
     widget.familyId,
     isAdmin: widget.isAdmin,
   );
+  FolderRecord? selected;
 
   @override
   void initState() {
@@ -150,9 +157,13 @@ class _FoldersPanelState extends State<FoldersPanel> {
             for (final folder in model.items)
               ListTile(
                 contentPadding: EdgeInsets.zero,
+                selected: selected?.id == folder.id,
                 leading: const Icon(Icons.folder_outlined),
                 title: Text(folder.name),
                 subtitle: Text(_subtitle(folder)),
+                onTap: widget.documents == null
+                    ? null
+                    : () => setState(() => selected = folder),
                 trailing: _canManage(folder)
                     ? PopupMenuButton<String>(
                         enabled: !model.busy,
@@ -177,6 +188,17 @@ class _FoldersPanelState extends State<FoldersPanel> {
                       )
                     : null,
               ),
+            if (selected != null && widget.documents != null) ...[
+              const SizedBox(height: 12),
+              DocumentsPanel(
+                key: ValueKey('docs-${selected!.id}'),
+                repository: widget.documents!,
+                folderId: selected!.id,
+                folderName: selected!.name,
+                canUpload: _canManage(selected!),
+                pickBytes: widget.pickDocumentBytes,
+              ),
+            ],
             OutlinedButton.icon(
               key: const Key('folder-create'),
               onPressed: model.busy ? null : createFolder,
