@@ -10,6 +10,7 @@ class DocumentViewModel extends ChangeNotifier {
   bool busy = false;
   bool _disposed = false;
   String? message;
+  DocumentDownload? lastDownload;
 
   void _notify() {
     if (!_disposed) {
@@ -26,14 +27,14 @@ class DocumentViewModel extends ChangeNotifier {
     _notify();
     try {
       await action();
-      items = await repository.listQuarantine(folderId);
+      items = await repository.listByFolder(folderId);
       return true;
     } on FormatException catch (error) {
       message = error.message;
       return false;
     } catch (_) {
       message =
-          'No se completó la carga. Revisa membresía, titularidad, tamaño y tipo.';
+          'No se completó la operación. Revisa membresía, titularidad y versión.';
       return false;
     } finally {
       busy = false;
@@ -67,6 +68,51 @@ class DocumentViewModel extends ChangeNotifier {
     } else if (result.status == DocumentStatus.rejected) {
       message = 'El archivo fue rechazado tras validar los bytes.';
     }
+  });
+
+  Future<bool> updateMetadata({
+    required DocumentRecord document,
+    required String title,
+    required String description,
+    DateTime? expiresOn,
+  }) => _run(() async {
+    await repository.updateMetadata(
+      documentId: document.id,
+      title: title,
+      description: description,
+      expectedVersion: document.version,
+      expiresOn: expiresOn,
+    );
+  });
+
+  Future<bool> delete(DocumentRecord document) => _run(() async {
+    await repository.delete(document.id, document.version);
+  });
+
+  Future<bool> download(DocumentRecord document) => _run(() async {
+    lastDownload = await repository.download(document.id);
+    message =
+        'Descarga lista (${lastDownload!.bytes.length} B). Copia local no se revoca.';
+  });
+
+  Future<bool> replace(
+    DocumentRecord document,
+    DocumentUploadInput input,
+  ) => _run(() async {
+    final replacement = DocumentUploadInput(
+      title: input.title,
+      description: input.description,
+      filename: input.filename,
+      bytes: input.bytes,
+      expiresOn: input.expiresOn,
+      replacesDocumentId: document.id,
+    );
+    if (!replacement.isValid) {
+      throw const FormatException(
+        'Revisa título, descripción, vencimiento y el archivo JPG/PNG/PDF (máx. 10 MiB).',
+      );
+    }
+    await repository.upload(folderId, replacement);
   });
 
   @override

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import '../../../core/read_all.dart';
@@ -17,32 +20,36 @@ class SupabaseDocumentRepository implements DocumentRepository {
 
   DocumentRecord _map(Map<String, dynamic> row) {
     final expires = row['expires_on'];
+    final mime =
+        (row['detected_mime_type'] as String?) ??
+        (row['declared_mime_type'] as String);
     return DocumentRecord(
       id: row['id'] as String,
       folderId: row['folder_id'] as String,
       familyId: row['family_id'] as String,
       title: row['title'] as String,
       description: row['description'] as String? ?? '',
-      mimeType: row['declared_mime_type'] as String,
+      mimeType: mime,
       sizeBytes: row['size_bytes'] as int,
       status: _status(row['status'] as String),
       storagePath: row['storage_path'] as String,
       version: row['version'] as int,
       expiresOn: expires == null ? null : DateTime.parse(expires as String),
+      publishedPath: row['published_path'] as String?,
     );
   }
 
   @override
-  Future<List<DocumentRecord>> listQuarantine(String folderId) async {
+  Future<List<DocumentRecord>> listByFolder(String folderId) async {
     final rows = await readAll(
       (from, to) => client
           .from('documents')
           .select(
             'id,folder_id,family_id,title,description,declared_mime_type,'
-            'size_bytes,status,storage_path,version,expires_on',
+            'detected_mime_type,size_bytes,status,storage_path,published_path,'
+            'version,expires_on',
           )
           .eq('folder_id', folderId)
-          .eq('status', 'quarantine')
           .order('created_at')
           .order('id')
           .range(from, to),
@@ -72,6 +79,7 @@ class SupabaseDocumentRepository implements DocumentRepository {
         'p_filename': input.filename,
         'p_size_bytes': input.bytes.length,
         'p_request_id': _uuid.v4(),
+        'p_replaces_document_id': input.replacesDocumentId,
       },
     );
     final row = Map<String, dynamic>.from(reserved as Map);
@@ -85,8 +93,6 @@ class SupabaseDocumentRepository implements DocumentRepository {
             fileOptions: FileOptions(upsert: false, contentType: mime),
           );
     } catch (_) {
-      // Compensación completa (borrar metadata huérfana) queda para el
-      // incremento de cuarentena/escaneo; la fila queda en quarantine sin bytes.
       rethrow;
     }
     return _map(row);
@@ -125,6 +131,69 @@ class SupabaseDocumentRepository implements DocumentRepository {
       status: status,
       error: map['error'] as String?,
       idempotent: map['idempotent'] == true,
+    );
+  }
+
+  @override
+  Future<DocumentRecord> updateMetadata({
+    required String documentId,
+    required String title,
+    required String description,
+    required int expectedVersion,
+    DateTime? expiresOn,
+  }) async {
+    final cleanTitle = DocumentPolicy.title(title);
+    final cleanDescription = DocumentPolicy.description(description);
+    final expires = DocumentPolicy.expiresOn(expiresOn);
+    final result = await client.rpc(
+      'update_document',
+      params: {
+        'p_document_id': documentId,
+        'p_title': cleanTitle,
+        'p_description': cleanDescription,
+        'p_expires_on': expires?.toIso8601String().split('T').first,
+        'p_expected_version': expectedVersion,
+      },
+    );
+    return _map(Map<String, dynamic>.from(result as Map));
+  }
+
+  @override
+  Future<void> delete(String documentId, int expectedVersion) async {
+    await client.rpc(
+      'delete_document',
+      params: {
+        'p_document_id': documentId,
+        'p_expected_version': expectedVersion,
+      },
+    );
+  }
+
+  @override
+  Future<DocumentDownload> download(String documentId) async {
+    final session = client.auth.currentSession;
+    if (session == null) {
+      throw StateError('forbidden');
+    }
+    final response = await client.functions.invoke(
+      'download-document',
+      body: {'document_id': documentId},
+    );
+    if (response.status >= 400) {
+      throw StateError('download_failed');
+    }
+    final data = response.data;
+    final map = data is Map
+        ? Map<String, dynamic>.from(data)
+        : <String, dynamic>{};
+    final encoded = map['content_base64'] as String?;
+    if (encoded == null || encoded.isEmpty) {
+      throw StateError('bytes_missing');
+    }
+    return DocumentDownload(
+      documentId: map['id'] as String? ?? documentId,
+      mimeType: map['mime_type'] as String? ?? 'application/octet-stream',
+      bytes: Uint8List.fromList(base64Decode(encoded)),
     );
   }
 }

@@ -10,12 +10,14 @@ class DocumentUploadInput {
     required this.filename,
     required this.bytes,
     this.expiresOn,
+    this.replacesDocumentId,
   });
   final String title;
   final String description;
   final String filename;
   final Uint8List bytes;
   final DateTime? expiresOn;
+  final String? replacesDocumentId;
 
   bool get isValid {
     try {
@@ -45,6 +47,7 @@ class DocumentRecord {
     required this.storagePath,
     required this.version,
     this.expiresOn,
+    this.publishedPath,
   });
   final String id;
   final String folderId;
@@ -57,15 +60,7 @@ class DocumentRecord {
   final String storagePath;
   final int version;
   final DateTime? expiresOn;
-}
-
-class DocumentUploadReservation {
-  const DocumentUploadReservation({
-    required this.document,
-    required this.storagePath,
-  });
-  final DocumentRecord document;
-  final String storagePath;
+  final String? publishedPath;
 }
 
 class DocumentProcessResult {
@@ -79,8 +74,28 @@ class DocumentProcessResult {
   final bool idempotent;
 }
 
+class DocumentDownload {
+  const DocumentDownload({
+    required this.documentId,
+    required this.mimeType,
+    required this.bytes,
+  });
+  final String documentId;
+  final String mimeType;
+  final Uint8List bytes;
+}
+
 abstract class DocumentRepository {
-  Future<List<DocumentRecord>> listQuarantine(String folderId);
+  Future<List<DocumentRecord>> listByFolder(String folderId);
   Future<DocumentRecord> upload(String folderId, DocumentUploadInput input);
   Future<DocumentProcessResult> process(String documentId);
+  Future<DocumentRecord> updateMetadata({
+    required String documentId,
+    required String title,
+    required String description,
+    required int expectedVersion,
+    DateTime? expiresOn,
+  });
+  Future<void> delete(String documentId, int expectedVersion);
+  Future<DocumentDownload> download(String documentId);
 }

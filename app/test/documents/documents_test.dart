@@ -11,6 +11,8 @@ import 'folders_test.dart' show FakeFolders;
 class FakeDocuments implements DocumentRepository {
   final uploads = <DocumentUploadInput>[];
   final processed = <String>[];
+  final deleted = <String>[];
+  final downloaded = <String>[];
   List<DocumentRecord> values = [];
   bool fail = false;
   DocumentProcessResult processResult = const DocumentProcessResult(
@@ -19,11 +21,8 @@ class FakeDocuments implements DocumentRepository {
   );
 
   @override
-  Future<List<DocumentRecord>> listQuarantine(String folderId) async => values
-      .where(
-        (d) => d.folderId == folderId && d.status == DocumentStatus.quarantine,
-      )
-      .toList();
+  Future<List<DocumentRecord>> listByFolder(String folderId) async =>
+      values.where((d) => d.folderId == folderId).toList();
 
   @override
   Future<DocumentRecord> upload(
@@ -72,11 +71,61 @@ class FakeDocuments implements DocumentRepository {
             storagePath: doc.storagePath,
             version: doc.version + 1,
             expiresOn: doc.expiresOn,
+            publishedPath: processResult.status == DocumentStatus.approved
+                ? doc.storagePath
+                : doc.publishedPath,
           )
         else
           doc,
     ];
     return processResult;
+  }
+
+  @override
+  Future<DocumentRecord> updateMetadata({
+    required String documentId,
+    required String title,
+    required String description,
+    required int expectedVersion,
+    DateTime? expiresOn,
+  }) async {
+    final index = values.indexWhere((d) => d.id == documentId);
+    final doc = values[index];
+    if (doc.version != expectedVersion) {
+      throw StateError('version_conflict');
+    }
+    final updated = DocumentRecord(
+      id: doc.id,
+      folderId: doc.folderId,
+      familyId: doc.familyId,
+      title: title.trim(),
+      description: description,
+      mimeType: doc.mimeType,
+      sizeBytes: doc.sizeBytes,
+      status: doc.status,
+      storagePath: doc.storagePath,
+      version: doc.version + 1,
+      expiresOn: expiresOn,
+      publishedPath: doc.publishedPath,
+    );
+    values = [...values]..[index] = updated;
+    return updated;
+  }
+
+  @override
+  Future<void> delete(String documentId, int expectedVersion) async {
+    deleted.add(documentId);
+    values = values.where((d) => d.id != documentId).toList();
+  }
+
+  @override
+  Future<DocumentDownload> download(String documentId) async {
+    downloaded.add(documentId);
+    return DocumentDownload(
+      documentId: documentId,
+      mimeType: 'application/pdf',
+      bytes: Uint8List.fromList([37, 80, 68, 70, 45]),
+    );
   }
 }
 
@@ -150,6 +199,94 @@ void main() {
     expect(vm.items, hasLength(1));
     expect(vm.items.single.status, DocumentStatus.quarantine);
     expect(vm.message, contains('cuarentena'));
+  });
+
+  test('TC-DOC-03 HU-09: editar metadata y eliminar propio', () async {
+    final repo = FakeDocuments();
+    repo.processResult = const DocumentProcessResult(
+      status: DocumentStatus.approved,
+    );
+    final vm = DocumentViewModel(repo, 'carpeta-1');
+    addTearDown(vm.dispose);
+    await vm.upload(
+      DocumentUploadInput(
+        title: 'Vacunas',
+        description: '',
+        filename: 'vacunas.pdf',
+        bytes: _pdf(),
+      ),
+    );
+    repo.processResult = const DocumentProcessResult(
+      status: DocumentStatus.approved,
+    );
+    // Forzar approved en lista
+    final doc = repo.values.single;
+    repo.values = [
+      DocumentRecord(
+        id: doc.id,
+        folderId: doc.folderId,
+        familyId: doc.familyId,
+        title: doc.title,
+        description: doc.description,
+        mimeType: doc.mimeType,
+        sizeBytes: doc.sizeBytes,
+        status: DocumentStatus.approved,
+        storagePath: doc.storagePath,
+        version: 2,
+        publishedPath: doc.storagePath,
+      ),
+    ];
+    await vm.load();
+    expect(
+      await vm.updateMetadata(
+        document: vm.items.single,
+        title: 'Vacunas editadas',
+        description: 'nota',
+      ),
+      true,
+    );
+    expect(vm.items.single.title, 'Vacunas editadas');
+    expect(await vm.download(vm.items.single), true);
+    expect(repo.downloaded, [doc.id]);
+    expect(await vm.delete(vm.items.single), true);
+    expect(vm.items, isEmpty);
+    expect(repo.deleted, [doc.id]);
+  });
+
+  test('TC-DOC-02 HU-09: reemplazo reserva sin sobrescribir approved', () async {
+    final repo = FakeDocuments();
+    final approved = DocumentRecord(
+      id: 'doc-old',
+      folderId: 'carpeta-1',
+      familyId: 'familia',
+      title: 'Vacunas',
+      description: '',
+      mimeType: 'application/pdf',
+      sizeBytes: 8,
+      status: DocumentStatus.approved,
+      storagePath: 'old-path',
+      version: 2,
+      publishedPath: 'old-path',
+    );
+    repo.values = [approved];
+    final vm = DocumentViewModel(repo, 'carpeta-1');
+    addTearDown(vm.dispose);
+    await vm.load();
+    expect(
+      await vm.replace(
+        approved,
+        DocumentUploadInput(
+          title: 'Vacunas v2',
+          description: 'reemplazo',
+          filename: 'v2.pdf',
+          bytes: _pdf(),
+        ),
+      ),
+      true,
+    );
+    expect(repo.uploads.single.replacesDocumentId, 'doc-old');
+    expect(vm.items.where((d) => d.status == DocumentStatus.approved), isNotEmpty);
+    expect(vm.items.where((d) => d.status == DocumentStatus.quarantine), isNotEmpty);
   });
 
   testWidgets(

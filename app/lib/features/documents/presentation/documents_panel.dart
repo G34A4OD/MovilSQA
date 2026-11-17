@@ -43,14 +43,96 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
     super.dispose();
   }
 
-  Future<void> uploadDocument() async {
+  Future<void> uploadDocument({DocumentRecord? replaces}) async {
     final input = await showDialog<DocumentUploadInput>(
       context: context,
-      builder: (_) => _UploadDialog(pickBytes: widget.pickBytes),
+      builder: (_) => _UploadDialog(
+        pickBytes: widget.pickBytes,
+        initialTitle: replaces?.title,
+        initialDescription: replaces?.description,
+        initialExpiresOn: replaces?.expiresOn,
+        dialogTitle: replaces == null ? 'Cargar documento' : 'Reemplazar archivo',
+      ),
     );
-    if (input != null && mounted) {
+    if (input == null || !mounted) {
+      return;
+    }
+    if (replaces != null) {
+      await model.replace(replaces, input);
+    } else {
       await model.upload(input);
     }
+  }
+
+  Future<void> editDocument(DocumentRecord doc) async {
+    final title = TextEditingController(text: doc.title);
+    final description = TextEditingController(text: doc.description);
+    var expiresOn = doc.expiresOn;
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocal) => AlertDialog(
+          title: const Text('Editar metadata'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  key: const Key('document-edit-title'),
+                  controller: title,
+                  decoration: const InputDecoration(labelText: 'Título'),
+                ),
+                TextField(
+                  key: const Key('document-edit-description'),
+                  controller: description,
+                  decoration: const InputDecoration(labelText: 'Descripción'),
+                  maxLines: 3,
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final picked = await showDatePicker(
+                      context: ctx,
+                      initialDate: expiresOn ?? DateTime.now(),
+                      firstDate: DateTime(1900),
+                      lastDate: DateTime.now().add(const Duration(days: 3650)),
+                    );
+                    if (picked != null) {
+                      setLocal(() => expiresOn = picked);
+                    }
+                  },
+                  child: Text(
+                    expiresOn == null
+                        ? 'Vencimiento opcional'
+                        : 'Vence: ${expiresOn!.toIso8601String().split('T').first}',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancelar'),
+            ),
+            FilledButton(
+              key: const Key('document-edit-save'),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Guardar'),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (saved == true && mounted) {
+      await model.updateMetadata(
+        document: doc,
+        title: title.text,
+        description: description.text,
+        expiresOn: expiresOn,
+      );
+    }
+    title.dispose();
+    description.dispose();
   }
 
   String _statusLabel(DocumentStatus status) => switch (status) {
@@ -92,7 +174,7 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
                 alignment: Alignment.centerLeft,
                 child: FilledButton.icon(
                   key: const Key('document-upload'),
-                  onPressed: model.busy ? null : uploadDocument,
+                  onPressed: model.busy ? null : () => uploadDocument(),
                   icon: const Icon(Icons.upload_file),
                   label: const Text('Cargar documento'),
                 ),
@@ -107,18 +189,67 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
             for (final doc in model.items)
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.picture_as_pdf_outlined),
+                leading: Icon(
+                  doc.status == DocumentStatus.approved
+                      ? Icons.verified_outlined
+                      : Icons.picture_as_pdf_outlined,
+                ),
                 title: Text(doc.title),
                 subtitle: Text(
                   '${_statusLabel(doc.status)} · ${doc.mimeType} · ${doc.sizeBytes} B',
                 ),
-                trailing: doc.status == DocumentStatus.quarantine
-                    ? TextButton(
+                trailing: Wrap(
+                  spacing: 4,
+                  children: [
+                    if (doc.status == DocumentStatus.quarantine)
+                      TextButton(
                         key: Key('document-process-${doc.id}'),
-                        onPressed: model.busy ? null : () => model.process(doc),
+                        onPressed: model.busy
+                            ? null
+                            : () => model.process(doc),
                         child: const Text('Procesar'),
-                      )
-                    : null,
+                      ),
+                    if (doc.status == DocumentStatus.approved)
+                      TextButton(
+                        key: Key('document-download-${doc.id}'),
+                        onPressed: model.busy
+                            ? null
+                            : () => model.download(doc),
+                        child: const Text('Descargar'),
+                      ),
+                    if (widget.canUpload)
+                      PopupMenuButton<String>(
+                        key: Key('document-menu-${doc.id}'),
+                        onSelected: (value) async {
+                          switch (value) {
+                            case 'edit':
+                              await editDocument(doc);
+                            case 'replace':
+                              if (doc.status == DocumentStatus.approved) {
+                                await uploadDocument(replaces: doc);
+                              }
+                            case 'delete':
+                              await model.delete(doc);
+                          }
+                        },
+                        itemBuilder: (_) => [
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Text('Editar metadata'),
+                          ),
+                          if (doc.status == DocumentStatus.approved)
+                            const PopupMenuItem(
+                              value: 'replace',
+                              child: Text('Reemplazar archivo'),
+                            ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Text('Eliminar'),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
           ],
         ),
@@ -128,17 +259,28 @@ class _DocumentsPanelState extends State<DocumentsPanel> {
 }
 
 class _UploadDialog extends StatefulWidget {
-  const _UploadDialog({this.pickBytes});
+  const _UploadDialog({
+    this.pickBytes,
+    this.initialTitle,
+    this.initialDescription,
+    this.initialExpiresOn,
+    this.dialogTitle = 'Cargar documento',
+  });
   final DocumentBytesPicker? pickBytes;
+  final String? initialTitle;
+  final String? initialDescription;
+  final DateTime? initialExpiresOn;
+  final String dialogTitle;
 
   @override
   State<_UploadDialog> createState() => _UploadDialogState();
 }
 
 class _UploadDialogState extends State<_UploadDialog> {
-  final title = TextEditingController();
-  final description = TextEditingController();
-  DateTime? expiresOn;
+  late final title = TextEditingController(text: widget.initialTitle ?? '');
+  late final description =
+      TextEditingController(text: widget.initialDescription ?? '');
+  late DateTime? expiresOn = widget.initialExpiresOn;
   String? filename;
   Uint8List? bytes;
   String? error;
@@ -157,7 +299,6 @@ class _UploadDialogState extends State<_UploadDialog> {
       if (!mounted) {
         return;
       }
-      // Cancelación del selector: no cierra el diálogo ni crea reserva.
       if (picked == null) {
         return;
       }
@@ -191,7 +332,7 @@ class _UploadDialogState extends State<_UploadDialog> {
 
   @override
   Widget build(BuildContext context) => AlertDialog(
-    title: const Text('Cargar documento'),
+    title: Text(widget.dialogTitle),
     content: SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
