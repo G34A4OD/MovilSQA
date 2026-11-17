@@ -107,6 +107,25 @@ select lives_ok(
   'TC-DOC-01 HU-08: tras reingreso puede crear carpeta nueva');
 select set_config('test.folder_id',(select id::text from public.folders where name='Nueva generación'),true);
 select lives_ok(
+  $$insert into public.folders(family_id,name,owner_user_id) values('37000000-0000-0000-0000-000000000001','Sesión viva','17000000-0000-0000-0000-000000000002')$$,
+  'TC-AUTH-03 HU-08: con sesión Auth vigente puede crear carpeta');
+reset role;
+delete from auth.sessions where id='27000000-0000-0000-0000-000000000002';
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"17000000-0000-0000-0000-000000000002","session_id":"27000000-0000-0000-0000-000000000002"}',true);
+select is((select count(*)::int from public.folders),0,
+  'TC-AUTH-03 HU-08: sesión Auth terminada no lee carpetas (guard session_id)');
+select throws_ok(
+  $$select public.delete_folder(current_setting('test.folder_id')::uuid,1)$$,
+  '42501','forbidden',
+  'TC-AUTH-03 HU-08: sesión Auth terminada no borra carpeta');
+-- Restore a live session for the remaining delete/enqueue checks (distinct from RLS-only cases above).
+reset role;
+insert into auth.sessions(id,user_id) values
+ ('27000000-0000-0000-0000-000000000002','17000000-0000-0000-0000-000000000002');
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"17000000-0000-0000-0000-000000000002","session_id":"27000000-0000-0000-0000-000000000002"}',true);
+select lives_ok(
   $$select public.delete_folder(current_setting('test.folder_id')::uuid,1)$$,
   'TC-DOC-01 HU-08: titular borra carpeta vacía');
 select is((select count(*)::int from public.folders where id=current_setting('test.folder_id')::uuid),0,
@@ -116,5 +135,39 @@ select is(
   (select count(*)::int from private.audit_events where operation='delete_folder' and resource_id=current_setting('test.folder_id')::uuid),
   1,
   'TC-DOC-01 HU-08: borrado deja auditoría');
+select is(
+  (select count(*)::int from private.cleanup_jobs where operation='delete_folder' and resource_id=current_setting('test.folder_id')::uuid),
+  1,
+  'TC-DOC-01 HU-08: borrado encola cleanup_jobs (purga física pendiente)');
+-- Enqueue failure must keep the folder (atomic RPC). Distinct from Auth session guard above.
+create function private.test_block_folder_cleanup() returns trigger
+language plpgsql set search_path = '' as $$
+begin
+  if new.operation = 'delete_folder' then
+    raise exception 'enqueue_failed';
+  end if;
+  return new;
+end;
+$$;
+create trigger test_block_folder_cleanup
+  before insert or update on private.cleanup_jobs
+  for each row execute function private.test_block_folder_cleanup();
+set local role authenticated;
+select set_config('request.jwt.claims','{"sub":"17000000-0000-0000-0000-000000000002","session_id":"27000000-0000-0000-0000-000000000002"}',true);
+select lives_ok(
+  $$insert into public.folders(family_id,name,owner_user_id) values('37000000-0000-0000-0000-000000000001','Cola atómica','17000000-0000-0000-0000-000000000002')$$,
+  'TC-DOC-01 HU-08: prepara carpeta para fallo de encolado');
+select set_config('test.folder_enqueue',(select id::text from public.folders where name='Cola atómica'),true);
+select throws_ok(
+  $$select public.delete_folder(current_setting('test.folder_enqueue')::uuid,1)$$,
+  'P0001','enqueue_failed',
+  'TC-DOC-01 HU-08: encolado fallido aborta la RPC');
+select is(
+  (select count(*)::int from public.folders where id=current_setting('test.folder_enqueue')::uuid),
+  1,
+  'TC-DOC-01 HU-08: si falla el encolado la carpeta queda intacta');
+reset role;
+drop trigger test_block_folder_cleanup on private.cleanup_jobs;
+drop function private.test_block_folder_cleanup();
 select * from finish();
 rollback;
