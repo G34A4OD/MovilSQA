@@ -9,6 +9,10 @@ project_id = "nido"
 # New signing keys are verified explicitly with Auth in the handler, then live-session SQL.
 verify_jwt = false
 
+[functions.process-document]
+# Auth se verifica en el handler; service_role solo tras authorize_document_process.
+verify_jwt = false
+
 [api]
 enabled = true
 # Port to use for the API URL.
