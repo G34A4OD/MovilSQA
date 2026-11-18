@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/widgets.dart';
 import '../domain/family_repository.dart';
 import '../domain/relationship_repository.dart';
 import 'relationship_view_model.dart';
@@ -57,97 +58,95 @@ class _RelationshipsPanelState extends State<RelationshipsPanel> {
     listenable: model,
     builder: (context, _) {
       final names = {for (final m in widget.members) m.userId: m.fullName};
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Nuestros vínculos',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: 'Recargar árbol',
-                    onPressed: model.busy ? null : model.load,
-                    icon: const Icon(Icons.refresh),
-                  ),
-                ],
+      final visible = model.items
+          .where(
+            (r) =>
+                names.containsKey(r.fromUserId) &&
+                names.containsKey(r.toUserId),
+          )
+          .toList();
+      return SectionCard(
+        icon: Icons.account_tree_outlined,
+        tone: Tone.success,
+        title: 'Nuestros vínculos',
+        refreshTooltip: 'Recargar árbol',
+        onRefresh: model.load,
+        busy: model.busy,
+        message: model.message,
+        children: [
+          FamilyTree(members: widget.members, relationships: model.items),
+          if (widget.family.isAdmin) ...[
+            const SizedBox(height: Space.sm),
+            OutlinedButton.icon(
+              onPressed: model.busy || widget.members.length < 2 ? null : edit,
+              icon: const Icon(Icons.add_link_rounded),
+              label: const Text('Asignar parentesco'),
+            ),
+          ],
+          if (visible.isNotEmpty) const SizedBox(height: Space.xs),
+          for (final r in visible)
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const IconTile(
+                icon: Icons.link_rounded,
+                tone: Tone.neutral,
+                size: 36,
               ),
-              if (model.busy) const LinearProgressIndicator(),
-              if (model.message != null) Text(model.message!),
-              FamilyTree(members: widget.members, relationships: model.items),
-              if (widget.family.isAdmin)
-                OutlinedButton.icon(
-                  onPressed: model.busy || widget.members.length < 2
-                      ? null
-                      : edit,
-                  icon: const Icon(Icons.add_link),
-                  label: const Text('Asignar parentesco'),
-                ),
-              for (final r in model.items.where(
-                (r) =>
-                    names.containsKey(r.fromUserId) &&
-                    names.containsKey(r.toUserId),
-              ))
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(
-                    '${names[r.fromUserId]} · ${r.label} ${names[r.toUserId]}',
-                  ),
-                  trailing: widget.family.isAdmin
-                      ? PopupMenuButton<String>(
-                          enabled: !model.busy,
-                          onSelected: (action) async {
-                            if (action == 'edit') {
-                              await edit(r);
-                            } else {
-                              final ok = await showDialog<bool>(
-                                context: context,
-                                builder: (context) => AlertDialog(
-                                  title: const Text('Quitar vínculo'),
-                                  content: const Text(
-                                    'Se eliminará este parentesco. Las personas seguirán en la familia.',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, false),
-                                      child: const Text('Cancelar'),
-                                    ),
-                                    FilledButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, true),
-                                      child: const Text('Quitar'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                              if (ok == true && mounted) {
-                                await model.delete(r);
-                              }
-                            }
-                          },
-                          itemBuilder: (_) => [
-                            const PopupMenuItem(
-                              value: 'edit',
-                              child: Text('Editar'),
+              title: Text(
+                '${names[r.fromUserId]} · ${r.label} ${names[r.toUserId]}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              trailing: widget.family.isAdmin
+                  ? PopupMenuButton<String>(
+                      enabled: !model.busy,
+                      icon: const Icon(Icons.more_vert_rounded),
+                      onSelected: (action) async {
+                        if (action == 'edit') {
+                          await edit(r);
+                        } else {
+                          final ok = await showConfirmDialog(
+                            context,
+                            title: 'Quitar vínculo',
+                            message:
+                                'Se eliminará este parentesco. Las personas seguirán en la familia.',
+                            confirmLabel: 'Quitar',
+                            icon: Icons.link_off_rounded,
+                          );
+                          if (ok && mounted) {
+                            await model.delete(r);
+                          }
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.edit_outlined),
+                            title: Text('Editar'),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(
+                              Icons.link_off_rounded,
+                              color: Theme.of(context).colorScheme.error,
                             ),
-                            const PopupMenuItem(
-                              value: 'delete',
-                              child: Text('Quitar vínculo'),
+                            title: Text(
+                              'Quitar vínculo',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
                             ),
-                          ],
-                        )
-                      : null,
-                ),
-            ],
-          ),
-        ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : null,
+            ),
+        ],
       );
     },
   );
@@ -174,46 +173,62 @@ class _RelationshipDialogState extends State<_RelationshipDialog> {
     content: SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           DropdownButtonFormField<String>(
             initialValue: person,
             isExpanded: true,
-            decoration: const InputDecoration(labelText: 'Persona'),
+            decoration: const InputDecoration(
+              labelText: 'Persona',
+              prefixIcon: Icon(Icons.person_outline_rounded),
+            ),
             items: widget.members
                 .map(
                   (m) => DropdownMenuItem(
                     value: m.userId,
-                    child: Text(m.fullName),
+                    child: Text(m.fullName, overflow: TextOverflow.ellipsis),
                   ),
                 )
                 .toList(),
             onChanged: (v) => setState(() => person = v!),
           ),
+          const SizedBox(height: Space.sm),
           DropdownButtonFormField<FamilyRole>(
             initialValue: role,
             isExpanded: true,
-            decoration: const InputDecoration(labelText: 'Es…'),
+            decoration: const InputDecoration(
+              labelText: 'Es…',
+              prefixIcon: Icon(Icons.link_rounded),
+            ),
             items: FamilyRole.values
                 .map((r) => DropdownMenuItem(value: r, child: Text(r.label)))
                 .toList(),
             onChanged: (v) => setState(() => role = v!),
           ),
+          const SizedBox(height: Space.sm),
           DropdownButtonFormField<String>(
             initialValue: relative,
             isExpanded: true,
-            decoration: const InputDecoration(labelText: 'De este familiar'),
+            decoration: const InputDecoration(
+              labelText: 'De este familiar',
+              prefixIcon: Icon(Icons.person_outline_rounded),
+            ),
             items: widget.members
                 .map(
                   (m) => DropdownMenuItem(
                     value: m.userId,
-                    child: Text(m.fullName),
+                    child: Text(m.fullName, overflow: TextOverflow.ellipsis),
                   ),
                 )
                 .toList(),
             onChanged: (v) => setState(() => relative = v!),
           ),
-          const SizedBox(height: 12),
-          const Text('Este vínculo no concede permisos de administrador.'),
+          InlineMessage(
+            text: person == relative
+                ? 'Elige dos personas distintas.'
+                : 'Este vínculo no concede permisos de administrador.',
+            tone: person == relative ? Tone.warning : Tone.info,
+          ),
         ],
       ),
     ),

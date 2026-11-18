@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/widgets.dart';
 import '../domain/family_repository.dart';
 import 'family_view_model.dart';
 
@@ -6,67 +7,86 @@ class MembersPanel extends StatelessWidget {
   const MembersPanel({super.key, required this.model, required this.family});
   final FamilyViewModel model;
   final FamilyRecord family;
-  Future<bool> confirm(BuildContext context, String title, String text) async =>
-      await showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text(title),
-          content: Text(text),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancelar'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Confirmar'),
-            ),
-          ],
-        ),
-      ) ??
-      false;
+  Future<bool> confirm(
+    BuildContext context,
+    String title,
+    String text, {
+    bool destructive = false,
+    String confirmLabel = 'Confirmar',
+  }) => showConfirmDialog(
+    context,
+    title: title,
+    message: text,
+    confirmLabel: confirmLabel,
+    destructive: destructive,
+    icon: destructive ? Icons.person_remove_outlined : Icons.shield_outlined,
+  );
+
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
+  Widget build(BuildContext context) => SectionCard(
+    icon: Icons.groups_outlined,
+    title: 'Miembros de la familia',
+    subtitle: 'Administración y parentesco son independientes.',
     children: [
-      Text(
-        'Miembros de la familia',
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      const Text('Administración y parentesco son independientes.'),
-      for (final member in model.members)
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.person_outline),
-            title: Text(member.fullName),
-            subtitle: Text(member.isAdmin ? 'Administrador' : 'Miembro'),
-            trailing: family.isAdmin
-                ? PopupMenuButton<String>(
-                    enabled: !model.busy,
-                    tooltip: 'Acciones de ${member.fullName}',
-                    onSelected: (action) async {
-                      if (action == 'admin') {
-                        if (await confirm(
-                          context,
-                          member.isAdmin
-                              ? 'Quitar administración'
-                              : 'Hacer administrador',
-                          '¿Confirmas el cambio de administración de ${member.fullName}?',
-                        )) {
-                          await model.setAdmin(family, member, !member.isAdmin);
-                        }
-                      } else if (await confirm(
-                        context,
-                        'Quitar del grupo',
-                        '¿Retirar a ${member.fullName} de ${family.name}? Perderá acceso al grupo.',
-                      )) {
-                        await model.remove(family, member);
+      for (final (i, member) in model.members.indexed) ...[
+        if (i > 0) const Divider(indent: 56),
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          leading: AppAvatar(name: member.fullName),
+          title: Text(
+            member.fullName,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: Space.xxs),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: StatusBadge(
+                label: member.isAdmin ? 'Administrador' : 'Miembro',
+                tone: member.isAdmin ? Tone.info : Tone.neutral,
+              ),
+            ),
+          ),
+          trailing: family.isAdmin
+              ? PopupMenuButton<String>(
+                  enabled: !model.busy,
+                  tooltip: 'Acciones de ${member.fullName}',
+                  icon: const Icon(Icons.more_vert_rounded),
+                  onSelected: (action) async {
+                    if (action == 'admin') {
+                      if (await confirm(
+                            context,
+                            member.isAdmin
+                                ? 'Quitar administración'
+                                : 'Hacer administrador',
+                            '¿Confirmas el cambio de administración de ${member.fullName}?',
+                          ) &&
+                          context.mounted) {
+                        await model.setAdmin(family, member, !member.isAdmin);
                       }
-                    },
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        value: 'admin',
-                        child: Text(
+                    } else if (await confirm(
+                          context,
+                          'Quitar del grupo',
+                          '¿Retirar a ${member.fullName} de ${family.name}? Perderá acceso al grupo.',
+                          destructive: true,
+                          confirmLabel: 'Quitar',
+                        ) &&
+                        context.mounted) {
+                      await model.remove(family, member);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'admin',
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(
+                          member.isAdmin
+                              ? Icons.remove_moderator_outlined
+                              : Icons.add_moderator_outlined,
+                        ),
+                        title: Text(
                           member.isAdmin
                               ? (member.userId == model.repository.currentUserId
                                     ? 'Dejar de ser administrador'
@@ -74,30 +94,51 @@ class MembersPanel extends StatelessWidget {
                               : 'Hacer administrador',
                         ),
                       ),
-                      if (member.userId != model.repository.currentUserId)
-                        const PopupMenuItem(
-                          value: 'remove',
-                          child: Text('Quitar del grupo'),
+                    ),
+                    if (member.userId != model.repository.currentUserId)
+                      PopupMenuItem(
+                        value: 'remove',
+                        child: ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(
+                            Icons.person_remove_outlined,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          title: Text(
+                            'Quitar del grupo',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
                         ),
-                    ],
-                  )
-                : null,
-          ),
+                      ),
+                  ],
+                )
+              : null,
         ),
-      TextButton.icon(
-        onPressed: model.busy
-            ? null
-            : () async {
-                if (await confirm(
-                  context,
-                  'Salir de la familia',
-                  '¿Salir de ${family.name}? Perderás el acceso a este grupo y se retirarán tus datos compartidos.',
-                )) {
-                  await model.leave(family);
-                }
-              },
-        icon: const Icon(Icons.exit_to_app),
-        label: const Text('Salir del grupo'),
+      ],
+      const SizedBox(height: Space.xs),
+      Align(
+        alignment: Alignment.centerLeft,
+        child: TextButton.icon(
+          style: destructiveTextStyle(context),
+          onPressed: model.busy
+              ? null
+              : () async {
+                  if (await confirm(
+                        context,
+                        'Salir de la familia',
+                        '¿Salir de ${family.name}? Perderás el acceso a este grupo y se retirarán tus datos compartidos.',
+                        destructive: true,
+                        confirmLabel: 'Salir',
+                      ) &&
+                      context.mounted) {
+                    await model.leave(family);
+                  }
+                },
+          icon: const Icon(Icons.exit_to_app_rounded),
+          label: const Text('Salir del grupo'),
+        ),
       ),
     ],
   );

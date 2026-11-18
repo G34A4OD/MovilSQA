@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/widgets/widgets.dart';
 import '../domain/pet_repository.dart';
 import 'pet_view_model.dart';
 
@@ -43,102 +44,120 @@ class _PetsPanelState extends State<PetsPanel> {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: model,
-    builder: (context, _) => Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.pets_outlined),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Nuestras mascotas',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                ),
-                IconButton(
-                  tooltip: 'Actualizar mascotas',
-                  onPressed: model.busy ? null : model.load,
-                  icon: const Icon(Icons.refresh),
-                ),
-              ],
+    builder: (context, _) {
+      final text = Theme.of(context).textTheme;
+      return SectionCard(
+        icon: Icons.pets_outlined,
+        tone: Tone.warning,
+        title: 'Nuestras mascotas',
+        refreshTooltip: 'Actualizar mascotas',
+        onRefresh: model.load,
+        busy: model.busy,
+        message: model.message,
+        children: [
+          if (model.items.isEmpty && !model.busy)
+            const EmptyState(
+              compact: true,
+              icon: Icons.pets_outlined,
+              title: 'Aquí también hay lugar para las mascotas.',
             ),
-            if (model.busy) const LinearProgressIndicator(),
-            if (model.message != null) Text(model.message!),
-            if (model.items.isEmpty && !model.busy)
-              const Text('Aquí también hay lugar para las mascotas.'),
-            for (final pet in model.items)
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(pet.details.name),
-                subtitle: Text(
-                  [
-                    pet.details.species,
-                    if (pet.details.birthDate != null)
-                      'Nacimiento: ${pet.details.birthDate}',
-                    if (pet.details.notes.isNotEmpty) pet.details.notes,
-                  ].join('\n'),
-                ),
-                trailing: widget.isAdmin
-                    ? PopupMenuButton<String>(
-                        enabled: !model.busy,
-                        tooltip: 'Opciones de ${pet.details.name}',
-                        onSelected: (action) async {
-                          if (action == 'edit') {
-                            await edit(pet);
-                          } else {
-                            final ok = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Quitar mascota'),
-                                content: Text(
-                                  '¿Eliminar a ${pet.details.name} de este grupo? Se retirará el acceso a sus documentos.',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, false),
-                                    child: const Text('Cancelar'),
-                                  ),
-                                  FilledButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, true),
-                                    child: const Text('Quitar mascota'),
-                                  ),
-                                ],
+          for (final (i, pet) in model.items.indexed) ...[
+            if (i > 0) const Divider(indent: 56),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Space.xs),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppAvatar(name: pet.details.name, icon: Icons.pets_rounded),
+                  const SizedBox(width: Space.md),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(pet.details.name, style: text.titleSmall),
+                        const SizedBox(height: Space.xxs),
+                        Wrap(
+                          spacing: Space.xs,
+                          runSpacing: Space.xxs,
+                          children: [
+                            StatusBadge(label: pet.details.species),
+                            if (pet.details.birthDate != null)
+                              StatusBadge(
+                                label: 'Nacimiento: ${pet.details.birthDate}',
+                                icon: Icons.cake_outlined,
                               ),
-                            );
-                            if (ok == true && mounted) {
-                              await model.delete(pet);
-                            }
-                          }
-                        },
-                        itemBuilder: (_) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Text('Editar mascota'),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Text('Quitar mascota'),
-                          ),
+                          ],
+                        ),
+                        if (pet.details.notes.isNotEmpty) ...[
+                          const SizedBox(height: Space.xxs),
+                          Text(pet.details.notes, style: text.bodySmall),
                         ],
-                      )
-                    : null,
+                      ],
+                    ),
+                  ),
+                  if (widget.isAdmin)
+                    PopupMenuButton<String>(
+                      enabled: !model.busy,
+                      tooltip: 'Opciones de ${pet.details.name}',
+                      icon: const Icon(Icons.more_vert_rounded),
+                      onSelected: (action) async {
+                        if (action == 'edit') {
+                          await edit(pet);
+                        } else {
+                          final ok = await showConfirmDialog(
+                            context,
+                            title: 'Quitar mascota',
+                            message:
+                                '¿Eliminar a ${pet.details.name} de este grupo? Se retirará el acceso a sus documentos.',
+                            confirmLabel: 'Quitar mascota',
+                          );
+                          if (ok && mounted) {
+                            await model.delete(pet);
+                          }
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.edit_outlined),
+                            title: Text('Editar mascota'),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(
+                              Icons.delete_outline_rounded,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            title: Text(
+                              'Quitar mascota',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
               ),
-            if (widget.isAdmin)
-              OutlinedButton.icon(
-                onPressed: model.busy ? null : edit,
-                icon: const Icon(Icons.add),
-                label: const Text('Añadir mascota'),
-              ),
+            ),
           ],
-        ),
-      ),
-    ),
+          if (widget.isAdmin) ...[
+            const SizedBox(height: Space.xs),
+            OutlinedButton.icon(
+              onPressed: model.busy ? null : edit,
+              icon: const Icon(Icons.add_rounded),
+              label: const Text('Añadir mascota'),
+            ),
+          ],
+        ],
+      );
+    },
   );
 }
 
@@ -170,39 +189,77 @@ class _PetDialogState extends State<_PetDialog> {
     super.dispose();
   }
 
+  Future<void> _pickBirth() async {
+    final now = DateTime.now();
+    final current = DateTime.tryParse(birth.text.trim());
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: current != null && current.isBefore(now) ? current : now,
+      firstDate: DateTime(1950),
+      lastDate: now,
+      helpText: 'Fecha de nacimiento',
+    );
+    if (picked != null && mounted) {
+      birth.text =
+          '${picked.year.toString().padLeft(4, '0')}-'
+          '${picked.month.toString().padLeft(2, '0')}-'
+          '${picked.day.toString().padLeft(2, '0')}';
+    }
+  }
+
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: Text(widget.existing == null ? 'Añadir mascota' : 'Editar mascota'),
     content: SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
             controller: name,
             maxLength: 100,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.next,
             decoration: const InputDecoration(
               labelText: 'Nombre de la mascota',
+              prefixIcon: Icon(Icons.pets_outlined),
             ),
           ),
           TextField(
             controller: species,
             maxLength: 60,
-            decoration: const InputDecoration(labelText: 'Especie'),
+            textCapitalization: TextCapitalization.sentences,
+            textInputAction: TextInputAction.next,
+            decoration: const InputDecoration(
+              labelText: 'Especie',
+              prefixIcon: Icon(Icons.category_outlined),
+            ),
           ),
           TextField(
             controller: birth,
             keyboardType: TextInputType.datetime,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: 'Nacimiento opcional (AAAA-MM-DD)',
+              prefixIcon: const Icon(Icons.cake_outlined),
+              suffixIcon: IconButton(
+                tooltip: 'Elegir fecha',
+                onPressed: _pickBirth,
+                icon: const Icon(Icons.calendar_month_outlined),
+              ),
             ),
           ),
+          const SizedBox(height: Space.md),
           TextField(
             controller: notes,
             maxLength: 1000,
             maxLines: 3,
-            decoration: const InputDecoration(labelText: 'Notas'),
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(
+              labelText: 'Notas',
+              alignLabelWithHint: true,
+            ),
           ),
-          if (message != null) Text(message!),
+          InlineMessage(text: message, tone: Tone.danger),
         ],
       ),
     ),
