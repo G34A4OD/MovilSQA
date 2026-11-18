@@ -2,6 +2,13 @@ import 'package:app/core/supabase_config.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('La compilación normal usa el proyecto compartido de pruebas', () {
+    const config = SupabaseConfig.forBuild;
+    config.validate();
+    expect(Uri.parse(config.url).host, 'dcwfnnttrxbtavshrbfj.supabase.co');
+    expect(config.localTest, isFalse);
+  });
+
   test(
     'TC-SEC-01: HTTP solo loopback de pruebas con bandera explícita y build debug',
     () {

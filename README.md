@@ -23,15 +23,17 @@ flutter pub get
 flutter run
 ```
 
-La aplicación inicia con Auth y los módulos persistentes de identidad/familia cuando recibe configuración pública del proyecto de pruebas:
+La compilación normal se conecta por HTTPS al proyecto de pruebas compartido `nido-dev`. En cada teléfono, inicia sesión con una cuenta propia, completa el perfil y comparte el ID de invitación con el administrador del grupo. Usa únicamente datos ficticios en este entorno.
 
 ```powershell
-flutter run --dart-define-from-file=config/supabase.local.json
+flutter run
+# APK de pruebas Android conectada, para instalar en otros teléfonos:
+flutter build apk --debug
 # Alternativa explícita sin red, solo demostración ficticia:
 flutter run --dart-define=NIDO_DEMO=true
 ```
 
-Crear el archivo local ignorado desde config/supabase.example.json con URL y publishable key. Nunca incluir service_role/secret ni contraseña DB. Documentos y presupuesto persistentes siguen a cargo de Eva/Waldir; la demo no acredita esos módulos. Consultar [integración y revisión](docs/INTEGRACION.md).
+Si necesitas otro proyecto o Supabase local, copia `config/supabase.example.json` a `config/supabase.local.json` e indica ambas variables con `--dart-define-from-file=config/supabase.local.json`. Nunca incluir service_role, claves secretas ni contraseña DB. Consultar [integración y revisión](docs/INTEGRACION.md).
 
 ```powershell
 # Desde la raíz; genera evidencia con fecha, entorno, casos y métricas.
