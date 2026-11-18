@@ -7,7 +7,9 @@ import '../domain/relationship_repository.dart';
 import 'supabase_relationship_repository.dart';
 import '../domain/pet_repository.dart';
 import 'supabase_pet_repository.dart';
+import '../../documents/domain/document_repository.dart';
 import '../../documents/domain/folder_repository.dart';
+import '../../documents/data/supabase_document_repository.dart';
 import '../../documents/data/supabase_folder_repository.dart';
 import '../../budget/domain/sheet_repository.dart';
 import '../../budget/data/supabase_sheet_repository.dart';
@@ -21,6 +23,8 @@ class SupabaseFamilyRepository implements FamilyRepository {
   FolderRepository get folders => SupabaseFolderRepository(client);
   @override
   BudgetSheetRepository get sheets => SupabaseBudgetSheetRepository(client);
+  @override
+  DocumentRepository get documents => SupabaseDocumentRepository(client);
   @override
   RelationshipRepository get relationships =>
       SupabaseRelationshipRepository(client);

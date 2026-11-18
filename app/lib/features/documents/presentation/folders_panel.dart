@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../core/widgets/widgets.dart';
+import '../domain/document_repository.dart';
 import '../domain/folder_repository.dart';
+import 'documents_panel.dart';
 import 'folder_view_model.dart';
 
 class FolderPetOption {
@@ -17,12 +19,16 @@ class FoldersPanel extends StatefulWidget {
     required this.isAdmin,
     required this.currentUserId,
     this.pets = const [],
+    this.documents,
+    this.pickDocumentBytes,
   });
   final FolderRepository repository;
   final String familyId;
   final bool isAdmin;
   final String currentUserId;
   final List<FolderPetOption> pets;
+  final DocumentRepository? documents;
+  final DocumentBytesPicker? pickDocumentBytes;
   @override
   State<FoldersPanel> createState() => _FoldersPanelState();
 }
@@ -36,6 +42,7 @@ class _FoldersPanelState extends State<FoldersPanel> {
   );
   final search = TextEditingController();
   String query = '';
+  FolderRecord? selected;
 
   @override
   void initState() {
@@ -174,6 +181,10 @@ class _FoldersPanelState extends State<FoldersPanel> {
             if (i > 0) const Divider(indent: 56),
             ListTile(
               contentPadding: EdgeInsets.zero,
+              selected: selected?.id == folder.id,
+              onTap: widget.documents == null
+                  ? null
+                  : () => setState(() => selected = folder),
               leading: IconTile(
                 icon: folder.ownerKind == FolderOwnerKind.pet
                     ? Icons.pets_rounded
@@ -233,6 +244,17 @@ class _FoldersPanelState extends State<FoldersPanel> {
                       ],
                     )
                   : null,
+            ),
+          ],
+          if (selected != null && widget.documents != null) ...[
+            const SizedBox(height: Space.sm),
+            DocumentsPanel(
+              key: ValueKey('docs-${selected!.id}'),
+              repository: widget.documents!,
+              folderId: selected!.id,
+              folderName: selected!.name,
+              canUpload: _canManage(selected!),
+              pickBytes: widget.pickDocumentBytes,
             ),
           ],
           const SizedBox(height: Space.xs),

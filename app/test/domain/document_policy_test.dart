@@ -66,4 +66,20 @@ void main() {
       expect(() => DocumentPolicy.folderName(value), throwsFormatException);
     }
   });
+
+  test('TC-DOC-02 HU-09 título, descripción y vencimiento opcionales', () {
+    expect(DocumentPolicy.title('  Vacunas  '), 'Vacunas');
+    expect(DocumentPolicy.description('nota'), 'nota');
+    expect(() => DocumentPolicy.description('x' * 1001), throwsFormatException);
+    final today = DateTime(2026, 11, 16);
+    expect(DocumentPolicy.expiresOn(null, today: today), isNull);
+    expect(
+      DocumentPolicy.expiresOn(DateTime(2026, 11, 16), today: today),
+      DateTime(2026, 11, 16),
+    );
+    expect(
+      () => DocumentPolicy.expiresOn(DateTime(2026, 11, 15), today: today),
+      throwsFormatException,
+    );
+  });
 }
