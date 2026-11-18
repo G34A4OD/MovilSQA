@@ -21,7 +21,7 @@ BudgetViewModel createDemoBudget() {
       year: 2026,
       month: 11,
       amountCents: 450000,
-      description: 'Ingreso de ejemplo',
+      description: 'Sueldo mensual',
     ),
     BudgetEntry(
       id: 'sample2',
@@ -29,7 +29,7 @@ BudgetViewModel createDemoBudget() {
       year: 2026,
       month: 11,
       amountCents: 85000,
-      description: 'Compras de ejemplo',
+      description: 'Compras del mes',
     ),
     BudgetEntry(
       id: 'sample3',
@@ -37,7 +37,7 @@ BudgetViewModel createDemoBudget() {
       year: 2026,
       month: 11,
       amountCents: 130000,
-      description: 'Servicios de ejemplo',
+      description: 'Luz, agua e internet',
     ),
   ]) {
     ledger.saveEntry(entry);

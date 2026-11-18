@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../core/widgets/widgets.dart';
 import '../../documents/presentation/folders_panel.dart';
 import '../../budget/presentation/sheets_panel.dart';
@@ -18,8 +19,10 @@ class FamilyPage extends StatefulWidget {
     required this.repository,
     required this.profiles,
     required this.reauthenticate,
+    this.invitationId,
   });
   final FamilyRepository repository;
+  final String? invitationId;
   final ProfileRepository profiles;
   final Future<void> Function(String password) reauthenticate;
   @override
@@ -83,10 +86,9 @@ class _FamilyPageState extends State<FamilyPage> {
       builder: (context) {
         final scheme = Theme.of(context).colorScheme;
         return AlertDialog(
-          icon: const IconTile(
+          icon: const DialogIcon(
             icon: Icons.warning_amber_rounded,
             tone: Tone.danger,
-            size: 48,
           ),
           title: const Text('Eliminar grupo', textAlign: TextAlign.center),
           content: SingleChildScrollView(
@@ -180,7 +182,7 @@ class _FamilyPageState extends State<FamilyPage> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialog) => AlertDialog(
-          icon: const IconTile(icon: Icons.privacy_tip_outlined, size: 48),
+          icon: const DialogIcon(icon: Icons.privacy_tip_outlined),
           title: const Text(
             'Compartir mi información',
             textAlign: TextAlign.center,
@@ -227,7 +229,7 @@ class _FamilyPageState extends State<FamilyPage> {
         ),
       ),
     );
-    if (ok == true) {
+    if (ok == true && mounted) {
       await model.run(
         () => widget.profiles.share(
           f.id,
@@ -291,6 +293,68 @@ class _FamilyPageState extends State<FamilyPage> {
           icon: Icons.diversity_1_outlined,
           title: 'Todavía no perteneces a un grupo.',
           message: 'Crea una familia o acepta una invitación recibida.',
+        ),
+      ),
+    if (model.families.isEmpty && !model.busy && widget.invitationId != null)
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.all(Space.md),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  const IconTile(icon: Icons.badge_outlined, tone: Tone.info),
+                  const SizedBox(width: Space.sm),
+                  Expanded(
+                    child: Text(
+                      'Tu ID para invitaciones',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: Space.sm),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Space.md,
+                  vertical: Space.sm,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  borderRadius: BorderRadius.circular(Radii.md),
+                ),
+                child: SelectableText(
+                  widget.invitationId!,
+                  style: moneyStyle(
+                    Theme.of(context).textTheme.titleMedium,
+                  ).copyWith(letterSpacing: 0.6),
+                ),
+              ),
+              const SizedBox(height: Space.sm),
+              Text(
+                'Comparte este ID con el administrador de la familia; cuando te invite, acepta en Mis invitaciones.',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () async {
+                    await Clipboard.setData(
+                      ClipboardData(text: widget.invitationId!),
+                    );
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('ID copiado.')),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.copy_rounded),
+                  label: const Text('Copiar ID'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     const SizedBox(height: Space.sm),

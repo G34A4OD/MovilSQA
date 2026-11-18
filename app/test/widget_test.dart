@@ -7,10 +7,8 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(const NidoApp());
-    expect(
-      find.text('Demostración local · Datos ficticios en memoria'),
-      findsOneWidget,
-    );
+    expect(find.textContaining('Demostración'), findsNothing);
+    expect(find.textContaining('ficticio'), findsNothing);
     await tester.tap(find.byKey(const Key('budget-tab')));
     await tester.pumpAndSettle();
     expect(find.text('Bs 2350,00'), findsWidgets);
@@ -53,6 +51,58 @@ void main() {
       find.text('Usa un monto positivo con hasta dos decimales.'),
       findsOneWidget,
     );
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets('TC-UI-02 HU-03 avatar abre la familia', (tester) async {
+    await tester.pumpWidget(const NidoApp());
+    expect(find.text('Tu ID para invitaciones'), findsNothing);
+    await tester.tap(find.byTooltip('Ver mi familia'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tu ID para invitaciones'), findsOneWidget);
+  });
+  testWidgets('TC-UI-03 HU-04 aceptar invitación e invitar en la demo', (
+    tester,
+  ) async {
+    await tester.pumpWidget(const NidoApp());
+    await tester.tap(find.byTooltip('Ver mi familia'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.text('Aceptar'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Aceptar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Te uniste a Familia Quispe'), findsOneWidget);
+    expect(find.text('No hay invitaciones pendientes.'), findsOneWidget);
+    expect(find.text('Familia Quispe'), findsOneWidget);
+    ScaffoldMessenger.of(
+      tester.element(find.text('Familia Quispe')),
+    ).clearSnackBars();
+    await tester.pumpAndSettle();
+
+    final field = find.byType(TextField);
+    await tester.scrollUntilVisible(
+      find.text('Enviar invitación'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(field, 'corto');
+    await tester.tap(find.text('Enviar invitación'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Pega el ID completo: 32 letras y números.'),
+      findsOneWidget,
+    );
+    await tester.enterText(field, 'b' * 32);
+    await tester.ensureVisible(find.text('Enviar invitación'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Enviar invitación'));
+    await tester.pumpAndSettle();
+    expect(find.text('Invitación enviada'), findsOneWidget);
+    expect(find.text('Pendiente'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

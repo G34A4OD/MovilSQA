@@ -41,6 +41,7 @@ class _AccountHomeState extends State<AccountHome> {
     MaterialPageRoute<void>(
       builder: (_) => FamilyPage(
         repository: widget.families,
+        invitationId: model.profile?.publicId,
         profiles: widget.repository,
         reauthenticate: (password) =>
             widget.auth.repository.signIn(widget.auth.session!.email, password),
@@ -256,7 +257,7 @@ class _AccountHomeState extends State<AccountHome> {
                             ),
                             const SizedBox(height: Space.xs),
                             Text(
-                              'Comparte este ID con el administrador de tu familia.',
+                              'Comparte este ID con el administrador de la familia; cuando te invite, acepta en Mis invitaciones.',
                               style: text.bodySmall,
                             ),
                           ],

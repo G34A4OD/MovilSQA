@@ -133,7 +133,7 @@ class _SheetsPanelState extends State<SheetsPanel> {
                             'Renombrar hoja',
                             initial: sheet.name,
                           );
-                          if (next != null) {
+                          if (next != null && mounted) {
                             await model.rename(sheet, next);
                           }
                         },
@@ -149,7 +149,7 @@ class _SheetsPanelState extends State<SheetsPanel> {
                             confirmLabel: 'Eliminar',
                             destructive: true,
                           );
-                          if (confirmation != null) {
+                          if (confirmation != null && mounted) {
                             await model.delete(sheet, confirmation);
                           }
                         },
@@ -177,7 +177,7 @@ class _SheetsPanelState extends State<SheetsPanel> {
               ? null
               : () async {
                   final ok = await model.create(name.text);
-                  if (ok) {
+                  if (ok && mounted) {
                     name.clear();
                   }
                 },

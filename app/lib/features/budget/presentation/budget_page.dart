@@ -168,12 +168,12 @@ class BudgetPage extends StatelessWidget {
                       onTap: () => _entry(context, existing: entry),
                       onDelete: () async {
                         if (await showConfirmDialog(
-                          context,
-                          title: 'Confirmar eliminación',
-                          message:
-                              '¿Eliminar este movimiento de la demostración?',
-                          confirmLabel: 'Eliminar',
-                        )) {
+                              context,
+                              title: 'Confirmar eliminación',
+                              message: '¿Eliminar este movimiento?',
+                              confirmLabel: 'Eliminar',
+                            ) &&
+                            context.mounted) {
                           model.deleteEntry(entry.id);
                         }
                       },
@@ -506,6 +506,9 @@ class BudgetPage extends StatelessWidget {
                   maxLength: 80,
                   textCapitalization: TextCapitalization.sentences,
                   decoration: const InputDecoration(labelText: 'Nombre'),
+                  onChanged: (_) {
+                    if (error != null) refresh(() => error = null);
+                  },
                 ),
                 const SizedBox(height: Space.xs),
                 TextField(
@@ -562,8 +565,7 @@ class BudgetPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const InlineMessage(
-                  text:
-                      'Vista previa local. La descarga al dispositivo estará disponible en la versión completa.',
+                  text: 'Vista previa del archivo CSV del año.',
                 ),
                 const SizedBox(height: Space.xs),
                 Container(
@@ -574,15 +576,20 @@ class BudgetPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(Radii.md),
                     border: Border.all(color: scheme.outlineVariant),
                   ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: SelectableText(
-                      model.ledger.exportYearCsv(model.year),
-                      style: const TextStyle(
-                        fontFamily: 'monospace',
-                        fontFamilyFallback: ['Menlo', 'Courier'],
-                        fontSize: 12,
-                        height: 1.5,
+                  child: Scrollbar(
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      primary: true,
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.only(bottom: Space.sm),
+                      child: SelectableText(
+                        model.ledger.exportYearCsv(model.year),
+                        style: const TextStyle(
+                          fontFamily: 'monospace',
+                          fontFamilyFallback: ['Menlo', 'Courier'],
+                          fontSize: 12,
+                          height: 1.5,
+                        ),
                       ),
                     ),
                   ),
@@ -1224,10 +1231,9 @@ Future<T?> _ownedSheet<T>({
 void _message(BuildContext context, String message) => showDialog<void>(
   context: context,
   builder: (context) => AlertDialog(
-    icon: const IconTile(
+    icon: const DialogIcon(
       icon: Icons.info_outline_rounded,
       tone: Tone.warning,
-      size: 48,
     ),
     title: const Text('Revisa la categoría'),
     content: Text(message),

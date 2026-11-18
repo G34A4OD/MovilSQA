@@ -199,7 +199,7 @@ class _PetDialogState extends State<_PetDialog> {
       lastDate: now,
       helpText: 'Fecha de nacimiento',
     );
-    if (picked != null) {
+    if (picked != null && mounted) {
       birth.text =
           '${picked.year.toString().padLeft(4, '0')}-'
           '${picked.month.toString().padLeft(2, '0')}-'

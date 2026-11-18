@@ -44,7 +44,7 @@ class _ProfileEditorState extends State<ProfileEditor> {
       lastDate: now,
       helpText: 'Fecha de nacimiento',
     );
-    if (picked != null) {
+    if (picked != null && mounted) {
       birth.text =
           '${picked.year.toString().padLeft(4, '0')}-'
           '${picked.month.toString().padLeft(2, '0')}-'

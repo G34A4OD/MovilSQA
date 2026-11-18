@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/connected_app.dart';
 import 'core/secure_session_storage.dart';
@@ -10,6 +11,7 @@ import 'features/family/data/supabase_family_repository.dart';
 import 'core/app_theme.dart';
 import 'core/money.dart';
 import 'demo/demo_data.dart';
+import 'demo/demo_family.dart';
 import 'features/budget/presentation/budget_page.dart';
 import 'features/budget/presentation/budget_view_model.dart';
 
@@ -96,17 +98,18 @@ class FamilyHome extends StatefulWidget {
 
 class _FamilyHomeState extends State<FamilyHome> {
   late final BudgetViewModel budget = createDemoBudget();
+  final family = DemoFamily();
   int section = 0;
   @override
   void dispose() {
     budget.dispose();
+    family.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final palette = AppPalette.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -122,13 +125,17 @@ class _FamilyHomeState extends State<FamilyHome> {
             ),
           ],
         ),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.only(right: Space.lg),
-            child: AppAvatar(
-              name: 'Familia',
-              size: 38,
-              icon: Icons.person_outline_rounded,
+            padding: const EdgeInsets.only(right: Space.sm),
+            child: IconButton(
+              tooltip: 'Ver mi familia',
+              onPressed: () => setState(() => section = 1),
+              icon: const AppAvatar(
+                name: 'Familia',
+                size: 38,
+                icon: Icons.person_outline_rounded,
+              ),
             ),
           ),
         ],
@@ -136,32 +143,6 @@ class _FamilyHomeState extends State<FamilyHome> {
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              width: double.infinity,
-              color: palette.warningContainer,
-              padding: const EdgeInsets.symmetric(
-                horizontal: Space.lg,
-                vertical: Space.xs,
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.science_outlined,
-                    size: 16,
-                    color: palette.warning,
-                  ),
-                  const SizedBox(width: Space.xs),
-                  Expanded(
-                    child: Text(
-                      'Demostración local · Datos ficticios en memoria',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        color: scheme.onSurface,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Expanded(
               child: Center(
                 child: ConstrainedBox(
@@ -184,7 +165,7 @@ class _FamilyHomeState extends State<FamilyHome> {
                     child: KeyedSubtree(
                       key: ValueKey(section),
                       child: switch (section) {
-                        1 => const _FamilyPreview(),
+                        1 => _FamilyPreview(family: family),
                         2 => BudgetPage(model: budget),
                         3 => const _DocumentsPreview(),
                         _ => _Overview(
@@ -340,7 +321,7 @@ class _Overview extends StatelessWidget {
                           ).copyWith(fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          'Explora y edita un presupuesto de prueba',
+                          'Revisa y organiza el presupuesto del año',
                           style: text.bodySmall,
                         ),
                       ],
@@ -391,7 +372,7 @@ class _Overview extends StatelessWidget {
                     names: ['Elena Rivera', 'Luis Rivera', 'Ana Rivera'],
                   ),
                   title: 'Casa Rivera',
-                  subtitle: '4 familiares y una mascota · vista de ejemplo',
+                  subtitle: '4 familiares y una mascota',
                   onTap: () => onNavigate(1),
                 ),
                 const Divider(indent: Space.md, endIndent: Space.md),
@@ -433,7 +414,7 @@ class _Overview extends StatelessWidget {
                 ),
                 const SizedBox(height: Space.xs),
                 Text(
-                  'Personas, recuerdos y planes de cada mes. Así imaginamos el hogar digital de tu familia.',
+                  'Personas, documentos y planes de cada mes, en un solo lugar.',
                   style: text.bodyMedium?.copyWith(
                     color: scheme.onSurfaceVariant,
                   ),
@@ -442,17 +423,11 @@ class _Overview extends StatelessWidget {
                 FilledButton.tonalIcon(
                   onPressed: () => onNavigate(1),
                   icon: const Icon(Icons.arrow_forward_rounded),
-                  label: const Text('Conocer la familia de ejemplo'),
+                  label: const Text('Ver mi familia'),
                 ),
               ],
             ),
           ),
-        ),
-        const SizedBox(height: Space.lg),
-        Text(
-          'Esta base no guarda información al cerrar. El acceso con cuentas, los grupos y los archivos privados se incorporan en las historias del equipo.',
-          textAlign: TextAlign.center,
-          style: text.bodySmall,
         ),
       ],
     );
@@ -550,11 +525,46 @@ class _AvatarStack extends StatelessWidget {
   }
 }
 
-class _FamilyPreview extends StatelessWidget {
-  const _FamilyPreview();
+class _FamilyPreview extends StatefulWidget {
+  const _FamilyPreview({required this.family});
+  final DemoFamily family;
   @override
-  Widget build(BuildContext context) {
+  State<_FamilyPreview> createState() => _FamilyPreviewState();
+}
+
+class _FamilyPreviewState extends State<_FamilyPreview> {
+  final inviteId = TextEditingController();
+  String? inviteError;
+
+  @override
+  void dispose() {
+    inviteId.dispose();
+    super.dispose();
+  }
+
+  void _snack(String message) => ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(content: Text(message)));
+
+  void _invite() {
+    final error = widget.family.invite(inviteId.text);
+    setState(() => inviteError = error);
+    if (error == null) {
+      inviteId.clear();
+      _snack('Invitación enviada');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => ListenableBuilder(
+    listenable: widget.family,
+    builder: (context, _) => _content(context),
+  );
+
+  Widget _content(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final family = widget.family;
     return ListView(
       padding: const EdgeInsets.fromLTRB(
         Space.lg,
@@ -567,6 +577,160 @@ class _FamilyPreview extends StatelessWidget {
           eyebrow: 'Familia',
           title: 'Casa Rivera',
           subtitle: 'Cada persona tiene su lugar.',
+        ),
+        const SectionHeader(title: 'Unirte a una familia'),
+        FadeSlideIn(
+          child: Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(Space.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      const IconTile(icon: Icons.badge_outlined),
+                      const SizedBox(width: Space.sm),
+                      Expanded(
+                        child: Text(
+                          'Tu ID para invitaciones',
+                          style: text.titleSmall,
+                        ),
+                      ),
+                      IconButton(
+                        tooltip: 'Copiar ID',
+                        icon: const Icon(Icons.copy_rounded, size: 20),
+                        onPressed: () async {
+                          await Clipboard.setData(
+                            const ClipboardData(text: DemoFamily.publicId),
+                          );
+                          if (mounted) _snack('ID copiado.');
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: Space.sm),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Space.md,
+                      vertical: Space.sm,
+                    ),
+                    decoration: BoxDecoration(
+                      color: scheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(Radii.md),
+                    ),
+                    child: SelectableText(
+                      DemoFamily.publicId,
+                      style: moneyStyle(
+                        text.titleMedium,
+                      ).copyWith(letterSpacing: 0.6),
+                    ),
+                  ),
+                  const SizedBox(height: Space.xs),
+                  Text(
+                    'Comparte este ID con el administrador de la familia; cuando te invite, acepta en Mis invitaciones.',
+                    style: text.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SectionHeader(title: 'Mis invitaciones'),
+        FadeSlideIn(
+          index: 1,
+          child: Card(
+            margin: EdgeInsets.zero,
+            child: family.received.isEmpty
+                ? const EmptyState(
+                    compact: true,
+                    icon: Icons.mark_email_read_outlined,
+                    title: 'No hay invitaciones pendientes.',
+                  )
+                : Column(
+                    children: [
+                      for (final invitation in family.received)
+                        Padding(
+                          padding: const EdgeInsets.all(Space.md),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  AppAvatar(name: invitation.family),
+                                  const SizedBox(width: Space.sm),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          invitation.family,
+                                          style: text.titleSmall,
+                                        ),
+                                        Text(
+                                          'Te invita ${invitation.from}',
+                                          style: text.bodySmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: Space.sm),
+                              Wrap(
+                                spacing: Space.xs,
+                                runSpacing: Space.xs,
+                                children: [
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      family.respond(invitation, accept: false);
+                                      _snack('Invitación rechazada');
+                                    },
+                                    child: const Text('Rechazar'),
+                                  ),
+                                  FilledButton(
+                                    onPressed: () {
+                                      family.respond(invitation, accept: true);
+                                      _snack(
+                                        'Te uniste a ${invitation.family}',
+                                      );
+                                    },
+                                    child: const Text('Aceptar'),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+          ),
+        ),
+        const SectionHeader(title: 'Mis familias'),
+        FadeSlideIn(
+          index: 2,
+          child: Card(
+            margin: EdgeInsets.zero,
+            child: Column(
+              children: [
+                for (final (i, name) in family.families.indexed) ...[
+                  if (i > 0) const Divider(indent: 72),
+                  ListTile(
+                    leading: AppAvatar(name: name),
+                    title: Text(name),
+                    subtitle: Align(
+                      alignment: Alignment.centerLeft,
+                      child: StatusBadge(
+                        label: i == 0 ? 'Administradora' : 'Miembro',
+                        tone: i == 0 ? Tone.info : Tone.neutral,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
         const SectionHeader(title: 'Miembros'),
         FadeSlideIn(
@@ -604,7 +768,7 @@ class _FamilyPreview extends StatelessWidget {
             ),
           ),
         ),
-        const SectionHeader(title: 'Vínculos de ejemplo'),
+        const SectionHeader(title: 'Vínculos'),
         FadeSlideIn(
           index: 1,
           child: Card(
@@ -649,10 +813,62 @@ class _FamilyPreview extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: Space.md),
-        const InlineMessage(
-          text:
-              'Vista de ejemplo. Las invitaciones y la edición de tu familia estarán disponibles en la versión completa.',
+        const SectionHeader(title: 'Invitar familiar'),
+        Card(
+          margin: EdgeInsets.zero,
+          child: Padding(
+            padding: const EdgeInsets.all(Space.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Pide a la persona su ID para invitaciones y pégalo aquí.',
+                  style: text.bodySmall,
+                ),
+                const SizedBox(height: Space.sm),
+                TextField(
+                  controller: inviteId,
+                  maxLength: 32,
+                  style: moneyStyle(text.bodyLarge),
+                  decoration: const InputDecoration(
+                    labelText: 'ID único del usuario',
+                    prefixIcon: Icon(Icons.person_search_outlined),
+                  ),
+                  onChanged: (_) {
+                    if (inviteError != null) {
+                      setState(() => inviteError = null);
+                    }
+                  },
+                  onSubmitted: (_) => _invite(),
+                ),
+                InlineMessage(text: inviteError, tone: Tone.warning),
+                const SizedBox(height: Space.xs),
+                FilledButton.icon(
+                  onPressed: _invite,
+                  icon: const Icon(Icons.send_rounded),
+                  label: const Text('Enviar invitación'),
+                ),
+                for (final id in family.sent) ...[
+                  const SizedBox(height: Space.sm),
+                  Row(
+                    children: [
+                      const Icon(Icons.schedule_send_outlined, size: 20),
+                      const SizedBox(width: Space.xs),
+                      Expanded(
+                        child: Text(
+                          id,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: moneyStyle(text.bodySmall),
+                        ),
+                      ),
+                      const StatusBadge(label: 'Pendiente', tone: Tone.warning),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
         ),
       ],
     );
@@ -677,7 +893,7 @@ class _DocumentsPreview extends StatelessWidget {
           title: 'El archivo de la familia',
           subtitle: 'Carpetas a tu manera, compartidas con intención.',
         ),
-        const SectionHeader(title: 'Carpetas de ejemplo'),
+        const SectionHeader(title: 'Carpetas'),
         LayoutBuilder(
           builder: (context, constraints) {
             final width = (constraints.maxWidth - Space.sm) / 2;
@@ -720,7 +936,7 @@ class _DocumentsPreview extends StatelessWidget {
                               ),
                               const SizedBox(height: Space.xxs),
                               Text(
-                                'Ejemplo de carpeta · Sin archivos cargados',
+                                'Sin archivos cargados',
                                 style: text.bodySmall,
                               ),
                             ],
@@ -732,16 +948,6 @@ class _DocumentsPreview extends StatelessWidget {
               ],
             );
           },
-        ),
-        const SizedBox(height: Space.lg),
-        const Card(
-          margin: EdgeInsets.zero,
-          child: EmptyState(
-            icon: Icons.lock_outline_rounded,
-            title: 'Antes de guardar algo real',
-            message:
-                'Tu archivo familiar necesita un espacio privado y acceso con tu cuenta. Esta demostración todavía no permite subir documentos.',
-          ),
         ),
       ],
     );

@@ -180,7 +180,8 @@ class _InvitationsPanelState extends State<InvitationsPanel> {
                             onPressed: model.busy || !item.actionable
                                 ? null
                                 : () async {
-                                    if (await model.respond(item, 'reject')) {
+                                    if (await model.respond(item, 'reject') &&
+                                        mounted) {
                                       widget.onChanged();
                                     }
                                   },
@@ -193,7 +194,8 @@ class _InvitationsPanelState extends State<InvitationsPanel> {
                             onPressed: model.busy || !item.actionable
                                 ? null
                                 : () async {
-                                    if (await model.respond(item, 'accept')) {
+                                    if (await model.respond(item, 'accept') &&
+                                        mounted) {
                                       widget.onChanged();
                                     }
                                   },

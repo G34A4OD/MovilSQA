@@ -56,21 +56,23 @@ class MembersPanel extends StatelessWidget {
                   onSelected: (action) async {
                     if (action == 'admin') {
                       if (await confirm(
-                        context,
-                        member.isAdmin
-                            ? 'Quitar administración'
-                            : 'Hacer administrador',
-                        '¿Confirmas el cambio de administración de ${member.fullName}?',
-                      )) {
+                            context,
+                            member.isAdmin
+                                ? 'Quitar administración'
+                                : 'Hacer administrador',
+                            '¿Confirmas el cambio de administración de ${member.fullName}?',
+                          ) &&
+                          context.mounted) {
                         await model.setAdmin(family, member, !member.isAdmin);
                       }
                     } else if (await confirm(
-                      context,
-                      'Quitar del grupo',
-                      '¿Retirar a ${member.fullName} de ${family.name}? Perderá acceso al grupo.',
-                      destructive: true,
-                      confirmLabel: 'Quitar',
-                    )) {
+                          context,
+                          'Quitar del grupo',
+                          '¿Retirar a ${member.fullName} de ${family.name}? Perderá acceso al grupo.',
+                          destructive: true,
+                          confirmLabel: 'Quitar',
+                        ) &&
+                        context.mounted) {
                       await model.remove(family, member);
                     }
                   },
@@ -124,12 +126,13 @@ class MembersPanel extends StatelessWidget {
               ? null
               : () async {
                   if (await confirm(
-                    context,
-                    'Salir de la familia',
-                    '¿Salir de ${family.name}? Perderás el acceso a este grupo y se retirarán tus datos compartidos.',
-                    destructive: true,
-                    confirmLabel: 'Salir',
-                  )) {
+                        context,
+                        'Salir de la familia',
+                        '¿Salir de ${family.name}? Perderás el acceso a este grupo y se retirarán tus datos compartidos.',
+                        destructive: true,
+                        confirmLabel: 'Salir',
+                      ) &&
+                      context.mounted) {
                     await model.leave(family);
                   }
                 },
