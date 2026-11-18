@@ -19,7 +19,7 @@ Future<void> main() async {
     return;
   }
   try {
-    const config = SupabaseConfig.fromEnvironment;
+    const config = SupabaseConfig.forBuild;
     config.validate();
     final host = Uri.parse(config.url).host;
     final supabase = await Supabase.initialize(

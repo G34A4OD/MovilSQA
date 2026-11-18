@@ -10,6 +10,22 @@ class SupabaseConfig {
   final String publishableKey;
   final bool localTest;
 
+  // These values identify the shared test project. Auth and RLS grant access.
+  static const nidoDev = SupabaseConfig(
+    url: 'https://dcwfnnttrxbtavshrbfj.supabase.co',
+    publishableKey: 'sb_publishable_Olzx18t0CgrhwTX1UgyiOg_TMruRvwR',
+  );
+
+  static const _hasUrl = bool.hasEnvironment('SUPABASE_URL');
+  static const _hasKey = bool.hasEnvironment('SUPABASE_PUBLISHABLE_KEY');
+  static const _localTest = bool.fromEnvironment('SUPABASE_LOCAL_TEST');
+
+  // Treat overrides as a pair. In particular, a local test must never
+  // silently fall back to the hosted project when its values are missing.
+  static const forBuild = _hasUrl || _hasKey || _localTest
+      ? fromEnvironment
+      : nidoDev;
+
   static const fromEnvironment = SupabaseConfig(
     url: String.fromEnvironment('SUPABASE_URL'),
     publishableKey: String.fromEnvironment('SUPABASE_PUBLISHABLE_KEY'),
