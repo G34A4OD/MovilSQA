@@ -1,5 +1,9 @@
 # GitHub · control del 14/11/2026
 
+**Actualización 18/11/2026:** Los PR #21, #23–34 y #36 indicados como pendientes en el corte histórico ya fueron fusionados. El único PR abierto al consultar fue [#38](https://github.com/G34A4OD/MovilSQA/pull/38), de Waldir; el head revisado `9c7da8f` tenía Flutter, SQL y Android en verde, pero recibió solicitud de cambios por una carrera de autorización financiera reproducida localmente. La issue #20 sigue abierta, al igual que #37 de reconciliación y HU-11..15. El estado vigente debe consultarse en GitHub antes de cualquier integración. No hay aceptación final ni release verificados por este corte.
+
+Los siguientes datos se conservan como registro histórico del 14/11, no como estado actual.
+
 Repositorio público https://github.com/G34A4OD/MovilSQA; Project privado https://github.com/users/G34A4OD/projects/1/views/1. No subir PDFs docentes, secretos ni documentos reales.
 
 - develop es integración/default y main reserva releases. Ambas protegidas: flutter-quality, aprobación independiente, descartar aprobaciones tras cambios, aprobación del último push, conversaciones resueltas, sin force push/borrado; aplica a admins.
